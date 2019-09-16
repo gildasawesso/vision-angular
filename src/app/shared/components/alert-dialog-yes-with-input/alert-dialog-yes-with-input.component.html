@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{title}}</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="{{inputTitle}}" [(ngModel)]="inputValue"/>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button [mat-dialog-close]="true" tabindex="1" (click)="no()">Annuler</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" tabindex="2" (click)="yes()">Valider</button>
+</div>
