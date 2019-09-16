@@ -1,8 +1,4 @@
-export class Fee {
+export class FeeType {
   '_id': string;
   name: string;
-  amount: number;
-  isScholarship: boolean;
-  tranches: Array<{ name: string, dueDate: Date }>;
-  deadline: Date;
 }

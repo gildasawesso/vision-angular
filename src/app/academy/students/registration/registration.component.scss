@@ -1,0 +1,26 @@
+
+:host {
+  display: block;
+  width: 55%;
+  margin: 25px auto;
+
+  .headers {
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+
+  .inputs {
+    margin-top: 15px;
+  }
+
+  .genre {
+    margin-right: 55px;
+  }
+
+  .stats {
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+}

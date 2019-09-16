@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 
 @Component({
-  selector: 'gen-alert-dialog-yes-with-input',
+  selector: 'app-alert-dialog-yes-with-input',
   templateUrl: './alert-dialog-yes-with-input.component.html',
   styleUrls: ['./alert-dialog-yes-with-input.component.css']
 })

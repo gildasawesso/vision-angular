@@ -1,7 +1,24 @@
-import {Teacher} from './teacher';
+import {Classroom} from './classroom';
 
-export class Subject {
-  code: string;
-  name: string;
-  professors: Array<Teacher>;
+export class Student {
+  '_id': string;
+  firstname: string;
+  lastname: string;
+  birthdaystring;
+  matricule: string;
+  gender: string;
+  status: string;
+  birthCity: string;
+  fathersFirstname: string;
+  fathersLastname: string;
+  mothersFirstname: string;
+  mothersLastname: string;
+  fathersJob: string;
+  mothersJob: string;
+  fathersPhone: string;
+  mothersPhone: string;
+  address: string;
+  lastClass: string;
+  lastSchool: string;
+  classroom: Classroom;
 }

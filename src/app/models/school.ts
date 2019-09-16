@@ -1,6 +1,10 @@
-export class Schoolyear {
-  startDate: Date;
-  endDate: Date;
-  sessions: [schoolSessionSchema],
-  school: School;
+import {Media} from './media';
+
+export class School {
+  '_id': string;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  logo: Media;
 }

@@ -1,7 +1,9 @@
-export class Fee {
+import {SchoolYear} from './school-year';
+
+export class SchoolSession {
+  '_id': string;
   name: string;
-  amount: number;
-  isScholarship: boolean;
-  tranches: Array<{ name: string, dueDate: Date }>;
-  deadline: Date;
+  startDate: Date;
+  endDate: Date;
+  schoolYear: SchoolYear;
 }

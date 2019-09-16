@@ -1,14 +1,5 @@
-import {Teacher} from './teacher';
-import {Fee} from './fee';
-import {Subject} from './subject';
-
-export class Classroom {
+export class Discount {
   '_id': string;
   name: string;
-  code: string;
-  capacity: number;
-  teacher: Teacher;
-  registrationFee: Fee;
-  scholarship: Fee;
-  subjects: Array<Subject>;
+  type: string;
 }

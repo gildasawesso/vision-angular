@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import {BaseRepository} from './base.repository';
-import {StudentsDatasource} from '../datasources/students.datasource';
-import {Student} from '../../models/student';
+import {Subject} from '../../models/subject';
+import {SubjectsDatasource} from '../datasources/subjects.datasource';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StudentsRepository extends BaseRepository<Student> {
+export class SubjectsRepository extends BaseRepository<Subject> {
 
-  constructor(private studentsDatasource: StudentsDatasource) {
-    super(studentsDatasource);
+  constructor(private subjectsDatasource: SubjectsDatasource) {
+    super(subjectsDatasource);
   }
 }

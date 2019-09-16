@@ -2,7 +2,7 @@ import {Student} from './student';
 import {SchoolYear} from './school-year';
 import {Fee} from './fee';
 
-export class Contribution {
+export class Payment {
   '_id'?: string;
   student: Student;
   schooYear: SchoolYear;

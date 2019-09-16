@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import {BaseDatasource} from './base.datasource';
-import {Subject} from '../../models/subject';
+import {Fee} from '../../models/fee';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SubjectsDatasource extends BaseDatasource<Subject> {
+export class FeesDatasource extends BaseDatasource<Fee> {
 
   constructor() {
-    super('/subjects', '');
+    super('/fees', '?populate=feeType');
   }
 }

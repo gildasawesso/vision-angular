@@ -3,45 +3,58 @@
  */
 
 import {BehaviorSubject, Observable} from 'rxjs';
+import {ApiService} from '../../services/api.service';
+import {inject} from '@angular/core';
+import {BaseDatasource} from '../datasources/base.datasource';
 
-export class BaseRepository<T> {
+export abstract class BaseRepository<T> {
 
   protected genericBehavioSubject: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
   private objects: Observable<T[]> = this.genericBehavioSubject.asObservable();
 
-  constructor() {
+  private api: ApiService;
+  private datasource: BaseDatasource<T>;
 
+  protected constructor(datasource: BaseDatasource<T>) {
+    this.api = inject(ApiService);
+    this.datasource = datasource;
+    this.init();
   }
 
-  get(): Observable<T[]> {
+  private async init() {
+    const data = await this.datasource.list();
+    console.log(data);
+    this.genericBehavioSubject.next(data);
+  }
+
+  get stream(): Observable<T[]> {
     return this.objects;
   }
 
-  add(object: T) {
-    const o = this.genericBehavioSubject.getValue().slice();
-    o.unshift(object);
-    this.genericBehavioSubject.next(o);
+  set next(object: T[]) {
+    this.genericBehavioSubject.next(object);
   }
 
-  update(oldObject: T, newObject: T) {
-    const index = this.genericBehavioSubject.value.findIndex(o => o == oldObject);
-    const objects = [...this.genericBehavioSubject.value];
-    objects[index] = newObject;
-    this.genericBehavioSubject.next(objects);
+  async add(object: T) {
+    const newObject = await this.datasource.create(object);
+    this.genericBehavioSubject.next([newObject, ...this.genericBehavioSubject.value]);
+    return newObject;
   }
 
-  updateBy(key: any, updatedObject: T) {
-    const objects = [...this.genericBehavioSubject.value];
-    const index = objects.findIndex(o => o[key] === updatedObject[key]);
-    console.log(index);
+  async update(object: T, id: any, idKey: any = '_id') {
+    const updatedObject = await this.datasource.update(object, id);
+    const objects = this.genericBehavioSubject.value;
+    const index = objects.findIndex(o => o[idKey] === updatedObject[idKey]);
     objects[index] = updatedObject;
     this.genericBehavioSubject.next(objects);
+    return updatedObject;
   }
 
-  remove(object: T) {
-    const index = this.genericBehavioSubject.getValue().findIndex(o => o == object);
-    const o = this.genericBehavioSubject.getValue().slice();
-    o.splice(index, 1);
-    this.genericBehavioSubject.next(o);
+  async remove(id: any, key: any = '_id') {
+    await this.datasource.remove(id);
+    const objects = this.genericBehavioSubject.value;
+    const index = objects.findIndex(o => o[key] === id);
+    objects.splice(index, 1);
+    this.genericBehavioSubject.next(objects);
   }
 }

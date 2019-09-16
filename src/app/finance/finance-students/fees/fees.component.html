@@ -1,0 +1,8 @@
+<div class="d-flex align-items-center ml-4">
+  <h5 class="mr-4">Contributions</h5>
+  <button (click)="add()" mat-flat-button color="primary">Ajouter</button>
+</div>
+
+<div>
+  <app-table [mapping]="mapping" [datasource]="feesRepository.stream" (edit)="edit($event)" (delete)="delete($event)"></app-table>
+</div>

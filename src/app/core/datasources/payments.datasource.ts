@@ -5,9 +5,9 @@ import {Payment} from '../../models/payment';
 @Injectable({
   providedIn: 'root'
 })
-export class ContributionsDatasource extends BaseDatasource<Payment> {
+export class PaymentsDatasource extends BaseDatasource<Payment> {
 
   constructor() {
-    super('/contributions', '?populate=student&populate=schoolYear&populate=fee');
+    super('/payments', '?populate=student&populate=schoolYear&populate=fee');
   }
 }

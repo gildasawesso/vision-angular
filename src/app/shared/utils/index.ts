@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Common} from './common.util';
 
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class Utils {
 
   common: Common;

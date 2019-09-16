@@ -1,0 +1,24 @@
+@import 'angular-material.theme.scss';
+@import '~@angular/material/theming';
+
+.appbar {
+  font-size: 12px;
+  height: 50px;
+
+  .home-button {
+    cursor: pointer;
+  }
+
+  .main-menu {
+    margin-left: 90px;
+    height: 100%;
+
+    .main-menu-link {
+      padding: 0 50px;
+
+      &.app-link-active {
+        background-color: mat-color($primary, 700);
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {AlertDialogComponent} from '../../shared/components/alert-dialog/alert-dialog.component';
+import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.component';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class Common {
 
   constructor(private dialog: MatDialog,
@@ -21,10 +21,21 @@ export class Common {
   modal(component, data) {
     this.dialog.open(component, {
       panelClass: 'dialog-without-padding',
-      minWidth: '95%',
+      minWidth: '60%',
       height: '85%',
       data
     });
+  }
+
+  async modalWithResult(component, data) {
+    const dialog = this.dialog.open(component, {
+      panelClass: 'dialog-without-padding',
+      minWidth: '60%',
+      height: '85%',
+      data
+    });
+
+    return dialog.afterClosed().toPromise();
   }
 
   toast(body: string) {
@@ -33,16 +44,8 @@ export class Common {
     });
   }
 
-  countryFlag(countryCode: number) {
-
-  }
-
-  compareObjects(o1: any, o2: any): boolean {
-    return o1.name === o2.name && o1.id === o2.id;
-  }
-
-  compareFunction(o1: any, o2: any): boolean {
-    return o1._id === o2._id;
+  compareFn(c1, c2): boolean {
+    return c1 && c2 ? c1._id === c2._id : c1 === c2;
   }
 
   pruneInputValue(inputValue) {
@@ -58,6 +61,19 @@ export class Common {
       return false;
     }
     return value > 0;
+  }
+
+  invalidatedForm(partForm) {
+    Object.keys(partForm.controls).forEach(field => { // {1}
+      const control = partForm.get(field);            // {2}
+      control.markAsTouched({ onlySelf: true });       // {3}
+    });
+    this.dialog.open(AlertDialogComponent, {
+      data: {
+        title: 'Le formulaire comporte des erreurs',
+        body: 'Veuillez corriger les erreurs du formulaire afin de continuer'
+      }
+    });
   }
 
 }

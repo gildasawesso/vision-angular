@@ -1,0 +1,22 @@
+:host {
+  padding: 50px 0;
+}
+
+.menu-item {
+  img {
+    width: 150px;
+    height: 150px;
+    border-radius: 30px;
+    box-shadow: 0 3px 6px rgba(0,0,0,.16);
+
+    &:hover {
+      box-shadow: 0 3px 12px 6px rgba(0,0,0,.20);
+      cursor: pointer;
+    }
+  }
+
+  .title {
+    padding-top: 15px;
+    font-size: 20px;
+  }
+}

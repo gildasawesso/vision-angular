@@ -1,0 +1,21 @@
+@import 'variables';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+}
+
+.app-input {
+  border: 1px solid $app-input-color;
+  border-radius: 7px;
+  padding: 2px;
+
+  input {
+    height: 36px;
+    border: 0;
+    padding: 10px;
+    color: #999;
+    width: 100%;
+  }
+}

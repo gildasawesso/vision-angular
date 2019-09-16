@@ -1,0 +1,13 @@
+<mat-toolbar class="appbar" color="primary">
+  <mat-icon class="home-button" routerLink="/">apps</mat-icon>
+    <div class="main-menu d-flex">
+      <div *ngFor="let route of routes" class="text-capitalize d-flex align-items-center link main-menu-link h-100"
+           [routerLink]="[route.url]"
+           routerLinkActive="app-link-active">
+        {{route.text}}
+      </div>
+    </div>
+  <span class="flex-fill"></span>
+  <mat-icon>person_rounded</mat-icon>
+  <span>Utilisateur</span>
+</mat-toolbar>

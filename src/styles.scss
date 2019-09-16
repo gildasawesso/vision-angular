@@ -1,1 +1,49 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import 'variables';
+
+$small-icon-size: 16px;
+
+@font-face {
+  font-family: 'SF Pro Text', sans-serif;
+  src: url('assets/fonts/SF-Pro-Text-Regular.otf') format('opentype');
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-family: "SF Pro Text", sans-serif !important;
+  background-color: white;
+}
+
+.link {
+  outline: 0 !important;
+  cursor: pointer;
+}
+
+*:focus {
+  outline: 0 !important;
+}
+
+[common-title] {
+  color: $app-common-title;
+}
+
+.dialog-without-padding {
+  padding: 0;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+mat-icon.small {
+  font-size: $small-icon-size;
+  height: $small-icon-size;
+  width: $small-icon-size;
+}
+
+

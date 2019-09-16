@@ -1,0 +1,94 @@
+<div class="d-flex flex-column" [formGroup]="registrationForm">
+  <div class="headers d-flex align-items-center">
+    <div common-title class="section-title">{{headers[currentPage]}}</div>
+    <span class="flex-fill"></span>
+    <button (click)="currentPage = currentPage - 1" *ngIf="currentPage != 0" mat-button>Précédent</button>
+    <app-action-button (click)="save()" color="primary" [isBusy]="isBusy" [isReady]="isReady" [text]="currentPage == 3 ? 'Finaliser l\'inscription' : 'Suivant'"></app-action-button>
+<!--    <button class="ml-4" (click)="save()" mat-flat-button color="primary">{{currentPage == 3 ? "Finaliser l'inscription" : "Suivant" }}</button>-->
+  </div>
+  <mat-divider style="margin: 10px 0 30px 0"></mat-divider>
+
+  <div *ngIf="currentPage == 0">
+    <label class="genre">Sexe</label>
+    <mat-radio-group formControlName="gender">
+      <mat-radio-button style="margin-right:40px;" value="M">M</mat-radio-button>
+      <mat-radio-button value="F">F</mat-radio-button>
+    </mat-radio-group>
+    <div class="row">
+      <app-input name="lastname" placeholder="Nom" formControlName="lastname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="firstname" placeholder="Prénom" formControlName="firstname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="birthday" placeholder="Date de naissance" formControlName="birthday"
+                 class="inputs col-12 col-sm-6" type="date"></app-input>
+      <app-input name="birthCity" placeholder="Lieu de naissance" formControlName="birthCity"
+                 class="inputs col-12 col-sm-6"></app-input>
+    </div>
+  </div>
+
+  <div *ngIf="currentPage == 1">
+    <h5>Père</h5>
+    <div class="row">
+      <app-input name="fathersFirstname" placeholder="Nom" formControlName="fathersFirstname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="fathersLastnme" placeholder="Prénom" formControlName="fathersLastname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="fathersJob" placeholder="Profession" formControlName="fathersJob" class="inputs col-12 col-sm-6"
+                 type="date"></app-input>
+      <app-input name="fathersPhone" placeholder="Téléphone" formControlName="fathersPhone"
+                 class="inputs col-12 col-sm-6"></app-input>
+    </div>
+
+    <h5 style="margin-top: 20px;">Mère</h5>
+    <div class="row">
+      <app-input name="mothersFirstname" placeholder="Nom" formControlName="mothersFirstname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="mothersLastnme" placeholder="Prénom" formControlName="mothersLastname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="mothersJob" placeholder="Profession" formControlName="mothersJob" class="inputs col-12 col-sm-6"
+                 type="date"></app-input>
+      <app-input name="mothersPhone" placeholder="Téléphone" formControlName="mothersPhone"
+                 class="inputs col-12 col-sm-6"></app-input>
+    </div>
+  </div>
+
+  <div *ngIf="currentPage == 2">
+    <mat-form-field appearance="outline">
+      <mat-label>Classe</mat-label>
+      <select matNativeControl required formControlName="classroom">
+        <option *ngFor="let classroom of classrooms"
+                [value]="classroom._id">{{classroom.name}}</option>
+      </select>
+    </mat-form-field>
+    <h5 style="margin-top: 20px;">Parcours</h5>
+    <div class="row">
+      <app-input name="lastSchool" placeholder="Ancien établissement" formControlName="lastSchool"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="lastClass" placeholder="Dernière classe suivie" formControlName="lastClass"
+                 class="inputs col-12 col-sm-6"></app-input>
+    </div>
+  </div>
+
+  <div *ngIf="currentPage == 3" class="d-flex justify-content-between">
+    <div class="d-flex flex-column w-50">
+      <app-input type="number" placeholder="Montant payé" [formControl]="amountPayed" class="inputs"></app-input>
+    </div>
+
+    <div>
+      <div class="stats">
+        <div class="title">Frais d'inscription</div>
+        <div class="value">{{registrationFee}} FCFA</div>
+      </div>
+
+      <div class="stats">
+        <div class="title">Montant payé</div>
+        <div class="value">{{amountPayed.valueChanges | async}} FCFA</div>
+      </div>
+
+      <div class="stats">
+        <div class="title">Reste à payer</div>
+        <div class="value">{{registrationFee - (amountPayed.valueChanges | async)}} FCFA</div>
+      </div>
+    </div>
+  </div>
+</div>

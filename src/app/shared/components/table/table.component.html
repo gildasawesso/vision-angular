@@ -1,0 +1,47 @@
+<div class="mat-elevation-z0">
+  <table [dataSource]="datasource" class="full-width-table" mat-table matSort>
+
+    <ng-container *ngFor="let column of humanReadable" [matColumnDef]="column">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>{{column.toUpperCase()}}</th>
+
+      <ng-container [ngSwitch]="column">
+
+        <ng-container *ngSwitchCase="mapping['commonOptions']">
+          <td *matCellDef="let element" mat-cell>
+            <ng-container *ngTemplateOutlet="classroomOptionsTemplate; context: { element: element }"></ng-container>
+          </td>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <td class="text-capitalize" *matCellDef="let element" mat-cell> {{valueFromColumnDisplayed(column, element)}}</td>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <tr *matHeaderRowDef="humanReadable" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: humanReadable;" mat-row></tr>
+  </table>
+
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+</div>
+
+
+<ng-template #classroomOptionsTemplate let-element="element">
+  <div>
+    <button [matMenuTriggerFor]="menu" mat-icon-button>
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu>
+
+      <button (click)="onEdit(element)" mat-menu-item>
+        <mat-icon>mode_edit</mat-icon>
+        <span>Modifier</span>
+      </button>
+
+      <button (click)="onDelete(element)" mat-menu-item>
+        <mat-icon>delete</mat-icon>
+        <span>Supprimer</span>
+      </button>
+    </mat-menu>
+  </div>
+</ng-template>

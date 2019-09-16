@@ -1,0 +1,6 @@
+<h3 class="welcome-message text-center">Bienvenue</h3>
+<div class="row justify-content-center">
+  <ng-container *ngFor="let menuItem of menuItems">
+    <app-menu-item [navigationUrl]="menuItem.url" class="col-12 col-sm-6 col-md-3" [title]="menuItem.title" [image]="menuItem.image"></app-menu-item>
+  </ng-container>
+</div>
