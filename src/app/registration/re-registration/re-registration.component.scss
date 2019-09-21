@@ -1,0 +1,11 @@
+@import "variables";
+
+:host {
+  display: block;
+  width: 55%;
+  margin: 25px auto;
+  background-color: white;
+  padding: 48px;
+  border-radius: 7px;
+  box-shadow: $app-box-shadow;
+}

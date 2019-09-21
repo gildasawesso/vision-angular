@@ -1,0 +1,7 @@
+<h1 mat-dialog-title>{{title}}</h1>
+<div mat-dialog-content>
+  <p>{{body}}</p>
+</div>
+<div mat-dialog-actions>
+  <button *ngFor="let action of actions; let i = index;" mat-button color="primary" [mat-dialog-close]="i" [tabindex]="i">{{action}}</button>
+</div>
