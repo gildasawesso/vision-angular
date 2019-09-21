@@ -1,11 +1,5 @@
 <div class="d-flex flex-column" [formGroup]="registrationForm">
-  <div class="headers d-flex align-items-center">
-    <div common-title class="section-title">{{headers[currentPage]}}</div>
-    <span class="flex-fill"></span>
-    <button (click)="currentPage = currentPage - 1" *ngIf="currentPage != 0" mat-button>Précédent</button>
-    <app-action-button (click)="save()" color="primary" [isBusy]="isBusy" [isReady]="isReady" [text]="currentPage == 3 ? 'Finaliser l\'inscription' : 'Suivant'"></app-action-button>
-<!--    <button class="ml-4" (click)="save()" mat-flat-button color="primary">{{currentPage == 3 ? "Finaliser l'inscription" : "Suivant" }}</button>-->
-  </div>
+  <div common-title class="section-title">{{headers[currentPage]}}</div>
   <mat-divider style="margin: 10px 0 30px 0"></mat-divider>
 
   <div *ngIf="currentPage == 0">
@@ -33,10 +27,9 @@
                  class="inputs col-12 col-sm-6"></app-input>
       <app-input name="fathersLastnme" placeholder="Prénom" formControlName="fathersLastname"
                  class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="fathersJob" placeholder="Profession" formControlName="fathersJob" class="inputs col-12 col-sm-6"
-                 type="date"></app-input>
+      <app-input name="fathersJob" placeholder="Profession" formControlName="fathersJob" class="inputs col-12 col-sm-6"></app-input>
       <app-input name="fathersPhone" placeholder="Téléphone" formControlName="fathersPhone"
-                 class="inputs col-12 col-sm-6"></app-input>
+                 class="inputs col-12 col-sm-6" type="tel"></app-input>
     </div>
 
     <h5 style="margin-top: 20px;">Mère</h5>
@@ -45,10 +38,9 @@
                  class="inputs col-12 col-sm-6"></app-input>
       <app-input name="mothersLastnme" placeholder="Prénom" formControlName="mothersLastname"
                  class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="mothersJob" placeholder="Profession" formControlName="mothersJob" class="inputs col-12 col-sm-6"
-                 type="date"></app-input>
+      <app-input name="mothersJob" placeholder="Profession" formControlName="mothersJob" class="inputs col-12 col-sm-6"></app-input>
       <app-input name="mothersPhone" placeholder="Téléphone" formControlName="mothersPhone"
-                 class="inputs col-12 col-sm-6"></app-input>
+                 class="inputs col-12 col-sm-6" type="tel"></app-input>
     </div>
   </div>
 
@@ -91,4 +83,12 @@
       </div>
     </div>
   </div>
+</div>
+<div class="actions d-flex justify-content-end align-items-center">
+  <button (click)="currentPage = currentPage - 1" *ngIf="currentPage != 0" mat-button>Précédent</button>
+  <app-action-button (click)="save()" color="primary"
+                     [isBusy]="isBusy"
+                     [isReady]="isReady"
+                     [text]="currentPage == 3 ? 'Finaliser l\'inscription' : 'Suivant'">
+  </app-action-button>
 </div>

@@ -1,5 +1,5 @@
 <label>{{label}}</label>
-<mat-form-field *ngIf="!multiple" appearance="outline">
+<mat-form-field *ngIf="!multiple" appearance="outline" color="primary">
   <select matNativeControl required [(ngModel)]="value" [compareWith]="utils.common.compareFn">
     <option *ngFor="let option of options" [ngValue]="option">{{option[displayKey]}}</option>
   </select>

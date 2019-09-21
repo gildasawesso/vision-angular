@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'https://api.amenschool.com'
+  baseUrl: 'https://api.amen.awessome.fr'
 };

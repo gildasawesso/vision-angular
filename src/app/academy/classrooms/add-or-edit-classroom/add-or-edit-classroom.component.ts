@@ -20,7 +20,7 @@ export class AddOrEditClassroomComponent implements OnInit {
     capacity: [''],
     teacher: [null],
     registrationFee: [null],
-    scholarship: [null],
+    schoolFee: [null],
     subjects: [null]
   });
   title = `Ajout d'une nouvelle classe`;

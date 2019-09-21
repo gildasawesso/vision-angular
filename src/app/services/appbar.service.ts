@@ -11,6 +11,15 @@ export class AppbarService {
 
   private subbarRoutesBehaviorSubject = new BehaviorSubject<Array<{text: string, url: string}>>(null);
   private appbarRoutesBehaviorSubject = new BehaviorSubject<Array<{text: string, url: string}>>(null);
+  private moduleNameBehaviorSubject = new BehaviorSubject<string>('');
+
+  get moduleSelectedStream() {
+    return this.moduleNameBehaviorSubject;
+  }
+
+  set moduleSelected(moduleName: string) {
+    this.moduleNameBehaviorSubject.next(moduleName);
+  }
 
   get subbarMenus() {
     return this.subbarRoutesBehaviorSubject;

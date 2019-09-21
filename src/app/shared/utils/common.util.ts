@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.component';
+import {CustomizableAlertDialogComponent} from '../components/customizable-alert-dialog/customizable-alert-dialog.component';
 
 @Injectable()
 export class Common {
@@ -16,6 +17,18 @@ export class Common {
         body
       }
     });
+  }
+
+  async customAlert(body: string, title: string = 'Attention', actions: any[] = ['OK']) {
+    const dialog = this.dialog.open(CustomizableAlertDialogComponent, {
+      data: {
+        title,
+        body,
+        actions
+      }
+    });
+
+    return dialog.afterClosed().toPromise();
   }
 
   modal(component, data) {

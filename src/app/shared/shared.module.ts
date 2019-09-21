@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { AppbarComponent } from './components/appbar/appbar.component';
 import {AngularMaterialModule} from '../vendors/angular-material.module';
 import { AdmissionComponent } from './components/admission/admission.component';
@@ -18,9 +17,14 @@ import {Utils} from './utils';
 import {Common} from './utils/common.util';
 import { SelectComponent } from './components/select/select.component';
 import { UnderConstructionComponent } from './components/under-construction/under-construction.component';
+import { DelComponent } from './components/del/del.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { CustomizableAlertDialogComponent } from './components/customizable-alert-dialog/customizable-alert-dialog.component';
+import {PrintUtil} from './utils/print.utils';
 
 const components = [
-  ToolbarComponent,
   AppbarComponent,
   AdmissionComponent,
   SubbarComponent,
@@ -31,20 +35,25 @@ const components = [
   AlertDialogYesWithInputComponent,
   ActionButtonComponent,
   TableComponent,
-  SelectComponent
+  SelectComponent,
+  CustomizableAlertDialogComponent,
+  UnderConstructionComponent,
+  DelComponent
 ];
 
 @NgModule({
   declarations: [
-    ...components,
-    UnderConstructionComponent
+    ...components
   ],
   imports: [
     AngularMaterialModule,
     CommonModule,
     RouterModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   exports: [
     ...components,
@@ -52,15 +61,16 @@ const components = [
     AngularMaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    UnderConstructionComponent
   ],
   entryComponents: [
     AlertDialogComponent,
     AlertDialogYesNoComponent,
     AlertDialogYesWithInputComponent,
+    CustomizableAlertDialogComponent
   ],
   providers: [
     Common,
+    PrintUtil,
     Utils
   ]
 })

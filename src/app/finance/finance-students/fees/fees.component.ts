@@ -15,7 +15,7 @@ export class FeesComponent implements OnInit {
     name: 'Nom',
     amount: 'Montant',
     'date deadline': 'Date Limite',
-    commonOptions: 'Options'
+    options: 'Options'
   };
 
   constructor(public feesRepository: FeesRepository,

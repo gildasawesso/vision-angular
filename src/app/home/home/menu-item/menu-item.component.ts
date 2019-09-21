@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {AppbarService} from '../../../services/appbar.service';
 
 @Component({
   selector: 'app-menu-item',
@@ -12,10 +13,12 @@ export class MenuItemComponent implements OnInit {
   @Input() image: string;
   @Input() navigationUrl: string;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+              private appbarService: AppbarService) { }
 
   navigate() {
     this.router.navigate([this.navigationUrl]);
+    this.appbarService.moduleSelected = this.title;
   }
 
   ngOnInit() {

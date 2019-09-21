@@ -2,4 +2,12 @@
   display: flex;
   flex-direction: column;
   margin-top: 10px;
+
+  mat-form-field {
+    .mat-form-field-wrapper {
+      .mat-form-field-flex {
+        background-color: white !important;
+      }
+    }
+  }
 }

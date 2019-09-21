@@ -1,14 +1,14 @@
-<div class="mat-elevation-z0">
-  <table [dataSource]="datasource" class="full-width-table" mat-table matSort>
+<div class="app-table">
+  <table class="full-width-table" mat-table matSort>
 
     <ng-container *ngFor="let column of humanReadable" [matColumnDef]="column">
       <th *matHeaderCellDef mat-header-cell mat-sort-header>{{column.toUpperCase()}}</th>
 
       <ng-container [ngSwitch]="column">
 
-        <ng-container *ngSwitchCase="mapping['commonOptions']">
+        <ng-container *ngSwitchCase="mapping['options']">
           <td *matCellDef="let element" mat-cell>
-            <ng-container *ngTemplateOutlet="classroomOptionsTemplate; context: { element: element }"></ng-container>
+            <ng-container *ngTemplateOutlet="optionsTemplate; context: { element: element }"></ng-container>
           </td>
         </ng-container>
 
@@ -22,11 +22,11 @@
     <tr *matRowDef="let row; columns: humanReadable;" mat-row></tr>
   </table>
 
-  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>
 
 
-<ng-template #classroomOptionsTemplate let-element="element">
+<ng-template #optionsTemplate let-element="element">
   <div>
     <button [matMenuTriggerFor]="menu" mat-icon-button>
       <mat-icon>more_vert</mat-icon>
@@ -42,6 +42,17 @@
         <mat-icon>delete</mat-icon>
         <span>Supprimer</span>
       </button>
+
+      <ng-container *ngTemplateOutlet="paymentOptions; context: {element: element}"></ng-container>
     </mat-menu>
   </div>
+</ng-template>
+
+<ng-template #paymentOptions let-element="element">
+  <ng-container *ngIf="includeOption == 'payment'">
+    <button (click)="onEdit(element)" mat-menu-item>
+      <mat-icon>print</mat-icon>
+      <span>Imprimer le reçu</span>
+    </button>
+  </ng-container>
 </ng-template>

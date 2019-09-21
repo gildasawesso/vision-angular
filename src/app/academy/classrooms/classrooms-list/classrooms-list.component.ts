@@ -15,15 +15,13 @@ export class ClassroomsListComponent implements OnInit {
   datasource: MatTableDataSource<Classroom>;
   mapping = {
     name: 'Nom',
-    code: 'Code',
-    capacity: 'Capacité',
     teacher: 'Professeur en Charge',
     'registrationFee.amount': 'Frais d\'inscription',
-    'scholarship.amount': 'Frais de scolarité',
-    commonOptions: 'Options'
+    'schoolFee.amount': 'Frais de scolarité',
+    options: 'Options'
   };
 
-  constructor(private classroomRepository: ClassroomsRepository,
+  constructor(public classroomRepository: ClassroomsRepository,
               private utils: Utils) {
   }
 

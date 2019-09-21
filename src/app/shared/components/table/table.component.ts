@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatTable, MatTableDataSource} from '@angular/material/table';
 import * as luxon from 'luxon';
 
 @Component({
@@ -9,18 +9,21 @@ import * as luxon from 'luxon';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements AfterViewInit, OnInit {
+export class TableComponent implements AfterViewInit, OnInit, OnChanges {
 
-  @Input() datasource;
+  @Input() data;
   @Input() mapping;
+  @Input() includeOption;
 
   @Output() edit = new EventEmitter();
   @Output() delete = new EventEmitter();
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatTable, {static: false}) table: MatTable<any>;
 
   humanReadable;
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
   onEdit(element: any) {
     this.edit.emit(element);
@@ -28,11 +31,6 @@ export class TableComponent implements AfterViewInit, OnInit {
 
   onDelete(element: any) {
     this.delete.emit(element);
-  }
-
-  ngOnInit() {
-    this.humanReadable = Object.values(this.mapping);
-    console.log(this.humanReadable);
   }
 
   valueFromColumnDisplayed(valueDisplayed, model?: any) {
@@ -67,7 +65,17 @@ export class TableComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    this.datasource.paginator = this.paginator;
-    this.datasource.sort = this.sort;
+    this.dataSource.data = this.data;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.table.dataSource = this.dataSource;
+  }
+
+  ngOnInit() {
+    this.humanReadable = Object.values(this.mapping);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.data) { this.dataSource.data = this.data; }
   }
 }

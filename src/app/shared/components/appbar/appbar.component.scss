@@ -5,19 +5,28 @@
   font-size: 12px;
   height: 50px;
 
+  &.home {
+    background-color: transparent !important;
+  }
+
   .home-button {
     cursor: pointer;
   }
 
   .main-menu {
-    margin-left: 90px;
     height: 100%;
+
+    .module-name {
+      font-size: 20px;
+      text-transform: capitalize;
+      margin: auto 30px;
+    }
 
     .main-menu-link {
       padding: 0 50px;
 
       &.app-link-active {
-        background-color: mat-color($primary, 700);
+        background-color: mat-color($primary, 900);
       }
     }
   }

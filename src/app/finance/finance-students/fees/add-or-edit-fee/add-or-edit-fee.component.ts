@@ -26,6 +26,11 @@ export class AddOrEditFeeComponent implements OnInit {
     feeType: ['']
   });
 
+  get tranches() {
+    const array = this.feeForm.controls.tranches as FormArray;
+    return array.controls;
+  }
+
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public feeTypesRepository: FeeTypesRepository,
               private feesRepository: FeesRepository,

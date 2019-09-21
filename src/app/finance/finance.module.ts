@@ -5,13 +5,12 @@ import { FinanceDashboardComponent } from './finance-students/finance-dashboard/
 import {FinanceRoutingModule} from './finance-routing.module';
 import { FinanceStudentsListComponent } from './finance-students/finance-students-list/finance-students-list.component';
 import { FinanceComponent } from './finance.component';
-import { SchoolFeesPaymentsComponent } from './finance-students/school-fees-payments/school-fees-payments.component';
+import { PaymentsComponent } from './finance-students/fees/payments/payments.component';
 import { ScholarshipTypesComponent } from './finance-students/scholarship-types/scholarship-types.component';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { IncomesComponent } from './incomes/incomes.component';
 import { ExpensesListComponent } from './expenses/expenses-list/expenses-list.component';
 import { IncomesListComponent } from './incomes/incomes-list/incomes-list.component';
-import {AcademyModule} from '../academy/academy.module';
 import { FeesComponent } from './finance-students/fees/fees.component';
 import { AddOrEditFeeComponent } from './finance-students/fees/add-or-edit-fee/add-or-edit-fee.component';
 import { AddOrEditTrancheComponent } from './finance-students/fees/add-or-edit-tranche/add-or-edit-tranche.component';
@@ -25,7 +24,7 @@ import { IncomeTypesComponent } from './incomes/income-types/income-types.compon
     FinanceDashboardComponent,
     FinanceStudentsListComponent,
     FinanceComponent,
-    SchoolFeesPaymentsComponent,
+    PaymentsComponent,
     ScholarshipTypesComponent,
     ExpensesComponent,
     IncomesComponent,
@@ -41,7 +40,6 @@ import { IncomeTypesComponent } from './incomes/income-types/income-types.compon
   imports: [
     SharedModule,
     FinanceRoutingModule,
-    AcademyModule
   ],
   entryComponents: [
     AddOrEditFeeComponent,

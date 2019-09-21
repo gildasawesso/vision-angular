@@ -8,9 +8,10 @@ const routes: Routes = [
     component: HomeComponent,
     children: [
       { path: '', component: HomeContentComponent },
-      { path: 'finance', loadChildren: () => import(`../finance/finance.module`).then(m => m.FinanceModule) },
-      { path: 'academy', loadChildren: () => import(`../academy/academy.module`).then(m => m.AcademyModule) },
-      { path: 'settings', loadChildren: () => import(`../settings/settings.module`).then(m => m.SettingsModule) }
+      { path: 'finance', loadChildren: () => import('../finance/finance.module').then(m => m.FinanceModule) },
+      { path: 'academy', loadChildren: () => import('../academy/academy.module').then(m => m.AcademyModule) },
+      { path: 'registration', loadChildren: () => import('../registration/registration.module').then(m => m.RegistrationModule) },
+      { path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule) }
     ]
   }
 ];

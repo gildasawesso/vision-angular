@@ -27,6 +27,10 @@ export abstract class BaseRepository<T> {
     this.genericBehavioSubject.next(data);
   }
 
+  get get() {
+    return this.genericBehavioSubject.value;
+  }
+
   get stream(): Observable<T[]> {
     return this.objects;
   }

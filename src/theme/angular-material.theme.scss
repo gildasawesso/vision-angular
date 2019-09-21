@@ -2,11 +2,11 @@
 @include mat-core();
 
 //private
-$primary-palette: $mat-blue;
-$secondary-palette: $mat-yellow;
+$primary-palette: $mat-pink;
+$secondary-palette: $mat-brown;
 
-$primary: mat-palette($primary-palette);
-$secondary: mat-palette($secondary-palette, A200, A100, A400);
+$primary: mat-palette($primary-palette, 700);
+$secondary: mat-palette($secondary-palette, 500);
 
 $app-theme: mat-light-theme($primary, $secondary);
 

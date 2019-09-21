@@ -8,9 +8,10 @@ import {AppbarService} from '../../services/appbar.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private appBarService: AppbarService) { }
+  constructor(public appBarService: AppbarService) { }
 
   ngOnInit() {
+
   }
 
 }

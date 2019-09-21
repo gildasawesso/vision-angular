@@ -23,6 +23,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   propagateChange: (_: any) => void;
   onTouched: any;
   disabled: boolean;
+  focused: boolean;
 
 
   get value() {

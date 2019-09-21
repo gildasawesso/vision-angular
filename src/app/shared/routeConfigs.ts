@@ -6,7 +6,6 @@ export const menuConfig = [
         text: 'élèves',
         url: '/finance/students',
         submenu: [
-          {text: 'inscription', url: '/finance/students/registration'},
           {text: 'payements des contributions', url: '/finance/students/payments'},
           {text: 'élèves & classes', url: '/finance/students/list'},
           {text: 'contributions', url: '/finance/students/fees'},
@@ -67,6 +66,12 @@ export const menuConfig = [
   {
     settings: [
       { text: 'paramètres généraux', url: '/settings', submenu: null },
+    ]
+  },
+  {
+    registration: [
+      { text: 'inscription', url: '/registration/register', submenu: null },
+      { text: 'réinscription', url: '/registration/re-register', submenu: null },
     ]
   },
 ];
