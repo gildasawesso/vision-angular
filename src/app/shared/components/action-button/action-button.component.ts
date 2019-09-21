@@ -11,6 +11,7 @@ export class ActionButtonComponent implements OnInit {
   @Input() isReady: boolean;
   @Input() text: string;
   @Input() color: string;
+  @Input() type: string;
 
   constructor() { }
 

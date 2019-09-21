@@ -15,6 +15,7 @@
   <div *ngIf="feeForm.controls.isSchoolFee.value" class="col-12 my-2" formArrayName="tranches">
     <div *ngFor="let tranche of tranches; let i = index" formGroupName="{{i}}" class="d-flex align-items-center my-4">
       <div class="mr-5">{{tranche.value?.name}}</div>
+      <div class="mr-5">{{tranche.value?.amount}}</div>
       <mat-icon (click)="updateTranche(i)" *ngIf="tranche.value?.name" class="small mr-3">edit</mat-icon>
       <mat-icon (click)="deleteTranche(i)" *ngIf="tranche.value?.name" class="small">delete</mat-icon>
     </div>

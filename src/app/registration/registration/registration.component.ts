@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {ClassroomsRepository} from '../../core/repositories/classrooms.repository';
 import {Router} from '@angular/router';
 import {Classroom} from '../../models/classroom';
@@ -25,8 +25,8 @@ const MAX_PAGE = 3;
 export class RegistrationComponent implements OnInit {
 
   registrationForm = this.formBuilder.group({
-    firstname: [''],
-    lastname: [''],
+    firstname: ['', Validators.required],
+    lastname: ['', Validators.required],
     birthday: [''],
     birthCity: [''],
     address: [''],
@@ -48,7 +48,9 @@ export class RegistrationComponent implements OnInit {
   currentPage = 0;
   userRole = 'account';
   registrationFee: number;
-  amountPayed = new FormControl(0);
+  firstTermSchoolFee: number;
+  amountPayed = new FormControl();
+  amountPayedOldValue: number;
   classrooms: Classroom[];
   schoolYears: SchoolYear[];
   isBusy = false;
@@ -64,10 +66,42 @@ export class RegistrationComponent implements OnInit {
               private router: Router,
               private utils: Utils) { }
 
+  back() {
+    this.currentPage -= 1;
+    if (this.currentPage <= 1) {
+      this.registrationForm.get('classroom').clearValidators();
+      this.registrationForm.get('classroom').setErrors(null);
+    }
+  }
+
+  onAmountPayedChanged(value) {
+    console.log(this.amountPayedOldValue);
+    if (Number(value) > this.registrationFee + this.firstTermSchoolFee) {
+      this.amountPayed.setValue(this.amountPayedOldValue, {emitModelToViewChange: true});
+      this.utils.common.toast('Le montant saisi est supérieur aux frais de scolarité et d\'inscription');
+    } else {
+      this.amountPayedOldValue = Number(value);
+    }
+  }
+
+  getBalance() {
+    if (this.firstTermSchoolFee) {
+      return (this.registrationFee + this.firstTermSchoolFee) - this.amountPayed.value;
+    }
+  }
+
   async save() {
+    console.log(this.registrationForm);
+    if (!this.registrationForm.valid) {
+      this.utils.form.invalidatedForm(this.registrationForm);
+      return;
+    }
+
     if (this.currentPage < MAX_PAGE) {
       this.currentPage++;
-
+      if (this.currentPage === 2) {
+        this.registrationForm.get('classroom').setValidators([Validators.required]);
+      }
       return;
     }
 
@@ -97,6 +131,11 @@ export class RegistrationComponent implements OnInit {
     this.currentPage = 0;
   }
 
+  validateAmountPayed(c: FormControl) {
+    const valid = Number(this.amountPayed.value) <= this.firstTermSchoolFee + this.registrationFee;
+    return valid ? null : 'Le montant saisi est incorrect';
+  }
+
   ngOnInit() {
     this.classroomsRepository.stream
       .subscribe((classrooms: Classroom[]) => {
@@ -104,14 +143,28 @@ export class RegistrationComponent implements OnInit {
       });
 
     this.registrationForm.controls.classroom.valueChanges
-      .subscribe((value: string) => {
-        const classroom = this.classrooms.find(c => c._id === value);
+      .subscribe((obj: Classroom) => {
+        const classroom = this.classrooms.find(c => c._id === obj._id);
         if (classroom.registrationFee === undefined || classroom.registrationFee === null ) {
           this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des frais d'inscription`);
           this.registrationForm.controls.classroom.setValue('', { emitEvent: false });
           return;
         }
+
+        if (classroom.schoolFee === undefined || classroom.schoolFee === null ) {
+          this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des frais de scolarité`);
+          this.registrationForm.controls.classroom.setValue('', { emitEvent: false });
+          return;
+        }
+
+        if (classroom.schoolFee.tranches === null || classroom.schoolFee.tranches.length <= 0) {
+          this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des tranches de scolarité.
+          Veuillez vous rendre dans le module Finance afin d'associer des tranches à ce type de contribution.`);
+          this.registrationForm.controls.classroom.setValue('', { emitEvent: false });
+          return;
+        }
         this.registrationFee = classroom.registrationFee.amount;
+        this.firstTermSchoolFee = classroom.schoolFee.tranches[0].amount;
       });
 
     this.schoolyearsRepository.stream

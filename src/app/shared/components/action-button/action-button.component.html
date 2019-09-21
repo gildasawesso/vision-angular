@@ -1,4 +1,4 @@
-<button [disabled]="!isReady" class="mt-2 button-spinner" mat-raised-button color="{{color}}">
+<button [disabled]="!isReady" class="mt-2 button-spinner" mat-raised-button color="{{color}}" [type]="type">
   <span *ngIf="!isBusy">{{text}}</span>
   <mat-spinner *ngIf="isBusy" diameter="20" color="accent"></mat-spinner>
 </button>

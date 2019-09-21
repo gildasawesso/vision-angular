@@ -1,5 +1,5 @@
 import {Component, forwardRef, Input, OnInit} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
   selector: 'app-input',
@@ -17,6 +17,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
 
   @Input() placeholder = '';
   @Input() name: string;
+  @Input() control: AbstractControl;
   // tslint:disable-next-line:variable-name
   @Input('value') _value = '';
   @Input('type') type = 'text';
@@ -33,6 +34,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   set value(val) {
     if (val) {
       this._value = val;
+      console.log(this.value);
       if (this.propagateChange) { this.propagateChange(this._value); }
       if (this.onTouched) { this.onTouched(); }
     } else {
@@ -57,6 +59,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
+    console.log(obj);
     if (obj !== undefined) {
       this.value = obj;
     }

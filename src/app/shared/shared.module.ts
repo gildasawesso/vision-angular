@@ -23,6 +23,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { CustomizableAlertDialogComponent } from './components/customizable-alert-dialog/customizable-alert-dialog.component';
 import {PrintUtil} from './utils/print.utils';
+import {FormUtil} from './utils/form.util';
+import { SpacedPipe } from './pipes/spaced.pipe';
 
 const components = [
   AppbarComponent,
@@ -38,7 +40,8 @@ const components = [
   SelectComponent,
   CustomizableAlertDialogComponent,
   UnderConstructionComponent,
-  DelComponent
+  DelComponent,
+  SpacedPipe
 ];
 
 @NgModule({
@@ -69,6 +72,7 @@ const components = [
     CustomizableAlertDialogComponent
   ],
   providers: [
+    FormUtil,
     Common,
     PrintUtil,
     Utils

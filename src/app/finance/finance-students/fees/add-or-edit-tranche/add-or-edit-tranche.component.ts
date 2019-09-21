@@ -14,6 +14,7 @@ export class AddOrEditTrancheComponent implements OnInit {
 
   trancheForm = this.formBuilder.group({
     name: [''],
+    amount: [''],
     dueDate: [''],
   });
 

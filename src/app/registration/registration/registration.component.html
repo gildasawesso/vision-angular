@@ -9,14 +9,10 @@
       <mat-radio-button value="F">F</mat-radio-button>
     </mat-radio-group>
     <div class="row">
-      <app-input name="lastname" placeholder="Nom" formControlName="lastname"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="firstname" placeholder="Prénom" formControlName="firstname"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="birthday" placeholder="Date de naissance" formControlName="birthday"
-                 class="inputs col-12 col-sm-6" type="date"></app-input>
-      <app-input name="birthCity" placeholder="Lieu de naissance" formControlName="birthCity"
-                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input [control]="registrationForm.get('lastname')" name="lastname" placeholder="Nom" formControlName="lastname" class="inputs col-12 col-sm-6"></app-input>
+      <app-input [control]="registrationForm.get('firstname')" name="firstname" placeholder="Prénom" formControlName="firstname" class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="birthday" placeholder="Date de naissance" formControlName="birthday" class="inputs col-12 col-sm-6" type="date"></app-input>
+      <app-input name="birthCity" placeholder="Lieu de naissance" formControlName="birthCity" class="inputs col-12 col-sm-6"></app-input>
     </div>
   </div>
 
@@ -45,13 +41,7 @@
   </div>
 
   <div *ngIf="currentPage == 2">
-    <mat-form-field appearance="outline">
-      <mat-label>Classe</mat-label>
-      <select matNativeControl required formControlName="classroom">
-        <option *ngFor="let classroom of classrooms"
-                [value]="classroom._id">{{classroom.name}}</option>
-      </select>
-    </mat-form-field>
+    <app-select [control]="registrationForm.get('classroom')" label="Classe" [options]="classrooms" displayKey="name" formControlName="classroom"></app-select>
     <h5 style="margin-top: 20px;">Parcours</h5>
     <div class="row">
       <app-input name="lastSchool" placeholder="Ancien établissement" formControlName="lastSchool"
@@ -63,29 +53,39 @@
 
   <div *ngIf="currentPage == 3" class="d-flex justify-content-between">
     <div class="d-flex flex-column w-50">
-      <app-input type="number" placeholder="Montant payé" [formControl]="amountPayed" class="inputs"></app-input>
+      <label>Montant payé</label>
+      <mat-form-field appearance="outline">
+        <input type="number" matInput [formControl]="amountPayed" (ngModelChange)="onAmountPayedChanged($event)"/>
+      </mat-form-field>
     </div>
 
     <div>
-      <div class="stats">
-        <div class="title">Frais d'inscription</div>
-        <div class="value">{{registrationFee}} FCFA</div>
+      <div class="stats d-flex">
+       <div>
+         <div class="title">Frais d'inscription</div>
+         <div class="value">{{registrationFee | spaced: 'FCFA' }}</div>
+       </div>
+
+        <div class="ml-5">
+          <div class="title">1ère Tranche</div>
+          <div class="value">{{firstTermSchoolFee | spaced: 'FCFA' }}</div>
+        </div>
       </div>
 
       <div class="stats">
         <div class="title">Montant payé</div>
-        <div class="value">{{amountPayed.valueChanges | async}} FCFA</div>
+        <div class="value">{{amountPayed.valueChanges | async | spaced: 'FCFA' }}</div>
       </div>
 
       <div class="stats">
         <div class="title">Reste à payer</div>
-        <div class="value">{{registrationFee - (amountPayed.valueChanges | async)}} FCFA</div>
+        <div class="value">{{ getBalance() | spaced: 'FCFA' }}</div>
       </div>
     </div>
   </div>
 </div>
 <div class="actions d-flex justify-content-end align-items-center">
-  <button (click)="currentPage = currentPage - 1" *ngIf="currentPage != 0" mat-button>Précédent</button>
+  <button (click)="back()" *ngIf="currentPage != 0" mat-button>Précédent</button>
   <app-action-button (click)="save()" color="primary"
                      [isBusy]="isBusy"
                      [isReady]="isReady"

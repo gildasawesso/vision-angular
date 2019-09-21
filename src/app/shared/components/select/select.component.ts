@@ -1,5 +1,5 @@
 import {Component, forwardRef, Input, OnInit} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {Utils} from '../../utils';
 
 @Component({
@@ -21,6 +21,7 @@ export class SelectComponent implements OnInit, ControlValueAccessor {
   @Input() valueKey: string;
   @Input() displayKey: string;
   @Input() multiple = false;
+  @Input() control: AbstractControl;
 
   // tslint:disable-next-line:variable-name
   @Input('value') _value: any = null;

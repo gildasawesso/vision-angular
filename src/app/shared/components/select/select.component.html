@@ -10,3 +10,6 @@
     <mat-option *ngFor="let option of options" [value]="option[valueKey]">{{option[displayKey]}}</mat-option>
   </mat-select>
 </mat-form-field>
+
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('required')">Ce champ est requis</span>
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('email')">L'email est requis</span>

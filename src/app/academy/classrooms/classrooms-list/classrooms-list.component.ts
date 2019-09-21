@@ -16,6 +16,7 @@ export class ClassroomsListComponent implements OnInit {
   mapping = {
     name: 'Nom',
     teacher: 'Professeur en Charge',
+    'schoolFee.name': 'Type de contribution',
     'registrationFee.amount': 'Frais d\'inscription',
     'schoolFee.amount': 'Frais de scolarité',
     options: 'Options'
