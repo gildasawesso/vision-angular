@@ -1,0 +1,31 @@
+<h4>{{title}}</h4>
+
+<div class="row">
+  <app-select label="Veuillez séléctionner la classe" class="inputs col-12"
+              [options]="classroomsRepository.stream | async"
+              displayKey="name" valueKey="_id"
+              [formControl]="classroomSelected">
+  </app-select>
+</div>
+
+<div class="row" [formGroup]="paymentForm" *ngIf="classroomSelected.value">
+  <app-select label="Élève" class="inputs col-12 col-sm-6"
+              [options]="students"
+              displayKey="lastname" valueKey="_id"
+              formControlName="student">
+  </app-select>
+
+  <app-select label="Type de contribution" class="inputs col-12 col-sm-6"
+              [options]="feeTypesRepository.stream | async"
+              displayKey="name" valueKey="_id"
+              formControlName="schoolFee">
+  </app-select>
+
+  <app-input name="amount" placeholder="Montant payé" formControlName="amount" class="inputs col-12"></app-input>
+</div>
+
+<div class="ml-auto mt-5">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">Enrégistrer le payement</button>
+</div>
+

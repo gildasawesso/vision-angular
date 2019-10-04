@@ -1,0 +1,35 @@
+<h4>{{title}}</h4>
+<div [formGroup]="teacherForm">
+  <div class="mt-3">
+    <label style="margin-right: 30px;">Sexe</label>
+    <mat-radio-group formControlName="gender">
+      <mat-radio-button style="margin-right:40px;" value="M">M</mat-radio-button>
+      <mat-radio-button value="F">F</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+ <div class="row">
+   <app-input name="firstname" placeholder="Prénom" formControlName="firstname" class="inputs col-12 col-sm-6"></app-input>
+   <app-input name="lastname" placeholder="Nom" formControlName="lastname" class="inputs col-12 col-sm-6"></app-input>
+ </div>
+
+ <div class="row">
+   <app-input name="address" placeholder="Adresse" formControlName="address" class="inputs col-12 col-sm-6"></app-input>
+   <app-input name="phone" placeholder="Téléphone" formControlName="phone" class="inputs col-12 col-sm-6"></app-input>
+ </div>
+
+  <div class="row">
+    <app-input name="qualifications" placeholder="Qualifications" formControlName="qualifications" class="inputs col-12"></app-input>
+  </div>
+
+  <div class="row">
+    <app-date [control]="teacherForm.get('hireDate')" label="Date d'embauche" class="inputs col-12 col-sm-6"></app-date>
+    <app-date [control]="teacherForm.get('fireDate')" label="Date de départ" class="inputs col-12 col-sm-6"></app-date>
+  </div>
+</div>
+
+<div class="ml-auto mr-4">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">{{submitText}}</button>
+</div>
+
