@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog, MatDialogRef, MatSnackBar} from '@angular/material';
 import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.component';
 import {CustomizableAlertDialogComponent} from '../components/customizable-alert-dialog/customizable-alert-dialog.component';
 
@@ -31,13 +31,15 @@ export class Common {
     return dialog.afterClosed().toPromise();
   }
 
-  modal(component, data) {
-    this.dialog.open(component, {
-      panelClass: 'dialog-without-padding',
+  modal(component, data, noPadding = false): Promise<MatDialogRef<any>> {
+    const dialog: MatDialogRef<any> = this.dialog.open(component, {
+      panelClass: noPadding ? 'dialog-without-padding' : '',
       minWidth: '60%',
       height: '85%',
       data
     });
+
+    return dialog.afterClosed().toPromise();
   }
 
   async modalWithResult(component, data) {
@@ -87,6 +89,11 @@ export class Common {
         body: 'Veuillez corriger les erreurs du formulaire afin de continuer'
       }
     });
+  }
+
+  spaced(value, suffix) {
+    if (value === undefined || value == null ) { return value; }
+    return value.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ') + ' ' + suffix;
   }
 
 }

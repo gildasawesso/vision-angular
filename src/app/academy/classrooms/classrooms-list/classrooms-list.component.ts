@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import {Classroom} from '../../../models/classroom';
-import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
+import {ClassroomsRepository} from '../../../repositories/classrooms.repository';
 import {Utils} from '../../../shared/utils';
 import {AddOrEditClassroomComponent} from '../add-or-edit-classroom/add-or-edit-classroom.component';
 
@@ -15,7 +15,7 @@ export class ClassroomsListComponent implements OnInit {
   datasource: MatTableDataSource<Classroom>;
   mapping = {
     name: 'Nom',
-    teacher: 'Professeur en Charge',
+    'append teacher.lastname teacher.firstname': 'Professeur en Charge',
     'schoolFee.name': 'Type de contribution',
     'registrationFee.amount': 'Frais d\'inscription',
     'schoolFee.amount': 'Frais de scolarité',
@@ -39,11 +39,7 @@ export class ClassroomsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.classroomRepository.stream
-      .subscribe((classrooms: Classroom[]) => {
-        if (classrooms.length <= 0) { return; }
-        this.datasource = new MatTableDataSource(classrooms);
-      });
+
   }
 
 }

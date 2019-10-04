@@ -2,7 +2,7 @@ import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
-import * as luxon from 'luxon';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-table',
@@ -20,7 +20,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort: MatSort;
-  @ViewChild(MatTable, {static: false}) table: MatTable<any>;
+  // @ViewChild(MatTable, {static: false}) table: MatTable<any>;
 
   humanReadable;
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -44,14 +44,19 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
   getValueFromKey(key, object) {
     const keySplitted = key.split(' ');
     if (keySplitted.length > 1) {
-      if (keySplitted[0] === 'date') {
-        const value = this.resolve(keySplitted[1], object);
-        const date = luxon.DateTime.fromISO(value, {locale: 'fr'});
-        return date.toFormat('dd LLLL');
-      } else {
-        const firstValue = this.resolve(keySplitted[0], object);
-        const secondValue = this.resolve(keySplitted[1], object);
-        return firstValue + ' ' + secondValue;
+      const format = keySplitted[0];
+      switch (format) {
+        case 'date':
+          const date = this.resolve(keySplitted[1], object);
+          return this.displayDate(date, keySplitted[2]);
+        case 'append':
+          const keys = keySplitted.slice(1);
+          const values = keys.map(val => this.resolve(val, object));
+          return this.displayAppendedValues(values);
+        case 'array':
+          const array = this.resolve(keySplitted[1], object);
+          const arrayDisplayProperty = keySplitted[2];
+          return this.displayArray(array, arrayDisplayProperty);
       }
     } else {
       return this.resolve(key, object);
@@ -68,7 +73,25 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
     this.dataSource.data = this.data;
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.table.dataSource = this.dataSource;
+  }
+
+  displayArray(array, displayProperty) {
+    return array.reduce((acc, cur) => acc + ' ' + cur[displayProperty], '');
+  }
+
+  displayAppendedValues(values) {
+    return values.reduce((acc, cur) => {
+      if (cur == null) { return acc; }
+      return acc + ' ' + cur;
+    }, '');
+  }
+
+  displayDate(date, format) {
+    let dateFormat = 'DD MMMM YYYY';
+    if (format) {
+      dateFormat = format;
+    }
+    return moment(date).format(dateFormat);
   }
 
   ngOnInit() {

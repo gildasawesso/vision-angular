@@ -25,6 +25,7 @@ import { CustomizableAlertDialogComponent } from './components/customizable-aler
 import {PrintUtil} from './utils/print.utils';
 import {FormUtil} from './utils/form.util';
 import { SpacedPipe } from './pipes/spaced.pipe';
+import { DateComponent } from './components/date/date.component';
 
 const components = [
   AppbarComponent,
@@ -41,12 +42,17 @@ const components = [
   CustomizableAlertDialogComponent,
   UnderConstructionComponent,
   DelComponent,
-  SpacedPipe
+  DateComponent
+];
+
+const pipes = [
+  SpacedPipe,
 ];
 
 @NgModule({
   declarations: [
-    ...components
+    ...components,
+    ...pipes
   ],
   imports: [
     AngularMaterialModule,
@@ -60,6 +66,7 @@ const components = [
   ],
   exports: [
     ...components,
+    ...pipes,
     CommonModule,
     AngularMaterialModule,
     FormsModule,

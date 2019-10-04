@@ -4,7 +4,7 @@ export class Student {
   '_id': string;
   firstname: string;
   lastname: string;
-  birthdaystring;
+  birthday: string;
   matricule: string;
   gender: string;
   status: string;

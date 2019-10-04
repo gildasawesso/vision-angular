@@ -3,8 +3,7 @@
   <button (click)="add()" mat-flat-button color="primary">Ajouter</button>
 </div>
 <div class="mt-3">
-  <app-table *ngIf="datasource"
-             [data]="classroomRepository.stream | async"
+  <app-table [data]="classroomRepository.stream | async"
              [mapping]="mapping"
              (edit)="edit($event)"
              (delete)="delete($event)">

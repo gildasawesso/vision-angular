@@ -12,6 +12,9 @@ import { AcademyDashboardComponent } from './academy-dashboard/academy-dashboard
 import { SubjectsComponent } from './subjects/subjects.component';
 import { SubjectsListComponent } from './subjects/subjects-list/subjects-list.component';
 import { AddOrEditClassroomComponent } from './classrooms/add-or-edit-classroom/add-or-edit-classroom.component';
+import { EditStudentComponent } from './students/edit-student/edit-student.component';
+import { AddOrEditSubjectComponent } from './subjects/add-or-edit-subject/add-or-edit-subject.component';
+import { AddOrEditTeacherComponent } from './teachers/add-or-edit-teacher/add-or-edit-teacher.component';
 
 @NgModule({
   declarations: [
@@ -25,14 +28,20 @@ import { AddOrEditClassroomComponent } from './classrooms/add-or-edit-classroom/
     AcademyDashboardComponent,
     SubjectsComponent,
     SubjectsListComponent,
-    AddOrEditClassroomComponent
+    AddOrEditClassroomComponent,
+    EditStudentComponent,
+    AddOrEditSubjectComponent,
+    AddOrEditTeacherComponent
   ],
   imports: [
     AcademyRoutingModule,
     SharedModule
   ],
   entryComponents: [
-    AddOrEditClassroomComponent
+    AddOrEditClassroomComponent,
+    EditStudentComponent,
+    AddOrEditSubjectComponent,
+    AddOrEditTeacherComponent
   ],
   providers: [
   ]

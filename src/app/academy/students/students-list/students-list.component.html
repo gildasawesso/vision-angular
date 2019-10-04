@@ -2,7 +2,7 @@
   <app-select label="Classe" [formControl]="classroomSelected" [options]="classroomsRepository.stream | async" displayKey="name" valueKey="_id"></app-select>
 
   <div *ngIf="classroomSelected.touched">
-    <app-table [mapping]="mapping" [data]="data"></app-table>
+    <app-table [mapping]="mapping" [data]="this.students" (edit)="edit($event)" (delete)="delete($event)"></app-table>
   </div>
   <div *ngIf="!classroomSelected.touched">
     <h2 class="text-center mt-5">Sélèctionnez une classe pour visualiser ses élèves</h2>

@@ -1,0 +1,9 @@
+<label>{{label}}</label>
+<mat-form-field appearance="outline">
+  <input matInput [matDatepicker]="deadlinePicker" [formControl]="control">
+  <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
+  <mat-datepicker startView="{{view}}" #deadlinePicker></mat-datepicker>
+  <mat-hint>Exemple : 01/12/2000</mat-hint>
+</mat-form-field>
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('required')">Ce champ est requis</span>
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('date')">La date est invalide</span>

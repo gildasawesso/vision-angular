@@ -1,19 +1,22 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
-import {ClassroomsRepository} from '../../core/repositories/classrooms.repository';
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ClassroomsRepository} from '../../repositories/classrooms.repository';
 import {Router} from '@angular/router';
 import {Classroom} from '../../models/classroom';
-import {StudentsRepository} from '../../core/repositories/students.repository';
+import {StudentsRepository} from '../../repositories/students.repository';
 import {Utils} from '../../shared/utils';
-import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
+import {RegistrationsRepository} from '../../repositories/registrations.repository';
 import {Registration} from '../../models/registration';
 import {Student} from '../../models/student';
-import {SchoolyearsRepository} from '../../core/repositories/schoolyears.repository';
+import {SchoolyearsRepository} from '../../repositories/schoolyears.repository';
 import {SchoolYear} from '../../models/school-year';
-import {PaymentRepository} from '../../core/repositories/payments.repository';
+import {PaymentsRepository} from '../../repositories/payments.repository';
 import {Payment} from '../../models/payment';
 import {School} from '../../models/school';
-import {SchoolsRepository} from '../../core/repositories/schools.repository';
+import {SchoolsRepository} from '../../repositories/schools.repository';
+import {sample} from 'rxjs/operators';
+import {FeeType} from '../../models/fee-type';
+import {FeeTypesRepository} from '../../repositories/fee-types.repository';
 
 const MAX_PAGE = 3;
 
@@ -24,13 +27,42 @@ const MAX_PAGE = 3;
 })
 export class RegistrationComponent implements OnInit {
 
+  constructor(private formBuilder: FormBuilder,
+              public classroomsRepository: ClassroomsRepository,
+              private studentsRepository: StudentsRepository,
+              private registrationRepository: RegistrationsRepository,
+              private schoolyearsRepository: SchoolyearsRepository,
+              private paymentsRepository: PaymentsRepository,
+              private schoolsRepository: SchoolsRepository,
+              public feeTypesRepository: FeeTypesRepository,
+              private router: Router,
+              private utils: Utils) {
+  }
+
+  get subPayments() {
+    return this.subFeesForm as FormArray;
+  }
+
+  subFeesForm = this.formBuilder.array([]);
+
+  paymentForm = this.formBuilder.group({
+    _id: [''],
+    student: [''],
+    schoolYear: [''],
+    registrationFee: [''],
+    schoolFee: [''],
+    fees: this.subFeesForm,
+    classroom: [''],
+    amount: ['']
+  });
+
   registrationForm = this.formBuilder.group({
     firstname: ['', Validators.required],
     lastname: ['', Validators.required],
     birthday: [''],
     birthCity: [''],
     address: [''],
-    gender: ['M'],
+    gender: ['M', Validators.required],
     fathersFirstname: [''],
     fathersLastname: [''],
     mothersFirstname: [''],
@@ -41,7 +73,8 @@ export class RegistrationComponent implements OnInit {
     mothersPhone: [''],
     lastClass: [''],
     lastSchool: [''],
-    classroom: ['']
+    classroom: [''],
+    payment: this.paymentForm
   });
 
   headers = ['Informations personnelles', 'Informations sur les parents', 'École', 'Contribution'];
@@ -50,23 +83,29 @@ export class RegistrationComponent implements OnInit {
   registrationFee: number;
   firstTermSchoolFee: number;
   amountPayed = new FormControl();
+  feeTypeToAdd = new FormControl();
   amountPayedOldValue: number;
   classrooms: Classroom[];
   schoolYears: SchoolYear[];
+  feeTypes: FeeType[] = [];
+  feeTypesFiltred: FeeType[] = [];
   isBusy = false;
   isReady = true;
 
-  constructor(private formBuilder: FormBuilder,
-              public classroomsRepository: ClassroomsRepository,
-              private studentsRepository: StudentsRepository,
-              private registrationRepository: RegistrationsRepository,
-              private schoolyearsRepository: SchoolyearsRepository,
-              private contributionsRepository: PaymentRepository,
-              private schoolsRepository: SchoolsRepository,
-              private router: Router,
-              private utils: Utils) { }
+  log(x) {
+    console.log(x);
+  }
+
+  async print() {
+    await this.utils.print.registrationReceipt({});
+  }
 
   back() {
+    if (!this.registrationForm.valid) {
+      this.utils.form.invalidatedForm(this.registrationForm);
+      return;
+    }
+
     this.currentPage -= 1;
     if (this.currentPage <= 1) {
       this.registrationForm.get('classroom').clearValidators();
@@ -74,14 +113,14 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
-  onAmountPayedChanged(value) {
-    console.log(this.amountPayedOldValue);
-    if (Number(value) > this.registrationFee + this.firstTermSchoolFee) {
-      this.amountPayed.setValue(this.amountPayedOldValue, {emitModelToViewChange: true});
-      this.utils.common.toast('Le montant saisi est supérieur aux frais de scolarité et d\'inscription');
-    } else {
-      this.amountPayedOldValue = Number(value);
-    }
+  filterFees() {
+    return this.feeTypes.filter(ft => {
+      const subPaymentAlreadyInForm = this.subPayments.controls.find(subPaymentGroup => {
+        const subPaymentId = subPaymentGroup.get('fee').value._id;
+        return ft._id === subPaymentId;
+      });
+      return subPaymentAlreadyInForm === undefined;
+    });
   }
 
   getBalance() {
@@ -91,7 +130,6 @@ export class RegistrationComponent implements OnInit {
   }
 
   async save() {
-    console.log(this.registrationForm);
     if (!this.registrationForm.valid) {
       this.utils.form.invalidatedForm(this.registrationForm);
       return;
@@ -106,34 +144,57 @@ export class RegistrationComponent implements OnInit {
     }
 
     this.isBusy = true;
-    const students = this.registrationForm.value;
-    const newStudent: Student = await this.studentsRepository.add(students);
+    const newStudents = this.registrationForm.value;
+    const student: Student = await this.studentsRepository.add(newStudents);
 
-    const registering: Registration = {
-      student: newStudent,
-      classroom: newStudent.classroom,
+    const newRegistration: Registration = {
+      student,
+      classroom: student.classroom,
       schoolYear: this.schoolYears[0]
     };
-    await this.registrationRepository.add(registering);
+    await this.registrationRepository.add(newRegistration);
 
-    const contributing: Payment = {
-      student: newStudent,
-      schooYear: this.schoolYears[0],
-      fee: newStudent.classroom.registrationFee,
-      amount: this.amountPayed.value
-    };
-    await this.contributionsRepository.add(contributing);
+    const newPayment: Payment = this.paymentForm.value;
+    newPayment.amount = newPayment.fees.reduce((acc, cur) => acc + cur.amount, 0);
+    newPayment.student = student;
+    const payment = await this.paymentsRepository.add(newPayment);
     this.isBusy = false;
-    const message = `L'élève ${newStudent.firstname}${newStudent.lastname} est inscrit avec succès à la classe de ${newStudent.classroom.name}`;
+    const message = `L'élève ${student.firstname} ${student.lastname} est inscrit avec succès à la classe de ${student.classroom.name}`;
     await this.utils.common.customAlert(message, '', ['Imprimer le reçu']);
-    this.utils.print.receipt(contributing);
-    this.registrationForm.reset();
+
+    await this.utils.print.registrationReceipt(payment);
+    this.resetAllForms();
     this.currentPage = 0;
   }
 
-  validateAmountPayed(c: FormControl) {
-    const valid = Number(this.amountPayed.value) <= this.firstTermSchoolFee + this.registrationFee;
-    return valid ? null : 'Le montant saisi est incorrect';
+  addPaymentToPaymentsFormArray(payment, subPayment) {
+    if (payment) {
+      this.paymentForm.reset();
+      this.paymentForm.patchValue(payment);
+      this.subPayments.push(this.formBuilder.group({
+        fee: subPayment.fee,
+        amount: [subPayment.amount, this.utils.form.registrationFeeValidator(subPayment)]
+      }));
+    } else {
+      this.subPayments.push(this.formBuilder.group({
+        fee: subPayment.fee,
+        amount: [subPayment.amount, this.utils.form.feeValidator(subPayment)]
+      }));
+    }
+  }
+
+  resetAllForms() {
+    this.registrationForm.reset();
+    this.registrationForm.markAsUntouched();
+    this.paymentForm.reset();
+    this.paymentForm.markAsUntouched();
+    this.subFeesForm.reset();
+    this.subFeesForm.clear();
+    this.subFeesForm.markAsUntouched();
+
+    console.log(this.registrationForm.value);
+
+    this.registrationForm.get('classroom').setErrors(null);
   }
 
   ngOnInit() {
@@ -144,25 +205,37 @@ export class RegistrationComponent implements OnInit {
 
     this.registrationForm.controls.classroom.valueChanges
       .subscribe((obj: Classroom) => {
+        if (obj == null) {
+          return;
+        }
         const classroom = this.classrooms.find(c => c._id === obj._id);
-        if (classroom.registrationFee === undefined || classroom.registrationFee === null ) {
+        if (classroom.registrationFee === undefined || classroom.registrationFee === null) {
           this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des frais d'inscription`);
-          this.registrationForm.controls.classroom.setValue('', { emitEvent: false });
+          this.registrationForm.controls.classroom.setValue('', {emitEvent: false});
           return;
         }
 
-        if (classroom.schoolFee === undefined || classroom.schoolFee === null ) {
+        if (classroom.schoolFee === undefined || classroom.schoolFee === null) {
           this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des frais de scolarité`);
-          this.registrationForm.controls.classroom.setValue('', { emitEvent: false });
+          this.registrationForm.controls.classroom.setValue('', {emitEvent: false});
           return;
         }
 
         if (classroom.schoolFee.tranches === null || classroom.schoolFee.tranches.length <= 0) {
           this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des tranches de scolarité.
           Veuillez vous rendre dans le module Finance afin d'associer des tranches à ce type de contribution.`);
-          this.registrationForm.controls.classroom.setValue('', { emitEvent: false });
+          this.registrationForm.controls.classroom.setValue('', {emitEvent: false});
           return;
         }
+
+        const payment = {
+          schoolYear: this.schoolYears[0],
+          classroom,
+          fees: []
+        };
+        const subPayment = { fee: classroom.registrationFee, amount: 0 };
+        this.addPaymentToPaymentsFormArray(payment, subPayment);
+
         this.registrationFee = classroom.registrationFee.amount;
         this.firstTermSchoolFee = classroom.schoolFee.tranches[0].amount;
       });
@@ -171,53 +244,17 @@ export class RegistrationComponent implements OnInit {
       .subscribe((schoolYears: SchoolYear[]) => {
         this.schoolYears = schoolYears;
       });
+
+    this.feeTypeToAdd.valueChanges
+      .subscribe(fee => {
+        if (fee == null) { return; }
+        const subPayment = { fee, amount: 0 };
+        console.log('fantome');
+        this.addPaymentToPaymentsFormArray(null, subPayment);
+      });
+
+    this.feeTypesRepository.stream.subscribe(feeTypes => {
+      this.feeTypes = feeTypes;
+    });
   }
-
 }
-
-export const sampleRegistration: any = {
-  _id: '5d82b523e3efe62fa585bd0f',
-  student: {
-    _id: '5d82b523e3efe62fa585bd0d',
-    dropOut: false,
-    firstname: 'fsefsef',
-    lastname: 'fsfsef',
-    birthday: '1994-02-10T00:00:00.000Z',
-    birthCity: 'fsfsfsf',
-    address: '',
-    gender: 'M',
-    fathersFirstname: 'fesfe',
-    fathersLastname: 'fsefsef',
-    mothersFirstname: 'fsfs',
-    mothersLastname: 'efs',
-    fathersJob: '2019-09-06',
-    mothersJob: '2019-08-31',
-    fathersPhone: '322323',
-    mothersPhone: '323232',
-    lastClass: 'fsefsfs',
-    lastSchool: 'fesfsf',
-    classroom: '5d7c526e046a831657964d00',
-    __v: 0
-  },
-  schooYear: {
-    _id: '5d7967f76e4cbb1842452026',
-    startDate: '2019-09-11T15:08:40.206Z',
-    endDate: '2020-07-11T15:08:40.206Z',
-    school: '5d790df89e9b0e10912878d2',
-    updatedAt: '2019-09-11T21:32:39.706Z',
-    createdAt: '2019-09-11T21:32:39.706Z',
-    __v: 0
-  },
-  fee: {
-    _id: '5d7e3607dfb64238feb88af7',
-    name: 'fesfsf',
-    amount: 4333,
-    deadline: '2019-09-07T00:00:00.000Z',
-    isSchoolFee: true,
-    tranches: [],
-    feeType: '5d7c50af20b7d715f236c6bd',
-    __v: 0
-  },
-  amount: 4333,
-  __v: 0
-};

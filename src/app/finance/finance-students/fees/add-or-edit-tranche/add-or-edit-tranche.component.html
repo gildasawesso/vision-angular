@@ -2,7 +2,7 @@
 <div class="row" [formGroup]="trancheForm">
   <app-input name="name" placeholder="Nom" formControlName="name" class="inputs col-12 col-sm-6"></app-input>
   <app-input name="amount" placeholder="Montant" formControlName="amount" class="inputs col-12 col-sm-6"></app-input>
-  <app-input name="dueDate" placeholder="Date limite" formControlName="dueDate" type="date" class="inputs col-12 col-sm-6"></app-input>
+  <app-date class="inputs col-12 col-sm-6" label="Date limite" [control]="trancheForm.get('dueDate')"></app-date>
 </div>
 
 <div class="actions ml-auto">

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
-  MatButtonModule, MatButtonToggleModule,
+  MAT_DATE_LOCALE,
+  MatButtonModule, MatButtonToggleModule, MatDatepickerModule,
   MatDialogModule, MatDividerModule,
   MatIconModule,
   MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatProgressSpinnerModule,
@@ -9,6 +10,7 @@ import {
   MatToolbarModule
 } from '@angular/material';
 import {LayoutModule} from '@angular/cdk/layout';
+import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
 const angularModules = [
   MatButtonModule,
@@ -32,7 +34,9 @@ const angularModules = [
   MatTableModule,
   MatPaginatorModule,
   MatSortModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatDatepickerModule,
+  MatMomentDateModule,
 ];
 
 @NgModule({
@@ -43,5 +47,8 @@ const angularModules = [
   exports: [
     ...angularModules
     ],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'},
+  ]
 })
 export class AngularMaterialModule { }

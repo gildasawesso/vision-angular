@@ -1,1 +1,11 @@
-<app-under-construction></app-under-construction>
+<div class="d-flex align-items-center">
+  <h5 class="mx-4">Enseignants</h5>
+  <button (click)="add()" mat-flat-button color="primary">Ajouter</button>
+</div>
+<div class="mt-3">
+  <app-table [data]="teachersRepository.stream | async"
+             [mapping]="mapping"
+             (edit)="edit($event)"
+             (delete)="delete($event)">
+  </app-table>
+</div>

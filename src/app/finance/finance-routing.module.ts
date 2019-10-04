@@ -10,7 +10,7 @@ import {IncomesComponent} from './incomes/incomes.component';
 import {IncomesListComponent} from './incomes/incomes-list/incomes-list.component';
 import {FinanceDashboardComponent} from './finance-students/finance-dashboard/finance-dashboard.component';
 import {FeesComponent} from './finance-students/fees/fees.component';
-import {FeeTypesComponent} from './finance-students/fees/fee-types/fee-types.component';
+import {FeeCategoriesComponent} from './finance-students/fees/fee-categories/fee-categories.component';
 import {ExpenseTypesComponent} from './expenses/expense-types/expense-types.component';
 import {IncomeTypesComponent} from './incomes/income-types/income-types.component';
 
@@ -30,7 +30,7 @@ const routes: Routes = [
           { path: 'list', component: FinanceStudentsListComponent },
           { path: 'payments', component: PaymentsComponent },
           { path: 'fees', component: FeesComponent },
-          { path: 'fee-types', component: FeeTypesComponent },
+          { path: 'fee-categories', component: FeeCategoriesComponent },
           { path: '', redirectTo: 'payments', pathMatch: 'full' },
         ]
       },

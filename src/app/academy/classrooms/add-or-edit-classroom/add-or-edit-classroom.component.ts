@@ -1,11 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
-import {SubjectsRepository} from '../../../core/repositories/subjects.repository';
-import {FeesRepository} from '../../../core/repositories/fees.repository';
+import {SubjectsRepository} from '../../../repositories/subjects.repository';
+import {FeeTypesRepository} from '../../../repositories/fee-types.repository';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Utils} from '../../../shared/utils';
-import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
+import {ClassroomsRepository} from '../../../repositories/classrooms.repository';
 import {Classroom} from '../../../models/classroom';
+import {TeachersRepository} from '../../../repositories/teachers.repository';
 
 @Component({
   selector: 'app-add-or-edit-classroom',
@@ -32,9 +33,10 @@ export class AddOrEditClassroomComponent implements OnInit {
               public dialogRef: MatDialogRef<AddOrEditClassroomComponent>,
               private formBuilder: FormBuilder,
               public subjectsRepository: SubjectsRepository,
-              public feesRepository: FeesRepository,
+              public feesRepository: FeeTypesRepository,
               private classroomsRepository: ClassroomsRepository,
-              private utils: Utils) {
+              private utils: Utils,
+              public teachersRepository: TeachersRepository) {
     if (this.data) {
       this.isNewClassroom = false;
       this.classroom = this.data;

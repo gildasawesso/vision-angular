@@ -8,8 +8,8 @@ export const menuConfig = [
         submenu: [
           {text: 'payements des contributions', url: '/finance/students/payments'},
           {text: 'élèves & classes', url: '/finance/students/list'},
-          {text: 'contributions', url: '/finance/students/fees'},
-          {text: 'Types de contributions', url: '/finance/students/fee-types'},
+          {text: 'Types de contributions', url: '/finance/students/fees'},
+          {text: 'Catégories de contributions', url: '/finance/students/fee-categories'},
         ]
       },
       {

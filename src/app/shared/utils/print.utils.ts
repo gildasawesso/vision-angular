@@ -2,35 +2,69 @@ import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import {Registration} from '../../models/registration';
-import {School} from '../../models/school';
-import {SchoolsRepository} from '../../core/repositories/schools.repository';
-import {Payment} from '../../models/payment';
+import {SchoolsRepository} from '../../repositories/schools.repository';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import * as moment from 'moment';
+import {ApiService} from '../../services/api.service';
+import {Payment} from '../../models/payment';
 
 @Injectable()
 export class PrintUtil {
 
   constructor(private dialog: MatDialog,
               private snackBar: MatSnackBar,
-              private schools: SchoolsRepository) {
+              private schools: SchoolsRepository,
+              private api: ApiService) {
+  }
+
+  spaced(value, suffix = '') {
+    if (value === undefined || value == null ) { return value; }
+    return value.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ') + ' ' + suffix;
   }
 
 
-  receipt(data: Payment | any) {
-    console.log({school: this.schools.get[0], ...data});
+  receipt(data: any) {
+    console.log({school: this.schools.list[0], ...data});
     const win = window.open('', '_blank');
-    console.log(getReceiptDocDefinition({school: this.schools.get[0], ...data}));
-    pdfMake.createPdf(getReceiptDocDefinition({school: this.schools.get[0], ...data})).open({}, win);
+    pdfMake.createPdf(getReceiptDocDefinition(data)).open({}, win);
   }
 
-  buildReceiptData(registration: any) {
-    return {...registration};
+  async registrationReceipt(payment: Payment | any) {
+    const currentSchool = this.schools.list[0];
+    const data = {
+      code: payment.code,
+      createdAt: moment(payment.createdAt).format('DD MMMM YYYY'),
+      schoolYear: moment(payment.schoolYear.startDate).format('YYYY') + ' - ' + moment(payment.schoolYear.endDate).format('YYYY'),
+      schoolName: currentSchool.nameLong,
+      schoolAddress: currentSchool.zipCode,
+      schoolPhones: currentSchool.phones.reduce((acc, current) => acc + ' ' + current, ''),
+      schoolEmail: currentSchool.email,
+      studentFullName: payment.student.firstname + ' ' + payment.student.lastname,
+      studentAddress: payment.student.address,
+      classroom: payment.classroom.name,
+      fees: payment.fees.map((subPayement, index) => {
+        return {
+          designation: index !== 0 ? subPayement.fee.name : subPayement.fee.name + ' + ' + subPayement.fee.tranches[0].name,
+          amount: index !== 0 ? this.spaced(subPayement.fee.amount) : this.spaced(subPayement.fee.amount + subPayement.fee.tranches[0].amount),
+          payed: this.spaced(subPayement.amount),
+          balance: this.spaced(subPayement.fee.amount - subPayement.amount),
+        };
+      }),
+      totalAmount: this.spaced(payment.fees.reduce((acc, cur) => acc + cur.fee.amount, 0), 'FCFA'),
+      totalPayed: this.spaced(payment.fees.reduce((acc, cur) => acc + cur.amount, 0), 'FCFA'),
+      totalBalance: this.spaced(payment.fees.reduce((acc, cur) => acc + (cur.fee.amount - cur.amount), 0), 'FCFA'),
+    };
+    const file = await this.api.post('/report/print/registration', data).toPromise();
+    console.log(file);
+    // console.log({school: this.schools.list[0], ...data});
+    // const win = window.open('', '_blank');
+    // pdfMake.createPdf(getReceiptDocDefinition(data)).open({}, win);
   }
 }
 
 export function getReceiptDocDefinition(data) {
-
+  const dotsNumber = 20;
+  const char = ' ';
   return {
     pageSize: 'A4',
     content: [
@@ -43,36 +77,39 @@ export function getReceiptDocDefinition(data) {
           //   height: 50
           // },
           {
-            text: 'COMPLEXE SCOLAIRE AMEN',
+            text: data.school.nameLong,
             fontSize: 28,
             style: 'title'
           }
         ]
       },
       {
-        text: '07 BP 155 Cotonou',
+        text: data.school.zipCode,
         fontSize: 12,
         style: 'header'
       },
       {
-        text: '21350890949 4979766431414',
+        text: data.school.phones.reduce((acc, current) => acc + ' ' + current, ''),
         style: 'header'
       },
       {
-        text: 'csamen@gmail.com',
+        text: data.school.email,
         style: 'header'
       },
       {
         text: [
           { text: 'REÇU', style: 'veryBig', decoration: 'underline'},
-          { text: ' N° 0000045', style: 'veryBig', color: 'red', bold: true }
+          { text: ' N° ' + data.registration.code, style: 'veryBig', color: 'red', bold: true }
         ]
       },
       {
         style: {alignment: 'right'},
         text: [
-          { text: 'ANNÉE', decoration: 'underline'},
-          { text: ' 2019 - 2020' }
+          { text: 'ANNÉE : ', decoration: 'underline'},
+          {
+            text:
+              moment(data.registration.schoolYear.startDate).format('YYYY') + ' - ' +
+              moment(data.registration.schoolYear.endDate).format('YYYY')}
         ]
       },
       {
@@ -98,7 +135,7 @@ export function getReceiptDocDefinition(data) {
         style: 'content',
         text: [
           { text: 'Objet : '},
-          { text: '........................................................', bold: true }
+          { text: '........................................................', bold: true, alignment: 'center', width: '*' }
         ]
       },
       {
@@ -112,28 +149,28 @@ export function getReceiptDocDefinition(data) {
         style: 'content',
         text: [
           { text: 'Classe : '},
-          { text: '........................................................', bold: true }
+          { text: fill(dotsNumber, char) + data.classroom.name, bold: true, alignment: 'center', width: '*' }
         ]
       },
       {
         style: 'content',
         text: [
           { text: 'Nom : '},
-          { text: '........................................................', bold: true }
+          { text: fill(dotsNumber, char) + data.registration.student.lastname, bold: true }
         ]
       },
       {
         style: 'content',
         text: [
           { text: 'Prénoms : '},
-          { text: '........................................................', bold: true }
+          { text: fill(dotsNumber, char) + data.registration.student.firstname, bold: true }
         ]
       },
       {
         style: 'content',
         text: [
           { text: 'Reste à payer : '},
-          { text: '........................................................', bold: true }
+          { text: fill(dotsNumber, char) + ((Number(data.classroom.registrationFee.amount) + Number(data.classroom.schoolFee.tranches[0].amount)) - Number(data.registration.amount)).toString(), bold: true }
         ]
       },
       {
@@ -144,7 +181,7 @@ export function getReceiptDocDefinition(data) {
         style: { alignment: 'right', fontSize: 16},
         text: [
           { text: 'Date: '},
-          { text: '........................................................', bold: true }
+          { text: moment().format('DD MMMM YYYY'), bold: true }
         ]
       },
       {
@@ -166,11 +203,11 @@ export function getReceiptDocDefinition(data) {
         style: 'content'
       },
       {
-        text: '- 2è tranche : avant le 28 Novembre 20',
+        text: '- 2è tranche : avant le ' + moment(data.classroom.schoolFee.tranches[1].dueDate).format('DD MMMM YYYY'),
         style: 'content'
       },
       {
-        text: '- 3è tranche : avant le 28 Janvier 20',
+        text: '- 3è tranche : avant le ' + moment(data.classroom.schoolFee.tranches[2].dueDate).format('DD MMMM YYYY'),
         style: 'content'
       },
       {
@@ -265,13 +302,13 @@ export function getReceiptDocDefinition(data) {
         ]
       },
       content: {
-        fontSize: 16,
+        fontSize: 14,
         margin: [
           0,
           10,
           0,
           10
-        ]
+        ],
       },
       contentSmall: {
         fontSize: 14,
@@ -285,6 +322,10 @@ export function getReceiptDocDefinition(data) {
     }
 
   };
+}
+
+export function fill(length, fillWith: string) {
+  return Array(length).fill(fillWith).reduce((acc, current) => acc + fillWith , '');
 }
 
 

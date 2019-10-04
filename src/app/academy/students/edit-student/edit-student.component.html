@@ -1,0 +1,62 @@
+<h3>Modification de l'élève  {{student.lastname}}</h3>
+
+<div [formGroup]="studentForm">
+  <div common-title class="section-title">Informations personnelles</div>
+  <div class="section">
+    <label class="genre">Sexe</label>
+    <mat-radio-group formControlName="gender">
+      <mat-radio-button style="margin-right:40px;" value="M">M</mat-radio-button>
+      <mat-radio-button value="F">F</mat-radio-button>
+    </mat-radio-group>
+    <div class="row">
+      <app-input [control]="studentForm.get('lastname')" name="lastname" placeholder="Nom" formControlName="lastname" class="inputs col-12 col-sm-6"></app-input>
+      <app-input [control]="studentForm.get('firstname')" name="firstname" placeholder="Prénom" formControlName="firstname" class="inputs col-12 col-sm-6"></app-input>
+      <app-date [control]="studentForm.get('birthday')" label="Date de naissance" class="col-12 col-sm-6"></app-date>
+      <app-input name="birthCity" placeholder="Lieu de naissance" formControlName="birthCity" class="inputs col-12 col-sm-6"></app-input>
+    </div>
+  </div>
+
+  <div common-title class="section-title">Informations sur les parents</div>
+  <div class="section">
+    <h5>Père</h5>
+    <div class="row">
+      <app-input name="fathersFirstname" placeholder="Nom" formControlName="fathersFirstname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="fathersLastnme" placeholder="Prénom" formControlName="fathersLastname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="fathersJob" placeholder="Profession" formControlName="fathersJob" class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="fathersPhone" placeholder="Téléphone" formControlName="fathersPhone"
+                 class="inputs col-12 col-sm-6" type="tel"></app-input>
+    </div>
+
+    <h5 style="margin-top: 20px;">Mère</h5>
+    <div class="row">
+      <app-input name="mothersFirstname" placeholder="Nom" formControlName="mothersFirstname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="mothersLastnme" placeholder="Prénom" formControlName="mothersLastname"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="mothersJob" placeholder="Profession" formControlName="mothersJob" class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="mothersPhone" placeholder="Téléphone" formControlName="mothersPhone"
+                 class="inputs col-12 col-sm-6" type="tel"></app-input>
+    </div>
+  </div>
+
+  <div common-title class="section-title">École</div>
+  <div class="section">
+    <h5 style="margin-top: 20px;">Parcours</h5>
+    <div class="row">
+      <app-input name="lastSchool" placeholder="Ancien établissement" formControlName="lastSchool"
+                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="lastClass" placeholder="Dernière classe suivie" formControlName="lastClass"
+                 class="inputs col-12 col-sm-6"></app-input>
+    </div>
+  </div>
+</div>
+
+<div class="actions d-flex justify-content-end align-items-center">
+  <button (click)="dialogRef.close()" mat-flat-button>Annuler</button>
+  <app-action-button (click)="save()" color="primary"
+                     [isBusy]="isBusy" isReady="true"
+                     [text]="'Modifier l\'élève'">
+  </app-action-button>
+</div>

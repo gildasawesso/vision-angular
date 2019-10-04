@@ -32,8 +32,8 @@ html, body {
   color: $app-common-title;
 }
 
-.dialog-without-padding {
-  padding: 0;
+.dialog-without-padding mat-dialog-container {
+  padding: 0 !important;
 }
 
 .actions {

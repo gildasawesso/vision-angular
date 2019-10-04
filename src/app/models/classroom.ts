@@ -1,5 +1,5 @@
 import {Teacher} from './teacher';
-import {Fee} from './fee';
+import {FeeType} from './fee-type';
 import {Subject} from './subject';
 
 export class Classroom {
@@ -8,7 +8,7 @@ export class Classroom {
   code: string;
   capacity: number;
   teacher: Teacher;
-  registrationFee: Fee;
-  schoolFee: Fee;
+  registrationFee: FeeType;
+  schoolFee: FeeType;
   subjects: Array<Subject>;
 }

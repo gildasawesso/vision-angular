@@ -4,5 +4,5 @@ export class Subject {
   '_id': string;
   code: string;
   name: string;
-  professors: Array<Teacher>;
+  teachers: Array<Teacher>;
 }

@@ -2,7 +2,13 @@
 <div class="row" [formGroup]="classroomForm">
   <app-input name="name" placeholder="Nom" formControlName="name" class="inputs col-12 col-sm-6"></app-input>
   <app-input name="code" placeholder="Code" formControlName="code" class="inputs col-12 col-sm-6"></app-input>
-  <app-input name="capacity" placeholder="Capacité" formControlName="capacity" class="inputs col-12 col-sm-6" type="number"></app-input>
+  <app-select name="teacher"
+              [options]="teachersRepository.stream | async"
+              displayKey="lastname" valueKey="_id"
+              label="Professeur en charge"
+              formControlName="teacher"
+              class="inputs col-12 col-sm-6">
+  </app-select>
 
   <app-select name="subjects" label="Cours" class="inputs col-12 col-sm-6"
               [options]="subjectsRepository.stream | async"

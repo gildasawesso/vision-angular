@@ -21,6 +21,8 @@ export class SelectComponent implements OnInit, ControlValueAccessor {
   @Input() valueKey: string;
   @Input() displayKey: string;
   @Input() multiple = false;
+  @Input() addEmptyOption = false;
+  @Input() emptyLabel = 'Veuillez sélectionner une valeur';
   @Input() control: AbstractControl;
 
   // tslint:disable-next-line:variable-name
