@@ -1,1 +1,12 @@
-<p>signin works!</p>
+<div class="d-flex flex-column align-items-center justify-content-center signin">
+  <div class="connexion col-10 col-sm-4" [formGroup]="signinForm">
+    <div class="connexion-label">Connexion</div>
+    <app-input [control]="signinForm.get('username')" formControlName="username">Username</app-input>
+    <app-input [control]="signinForm.get('password')" formControlName="password" type="password">Mot de passe</app-input>
+    <app-action-button (appClick)="signin()" class="mt-4" isReady="true" color="primary" [isBusy]="isBusy">Connexion</app-action-button>
+  </div>
+ <div class="d-flex flex-column align-items-center mt-4">
+   <mat-label>Si vous ne disposez pas d'un compte </mat-label>
+   <mat-label>veuillez vous adresser à votre administrateur</mat-label>
+ </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="d-flex align-items-center">
+  <h5 class="mx-4">Roles</h5>
+  <button (click)="add()" mat-flat-button color="primary">Ajouter</button>
+</div>
+<div class="mt-3">
+  <app-table [data]="data"
+             [mapping]="mapping"
+             (edit)="edit($event)"
+             (delete)="delete($event)">
+  </app-table>
+</div>

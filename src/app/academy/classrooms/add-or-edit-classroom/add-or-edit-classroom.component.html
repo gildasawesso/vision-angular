@@ -1,34 +1,35 @@
 <h4>{{title}}</h4>
 <div class="row" [formGroup]="classroomForm">
-  <app-input name="name" placeholder="Nom" formControlName="name" class="inputs col-12 col-sm-6"></app-input>
-  <app-input name="code" placeholder="Code" formControlName="code" class="inputs col-12 col-sm-6"></app-input>
+  <app-input name="name" formControlName="name" class="inputs col-12 col-sm-6">Nom</app-input>
+  <app-input name="code" formControlName="code" class="inputs col-12 col-sm-6">Code</app-input>
   <app-select name="teacher"
               [options]="teachersRepository.stream | async"
               displayKey="lastname" valueKey="_id"
-              label="Professeur en charge"
               formControlName="teacher"
               class="inputs col-12 col-sm-6">
+    Professeur en charge
   </app-select>
 
-  <app-select name="subjects" label="Cours" class="inputs col-12 col-sm-6"
+  <app-select name="subjects" class="inputs col-12 col-sm-6"
               [options]="subjectsRepository.stream | async"
               displayKey="name" valueKey="_id"
               formControlName="subjects" [multiple]="true">
+    Cours
   </app-select>
   <app-select name="registrationFee"
               [options]="feesRepository.stream | async"
               displayKey="name" valueKey="_id"
-             label="Frais d'inscription"
              formControlName="registrationFee"
              class="inputs col-12 col-sm-6">
+    Frais d'inscription
   </app-select>
 
   <app-select name="registrationFee"
               [options]="feesRepository.stream | async"
               displayKey="name" valueKey="_id"
-              label="Frais de scolarité"
               formControlName="schoolFee"
               class="inputs col-12 col-sm-6">
+    Frais de scolarité
   </app-select>
 
   <div class="ml-auto mr-4">

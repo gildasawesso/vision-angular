@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {StudentsRepository} from '../../../repositories/students.repository';
-import {ClassroomsRepository} from '../../../repositories/classrooms.repository';
+import {StudentsRepository} from '../../../core/repositories/students.repository';
+import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {FormControl} from '@angular/forms';
 import {filter, flatMap, switchMap} from 'rxjs/operators';
-import {Classroom} from '../../../models/classroom';
-import {Student} from '../../../models/student';
-import {Utils} from '../../../shared/utils';
+import {Classroom} from '../../../core/models/classroom';
+import {Student} from '../../../core/models/student';
+import {Utils} from '../../../core/shared/utils';
 import {EditStudentComponent} from '../edit-student/edit-student.component';
 
 @Component({

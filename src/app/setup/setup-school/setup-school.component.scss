@@ -1,0 +1,23 @@
+@import 'app.colors';
+
+:host {
+  display: flex;
+  justify-content: center;
+
+  .school {
+    width: 60%;
+  }
+
+  .title {
+    color: $color-big-titles;
+    font-size: 28px;
+    text-align: center;
+    margin: 24px 0 8px 0;
+  }
+
+  .subtitle {
+    color: $primary;
+    font-size: 18px;
+    text-align: center;
+  }
+}

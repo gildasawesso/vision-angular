@@ -34,7 +34,8 @@
             },
             "styles": [
               "src/styles.scss",
-              "src/theme/variables.scss"
+              "src/theme/variables.scss",
+              "src/theme/app.colors.scss"
             ],
             "scripts": []
           },
@@ -58,7 +59,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "1mb",
                   "maximumError": "5mb"
                 },
                 {

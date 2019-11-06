@@ -1,9 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Utils} from '../../../shared/utils';
-import {TeachersRepository} from '../../../repositories/teachers.repository';
-import {Teacher} from '../../../models/teacher';
+import {Utils} from '../../../core/shared/utils';
+import {TeachersRepository} from '../../../core/repositories/teachers.repository';
+import {Teacher} from '../../../core/models/teacher';
 
 @Component({
   selector: 'app-add-or-edit-teacher',

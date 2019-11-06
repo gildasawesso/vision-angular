@@ -1,0 +1,15 @@
+<div class="d-flex align-items-center ml-4 mb-3">
+  <h5 class="mr-4">Payement des contributions</h5>
+  <button mat-flat-button color="primary" (click)="add()">Ajouter</button>
+</div>
+
+<div>
+  <app-table
+    [mapping]="mapping"
+    [data]="data"
+    (printPayment)="printReceipt($event)"
+    (edit)="edit($event)"
+    (delete)="delete($event)"
+    [optionPermissions]="optionsPermissions"
+    [includeOption]="'payment'"></app-table>
+</div>

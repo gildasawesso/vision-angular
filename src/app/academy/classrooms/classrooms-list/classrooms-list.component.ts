@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
-import {Classroom} from '../../../models/classroom';
-import {ClassroomsRepository} from '../../../repositories/classrooms.repository';
-import {Utils} from '../../../shared/utils';
+import {Classroom} from '../../../core/models/classroom';
+import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
+import {Utils} from '../../../core/shared/utils';
 import {AddOrEditClassroomComponent} from '../add-or-edit-classroom/add-or-edit-classroom.component';
 
 @Component({
@@ -12,7 +12,7 @@ import {AddOrEditClassroomComponent} from '../add-or-edit-classroom/add-or-edit-
 })
 export class ClassroomsListComponent implements OnInit {
 
-  datasource: MatTableDataSource<Classroom>;
+  data;
   mapping = {
     name: 'Nom',
     'append teacher.lastname teacher.firstname': 'Professeur en Charge',
@@ -34,12 +34,17 @@ export class ClassroomsListComponent implements OnInit {
     this.utils.common.modal(AddOrEditClassroomComponent, classroom);
   }
 
-  delete(classroom: Classroom) {
-    console.log(classroom);
+  async delete(classroom: Classroom) {
+    const result = await this.utils.common.customAlert('Vous êtes sur le point de supprimer cette classe', 'Attention', ['Annuler', 'Continuer']);
+
+    if (result === 0) { return; }
+    await this.classroomRepository.remove(classroom._id);
   }
 
   ngOnInit() {
-
+    this.classroomRepository.stream
+      .subscribe((classrooms: Classroom[]) => {
+        this.data = [...classrooms];
+      });
   }
-
 }

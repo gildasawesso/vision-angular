@@ -1,0 +1,41 @@
+<h4>{{title}}</h4>
+<div [formGroup]="userForm">
+  <div class="mt-3">
+    <label style="margin-right: 30px;">Sexe</label>
+    <mat-radio-group formControlName="gender">
+      <mat-radio-button style="margin-right:40px;" value="M">M</mat-radio-button>
+      <mat-radio-button value="F">F</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div class="row">
+    <app-input formControlName="username" class="inputs col-12">Username</app-input>
+  </div>
+
+  <div class="row">
+    <app-input formControlName="firstname" class="inputs col-12 col-sm-6">Prénom</app-input>
+    <app-input formControlName="lastname" class="inputs col-12 col-sm-6">Nom</app-input>
+  </div>
+
+  <div class="row">
+    <app-input formControlName="job" class="inputs col-12 col-sm-6">Fonction</app-input>
+    <app-input type="password" formControlName="password" class="inputs col-12 col-sm-6">Mot de passe</app-input>
+  </div>
+
+  <div class="row">
+    <app-select class="inputs col-12"
+                [options]="rolesRepository.stream | async"
+                displayKey="name" valueKey="_id"
+                formControlName="roles" [multiple]="true">
+      Roles
+    </app-select>
+  </div>
+</div>
+
+
+
+<div class="ml-auto mr-4">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">{{submitText}}</button>
+</div>
+

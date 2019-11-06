@@ -1,12 +1,16 @@
-@import "variables";
+@import 'app.colors';
 
 :host {
   display: block;
   margin: 25px auto;
-  background-color: white;
-  padding: 48px;
-  border-radius: 7px;
-  box-shadow: $app-box-shadow;
+
+  .registration {
+    background-color: white;
+    border-radius: 7px;
+    box-shadow: $shadow;
+    padding: 48px;
+    margin: 0 auto;
+  }
 
   .section-title {
     font-size: 14px;
@@ -22,6 +26,11 @@
   }
 
   .stats {
-    font-size: 14px;
+    font-size: 12px;
+
+    .balance {
+      margin-left: auto;
+      text-align: right;
+    }
   }
 }

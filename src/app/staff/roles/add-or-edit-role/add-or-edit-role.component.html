@@ -1,0 +1,24 @@
+<h4>{{title}}</h4>
+<div [formGroup]="rolesForm">
+
+  <div class="row">
+    <app-input formControlName="name" class="inputs col-12">Nom du rôle</app-input>
+  </div>
+
+  <div class="row">
+    <app-select class="inputs col-12"
+                [options]="permissions"
+                displayKey="description" valueKey="_id"
+                formControlName="permissions" [multiple]="true">
+      Permissions
+    </app-select>
+  </div>
+</div>
+
+
+
+<div class="ml-auto mr-4">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">{{submitText}}</button>
+</div>
+

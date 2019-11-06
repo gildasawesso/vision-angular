@@ -1,0 +1,6 @@
+<button (click)="onClick()" [disabled]="!isReady || isBusy" class="mt-2 button-spinner" mat-raised-button color="{{color}}" [type]="type">
+  <span *ngIf="!isBusy"><ng-content></ng-content></span>
+  <span style="width: 100%;" class="d-flex align-items-center justify-content-center">
+    <mat-spinner *ngIf="isBusy" diameter="20" color="accent"></mat-spinner>
+  </span>
+</button>

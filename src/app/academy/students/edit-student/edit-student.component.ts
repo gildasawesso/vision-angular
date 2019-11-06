@@ -1,11 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Student} from '../../../models/student';
+import {Student} from '../../../core/models/student';
 import {FormBuilder} from '@angular/forms';
-import {Classroom} from '../../../models/classroom';
-import {ClassroomsRepository} from '../../../repositories/classrooms.repository';
-import {StudentsRepository} from '../../../repositories/students.repository';
-import {Utils} from '../../../shared/utils';
+import {Classroom} from '../../../core/models/classroom';
+import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
+import {StudentsRepository} from '../../../core/repositories/students.repository';
+import {Utils} from '../../../core/shared/utils';
 
 @Component({
   selector: 'app-edit-student',

@@ -9,26 +9,26 @@
   </div>
 
  <div class="row">
-   <app-input name="firstname" placeholder="Prénom" formControlName="firstname" class="inputs col-12 col-sm-6"></app-input>
-   <app-input name="lastname" placeholder="Nom" formControlName="lastname" class="inputs col-12 col-sm-6"></app-input>
+   <app-input formControlName="firstname" class="inputs col-12 col-sm-6">Prénom</app-input>
+   <app-input formControlName="lastname" class="inputs col-12 col-sm-6">Nom</app-input>
  </div>
 
  <div class="row">
-   <app-input name="address" placeholder="Adresse" formControlName="address" class="inputs col-12 col-sm-6"></app-input>
-   <app-input name="phone" placeholder="Téléphone" formControlName="phone" class="inputs col-12 col-sm-6"></app-input>
+   <app-input formControlName="address" class="inputs col-12 col-sm-6">Adresse</app-input>
+   <app-input formControlName="phone" class="inputs col-12 col-sm-6">Téléphone</app-input>
  </div>
 
   <div class="row">
-    <app-input name="qualifications" placeholder="Qualifications" formControlName="qualifications" class="inputs col-12"></app-input>
+    <app-input formControlName="qualifications" class="inputs col-12">Qualifications</app-input>
   </div>
 
   <div class="row">
-    <app-date [control]="teacherForm.get('hireDate')" label="Date d'embauche" class="inputs col-12 col-sm-6"></app-date>
-    <app-date [control]="teacherForm.get('fireDate')" label="Date de départ" class="inputs col-12 col-sm-6"></app-date>
+    <app-date [control]="teacherForm.get('hireDate')" class="inputs col-12 col-sm-6">Date d'embauche</app-date>
+    <app-date [control]="teacherForm.get('fireDate')" class="inputs col-12 col-sm-6">Date de départ</app-date>
   </div>
 </div>
 
-<div class="ml-auto mr-4">
+<div class="ml-auto mt-4">
   <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
   <button (click)="save()" mat-flat-button color="primary">{{submitText}}</button>
 </div>

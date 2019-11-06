@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AppbarService} from '../../services/appbar.service';
+import {AppbarService} from '../../core/services/appbar.service';
 
 @Component({
   selector: 'app-home',

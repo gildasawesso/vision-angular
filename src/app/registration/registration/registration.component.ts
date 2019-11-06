@@ -1,22 +1,21 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ClassroomsRepository} from '../../repositories/classrooms.repository';
+import { FormArray, FormBuilder, FormControl, Validators} from '@angular/forms';
+import {ClassroomsRepository} from '../../core/repositories/classrooms.repository';
 import {Router} from '@angular/router';
-import {Classroom} from '../../models/classroom';
-import {StudentsRepository} from '../../repositories/students.repository';
-import {Utils} from '../../shared/utils';
-import {RegistrationsRepository} from '../../repositories/registrations.repository';
-import {Registration} from '../../models/registration';
-import {Student} from '../../models/student';
-import {SchoolyearsRepository} from '../../repositories/schoolyears.repository';
-import {SchoolYear} from '../../models/school-year';
-import {PaymentsRepository} from '../../repositories/payments.repository';
-import {Payment} from '../../models/payment';
-import {School} from '../../models/school';
-import {SchoolsRepository} from '../../repositories/schools.repository';
-import {sample} from 'rxjs/operators';
-import {FeeType} from '../../models/fee-type';
-import {FeeTypesRepository} from '../../repositories/fee-types.repository';
+import {Classroom} from '../../core/models/classroom';
+import {StudentsRepository} from '../../core/repositories/students.repository';
+import {Utils} from '../../core/shared/utils';
+import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
+import {Registration} from '../../core/models/registration';
+import {Student} from '../../core/models/student';
+import {SchoolyearsRepository} from '../../core/repositories/schoolyears.repository';
+import {SchoolYear} from '../../core/models/school-year';
+import {PaymentsRepository} from '../../core/repositories/payments.repository';
+import {Payment} from '../../core/models/payment';
+import {SchoolsRepository} from '../../core/repositories/schools.repository';
+import {FeeType} from '../../core/models/fee-type';
+import {FeeTypesRepository} from '../../core/repositories/fee-types.repository';
+import * as moment from 'moment';
 
 const MAX_PAGE = 3;
 
@@ -27,24 +26,7 @@ const MAX_PAGE = 3;
 })
 export class RegistrationComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder,
-              public classroomsRepository: ClassroomsRepository,
-              private studentsRepository: StudentsRepository,
-              private registrationRepository: RegistrationsRepository,
-              private schoolyearsRepository: SchoolyearsRepository,
-              private paymentsRepository: PaymentsRepository,
-              private schoolsRepository: SchoolsRepository,
-              public feeTypesRepository: FeeTypesRepository,
-              private router: Router,
-              private utils: Utils) {
-  }
-
-  get subPayments() {
-    return this.subFeesForm as FormArray;
-  }
-
   subFeesForm = this.formBuilder.array([]);
-
   paymentForm = this.formBuilder.group({
     _id: [''],
     student: [''],
@@ -55,7 +37,6 @@ export class RegistrationComponent implements OnInit {
     classroom: [''],
     amount: ['']
   });
-
   registrationForm = this.formBuilder.group({
     firstname: ['', Validators.required],
     lastname: ['', Validators.required],
@@ -74,30 +55,40 @@ export class RegistrationComponent implements OnInit {
     lastClass: [''],
     lastSchool: [''],
     classroom: [''],
+    registrationDate: [moment().format()],
     payment: this.paymentForm
   });
-
   headers = ['Informations personnelles', 'Informations sur les parents', 'École', 'Contribution'];
   currentPage = 0;
-  userRole = 'account';
   registrationFee: number;
   firstTermSchoolFee: number;
-  amountPayed = new FormControl();
   feeTypeToAdd = new FormControl();
-  amountPayedOldValue: number;
   classrooms: Classroom[];
   schoolYears: SchoolYear[];
   feeTypes: FeeType[] = [];
-  feeTypesFiltred: FeeType[] = [];
+  registrations: Registration[] = [];
   isBusy = false;
-  isReady = true;
+  registationDateIsDifferent = false;
+  studentHasSibling = false;
+  siblingClassroom = new FormControl();
+  siblingClassroomStudents = [];
+  sibling = new FormControl();
+  isReady = this.currentPage !== MAX_PAGE ? true : this.registrationForm.valid;
 
-  log(x) {
-    console.log(x);
+  constructor(private formBuilder: FormBuilder,
+              public classroomsRepository: ClassroomsRepository,
+              private studentsRepository: StudentsRepository,
+              private registrationRepository: RegistrationsRepository,
+              private schoolyearsRepository: SchoolyearsRepository,
+              private paymentsRepository: PaymentsRepository,
+              private schoolsRepository: SchoolsRepository,
+              public feeTypesRepository: FeeTypesRepository,
+              private router: Router,
+              private utils: Utils) {
   }
 
-  async print() {
-    await this.utils.print.registrationReceipt({});
+  get subPayments() {
+    return this.subFeesForm as FormArray;
   }
 
   back() {
@@ -116,32 +107,21 @@ export class RegistrationComponent implements OnInit {
   filterFees() {
     return this.feeTypes.filter(ft => {
       const subPaymentAlreadyInForm = this.subPayments.controls.find(subPaymentGroup => {
+        console.log(subPaymentGroup.get('fee').value);
         const subPaymentId = subPaymentGroup.get('fee').value._id;
+        console.log(subPaymentId);
         return ft._id === subPaymentId;
       });
       return subPaymentAlreadyInForm === undefined;
     });
   }
 
-  getBalance() {
-    if (this.firstTermSchoolFee) {
-      return (this.registrationFee + this.firstTermSchoolFee) - this.amountPayed.value;
-    }
+  getBalance(subpayment) {
+    return subpayment.fee.amount - subpayment.amount;
   }
 
   async save() {
-    if (!this.registrationForm.valid) {
-      this.utils.form.invalidatedForm(this.registrationForm);
-      return;
-    }
-
-    if (this.currentPage < MAX_PAGE) {
-      this.currentPage++;
-      if (this.currentPage === 2) {
-        this.registrationForm.get('classroom').setValidators([Validators.required]);
-      }
-      return;
-    }
+    if (!this.canSave()) { return; }
 
     this.isBusy = true;
     const newStudents = this.registrationForm.value;
@@ -150,21 +130,24 @@ export class RegistrationComponent implements OnInit {
     const newRegistration: Registration = {
       student,
       classroom: student.classroom,
-      schoolYear: this.schoolYears[0]
+      schoolYear: this.schoolYears[0],
+      registrationDate: newStudents.registrationDate
     };
     await this.registrationRepository.add(newRegistration);
 
     const newPayment: Payment = this.paymentForm.value;
     newPayment.amount = newPayment.fees.reduce((acc, cur) => acc + cur.amount, 0);
     newPayment.student = student;
+    newPayment.paymentDate = newStudents.registrationDate;
     const payment = await this.paymentsRepository.add(newPayment);
-    this.isBusy = false;
+
     const message = `L'élève ${student.firstname} ${student.lastname} est inscrit avec succès à la classe de ${student.classroom.name}`;
     await this.utils.common.customAlert(message, '', ['Imprimer le reçu']);
 
     await this.utils.print.registrationReceipt(payment);
     this.resetAllForms();
     this.currentPage = 0;
+    this.isBusy = false;
   }
 
   addPaymentToPaymentsFormArray(payment, subPayment) {
@@ -173,14 +156,16 @@ export class RegistrationComponent implements OnInit {
       this.paymentForm.patchValue(payment);
       this.subPayments.push(this.formBuilder.group({
         fee: subPayment.fee,
-        amount: [subPayment.amount, this.utils.form.registrationFeeValidator(subPayment)]
+        amount: [subPayment.amount, [this.utils.form.registrationFeeValidator(subPayment), Validators.min(0)]],
+        isRegistration: true
       }));
     } else {
       this.subPayments.push(this.formBuilder.group({
         fee: subPayment.fee,
-        amount: [subPayment.amount, this.utils.form.feeValidator(subPayment)]
+        amount: [subPayment.amount, [this.utils.form.feeValidator(subPayment), Validators.min(0)]]
       }));
     }
+    console.log(payment);
   }
 
   resetAllForms() {
@@ -192,17 +177,11 @@ export class RegistrationComponent implements OnInit {
     this.subFeesForm.clear();
     this.subFeesForm.markAsUntouched();
 
-    console.log(this.registrationForm.value);
-
     this.registrationForm.get('classroom').setErrors(null);
+    this.registrationForm.patchValue({gender: 'M'});
   }
 
-  ngOnInit() {
-    this.classroomsRepository.stream
-      .subscribe((classrooms: Classroom[]) => {
-        this.classrooms = classrooms;
-      });
-
+  onClassroomSelected() {
     this.registrationForm.controls.classroom.valueChanges
       .subscribe((obj: Classroom) => {
         if (obj == null) {
@@ -239,6 +218,37 @@ export class RegistrationComponent implements OnInit {
         this.registrationFee = classroom.registrationFee.amount;
         this.firstTermSchoolFee = classroom.schoolFee.tranches[0].amount;
       });
+  }
+
+  private canSave() {
+    if (!this.registrationForm.valid) {
+      this.utils.form.invalidatedForm(this.registrationForm);
+      return false;
+    }
+
+    if (this.currentPage < MAX_PAGE) {
+      this.currentPage++;
+      if (this.currentPage === 2) {
+        this.registrationForm.get('classroom').setValidators([Validators.required]);
+      }
+      return false;
+    }
+
+    return true;
+  }
+
+  ngOnInit() {
+    this.classroomsRepository.stream
+      .subscribe((classrooms: Classroom[]) => {
+        this.classrooms = classrooms;
+      });
+
+    this.registrationRepository.stream
+      .subscribe((registrations: Registration[]) => {
+        this.registrations = registrations;
+      });
+
+    this.onClassroomSelected();
 
     this.schoolyearsRepository.stream
       .subscribe((schoolYears: SchoolYear[]) => {
@@ -248,13 +258,29 @@ export class RegistrationComponent implements OnInit {
     this.feeTypeToAdd.valueChanges
       .subscribe(fee => {
         if (fee == null) { return; }
-        const subPayment = { fee, amount: 0 };
-        console.log('fantome');
+        const subPayment = { fee, amount: 0, isRegistration: false };
         this.addPaymentToPaymentsFormArray(null, subPayment);
       });
 
     this.feeTypesRepository.stream.subscribe(feeTypes => {
       this.feeTypes = feeTypes;
     });
+
+    this.siblingClassroom.valueChanges
+      .subscribe((classroom: Classroom) => {
+        this.siblingClassroomStudents = this.registrationRepository.totalStudentsForClassroom(this.registrations, classroom);
+      });
+
+    this.sibling.valueChanges
+      .subscribe((student: Student) => {
+        this.registrationForm.get('fathersFirstname').setValue(student.fathersFirstname);
+        this.registrationForm.get('fathersLastname').setValue(student.fathersLastname);
+        this.registrationForm.get('mothersFirstname').setValue(student.mothersFirstname);
+        this.registrationForm.get('mothersLastname').setValue(student.mothersLastname);
+        this.registrationForm.get('fathersJob').setValue(student.fathersJob);
+        this.registrationForm.get('mothersJob').setValue(student.mothersJob);
+        this.registrationForm.get('fathersPhone').setValue(student.mothersJob);
+        this.registrationForm.get('mothersPhone').setValue(student.mothersJob);
+      });
   }
 }

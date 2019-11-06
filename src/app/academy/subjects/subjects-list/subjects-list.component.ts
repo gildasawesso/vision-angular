@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
-import {Utils} from '../../../shared/utils';
-import {SubjectsRepository} from '../../../repositories/subjects.repository';
-import {Subject} from '../../../models/subject';
+import {Utils} from '../../../core/shared/utils';
+import {SubjectsRepository} from '../../../core/repositories/subjects.repository';
+import {Subject} from '../../../core/models/subject';
 import {AddOrEditSubjectComponent} from '../add-or-edit-subject/add-or-edit-subject.component';
 
 @Component({
@@ -15,7 +15,7 @@ export class SubjectsListComponent implements OnInit {
   constructor(private utils: Utils,
               public subjectsRepository: SubjectsRepository) { }
 
-  datasource: MatTableDataSource<Subject>;
+  data;
   mapping = {
     name: 'Nom',
     code: 'Code de la matière',
@@ -31,11 +31,18 @@ export class SubjectsListComponent implements OnInit {
     await this.utils.common.modal(AddOrEditSubjectComponent, { subject });
   }
 
-  delete(subject: Subject) {
-    console.log(subject);
+  async delete(subject: Subject) {
+    const result = await this.utils.common.customAlert('Vous êtes sur le point de supprimer un cours', 'Attention', ['Annuler', 'Continuer']);
+
+    if (result === 0) { return; }
+    await this.subjectsRepository.remove(subject._id);
   }
 
   ngOnInit() {
+    this.subjectsRepository.stream
+      .subscribe((subjects: Subject[]) => {
+        this.data = [...subjects];
+      });
   }
 
 }

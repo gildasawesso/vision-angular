@@ -1,0 +1,30 @@
+@import 'angular-material.theme';
+@import 'variables';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+}
+
+.app-input {
+  border: 1px solid $app-input-color;
+  border-radius: 7px;
+  overflow: hidden;
+
+  &.focused {
+    border: 2px solid mat-color($primary, 700);
+  }
+
+  &:hover {
+    border: 2px solid #212529;
+  }
+
+  input {
+    height: 36px;
+    border: 0;
+    padding: 10px;
+    color: #111111;
+    width: 100%;
+  }
+}

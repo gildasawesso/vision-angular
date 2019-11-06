@@ -1,0 +1,14 @@
+<div class="d-flex flex-column" style="margin-top: 15px;">
+  <label><ng-content></ng-content></label>
+  <mat-form-field appearance="outline">
+    <input matInput [matDatepicker]="deadlinePicker" [formControl]="control">
+    <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
+    <mat-datepicker startView="{{view}}" #deadlinePicker></mat-datepicker>
+  </mat-form-field>
+<!--  <span style="font-size: 9px;">Exemple : 01/12/2000</span>-->
+</div>
+
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('required')">Ce champ est requis</span>
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('date')">La date est invalide</span>
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('matDatepickerParse')">La date est invalide</span>
+<span style="color: red;" *ngIf="control?.touched && control?.hasError('min')">La valeur est invalide</span>

@@ -1,0 +1,32 @@
+<h4>{{title}}</h4>
+<div class="row" [formGroup]="feeForm">
+  <app-input name="name" formControlName="name" class="inputs col-12 col-sm-6">Nom</app-input>
+  <app-input name="amount" formControlName="amount" type="number" class="inputs col-12 col-sm-6">Montant</app-input>
+  <app-date class="col-12 col-sm-6"  [control]="feeForm.get('deadline')">Date limite</app-date>
+  <app-select name="feeType" class="inputs col-12 col-sm-6"
+              [options]="feeCategoriesRepository.stream | async"
+              displayKey="name" valueKey="_id"
+              formControlName="feeCategory">
+    Type de contribution
+  </app-select>
+
+
+  <mat-slide-toggle formControlName="isSchoolFee" class="col-12 mt-4">Ajouter des tranches ?</mat-slide-toggle>
+
+  <div *ngIf="feeForm.controls.isSchoolFee.value" class="col-12 my-2" formArrayName="tranches">
+    <div *ngFor="let tranche of tranches; let i = index" formGroupName="{{i}}" class="d-flex align-items-center my-4 justify-content-between">
+      <div class="mr-5">{{tranche.value?.name}}</div>
+      <div class="mr-5">{{tranche.value?.amount}}</div>
+      <div class="flex-grow-1" style="margin-right: auto;">
+        <mat-icon  (click)="updateTranche(i)" *ngIf="tranche.value?.name" class="small mr-3">edit</mat-icon>
+        <mat-icon (click)="deleteTranche(i)" *ngIf="tranche.value?.name" class="small">delete</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <button class="col-12 mt-3" mat-stroked-button color="primary" *ngIf="feeForm.controls.isSchoolFee.value" (click)="addTranche()">Ajouter une tranche</button>
+</div>
+<div class="actions ml-auto">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">{{buttonSubmitText}}</button>
+</div>

@@ -1,0 +1,11 @@
+<h4>{{title}}</h4>
+<div class="row" [formGroup]="trancheForm">
+  <app-input name="name" formControlName="name" class="inputs col-12 col-sm-6">Nom</app-input>
+  <app-input name="amount" formControlName="amount" class="inputs col-12 col-sm-6">Montant</app-input>
+  <app-date class="inputs col-12 col-sm-6" [control]="trancheForm.get('dueDate')">Date limite</app-date>
+</div>
+
+<div class="actions ml-auto">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">{{buttonSubmitText}}</button>
+</div>

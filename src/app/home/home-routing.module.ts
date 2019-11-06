@@ -11,6 +11,7 @@ const routes: Routes = [
       { path: 'finance', loadChildren: () => import('../finance/finance.module').then(m => m.FinanceModule) },
       { path: 'academy', loadChildren: () => import('../academy/academy.module').then(m => m.AcademyModule) },
       { path: 'registration', loadChildren: () => import('../registration/registration.module').then(m => m.RegistrationModule) },
+      { path: 'staff', loadChildren: () => import('../staff/staff.module').then(m => m.StaffModule) },
       { path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule) }
     ]
   }

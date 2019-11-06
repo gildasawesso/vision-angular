@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import {AcademyRoutingModule} from './academy-routing.module';
-import {SharedModule} from '../shared/shared.module';
+import {SharedModule} from '../core/shared/shared.module';
 import { AcademyComponent } from './academy.component';
 import { StudentsComponent } from './students/students.component';
 import { ClassroomsComponent } from './classrooms/classrooms.component';
@@ -15,6 +15,8 @@ import { AddOrEditClassroomComponent } from './classrooms/add-or-edit-classroom/
 import { EditStudentComponent } from './students/edit-student/edit-student.component';
 import { AddOrEditSubjectComponent } from './subjects/add-or-edit-subject/add-or-edit-subject.component';
 import { AddOrEditTeacherComponent } from './teachers/add-or-edit-teacher/add-or-edit-teacher.component';
+import { EffectifComponent } from './academy-dashboard/effectif/effectif.component';
+import { EffectifPerClassroomComponent } from './academy-dashboard/effectif-per-classroom/effectif-per-classroom.component';
 
 @NgModule({
   declarations: [
@@ -31,17 +33,21 @@ import { AddOrEditTeacherComponent } from './teachers/add-or-edit-teacher/add-or
     AddOrEditClassroomComponent,
     EditStudentComponent,
     AddOrEditSubjectComponent,
-    AddOrEditTeacherComponent
+    AddOrEditTeacherComponent,
+    EffectifComponent,
+    EffectifPerClassroomComponent
   ],
   imports: [
     AcademyRoutingModule,
-    SharedModule
+    SharedModule,
   ],
   entryComponents: [
     AddOrEditClassroomComponent,
     EditStudentComponent,
     AddOrEditSubjectComponent,
-    AddOrEditTeacherComponent
+    AddOrEditTeacherComponent,
+    EffectifComponent,
+    EffectifPerClassroomComponent
   ],
   providers: [
   ]

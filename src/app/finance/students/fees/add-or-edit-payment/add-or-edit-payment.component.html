@@ -1,0 +1,49 @@
+<h4>{{title}}</h4>
+
+<div class="row">
+  <app-select class="inputs col-12"
+              [options]="classroomsRepository.stream | async"
+              displayKey="name" valueKey="_id"
+              [formControl]="classroomSelected">
+    Veuillez séléctionner la classe
+  </app-select>
+</div>
+
+<div class="row" [formGroup]="paymentForm" *ngIf="classroomSelected.value">
+  <app-select class="inputs col-12 col-sm-6"
+              [options]="students"
+              displayKey="lastname" valueKey="_id"
+              formControlName="student">
+    Élève
+  </app-select>
+
+<div class="inputs col-12 col-sm-6">
+<div class="d-flex flex-column">
+  <label>Type de contribution</label>
+  <mat-form-field appearance="outline" color="primary" >
+    <select matNativeControl formControlName="schoolFee" [compareWith]="utils.common.compareFn">
+      <option *ngFor="let option of feeTypesRepository.stream | async" [ngValue]="option">{{option.name}}</option>
+    </select>
+  </mat-form-field>
+</div>
+</div>
+
+<!--  <app-select class="inputs col-12 col-sm-6"-->
+<!--              [options]="feeTypesRepository.stream | async"-->
+<!--              displayKey="name" valueKey="_id"-->
+<!--              formControlName="schoolFee">-->
+<!--    Type de contribution-->
+<!--  </app-select>-->
+
+  <div class="col-12 col-sm-4">{{totalSchoolFeeAmount()}}</div>
+  <div class="col-12 col-sm-4">{{studentSchoolFeesPaymentsAmount()}}</div>
+  <div class="col-12 col-sm-4"></div>
+
+  <app-input [control]="this.paymentForm.get('amount')" name="amount" formControlName="amount" type="number" class="inputs col-12">Montant payé</app-input>
+</div>
+
+<div class="ml-auto mt-5">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">Enrégistrer le payement</button>
+</div>
+

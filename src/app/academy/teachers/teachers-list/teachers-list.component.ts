@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {Classroom} from '../../../models/classroom';
+import {Classroom} from '../../../core/models/classroom';
 import {MatTableDataSource} from '@angular/material';
-import {Utils} from '../../../shared/utils';
-import {TeachersRepository} from '../../../repositories/teachers.repository';
+import {Utils} from '../../../core/shared/utils';
+import {TeachersRepository} from '../../../core/repositories/teachers.repository';
 import {AddOrEditTeacherComponent} from '../add-or-edit-teacher/add-or-edit-teacher.component';
-import {Teacher} from '../../../models/teacher';
+import {Teacher} from '../../../core/models/teacher';
 
 @Component({
   selector: 'app-teachers-list',
@@ -17,7 +17,7 @@ export class TeachersListComponent implements OnInit {
               public teachersRepository: TeachersRepository) { }
 
 
-  datasource: MatTableDataSource<Classroom>;
+  data;
   mapping = {
     'append firstname lastname': 'Nom',
     gender: 'Sexe',
@@ -34,11 +34,18 @@ export class TeachersListComponent implements OnInit {
     await this.utils.common.modal(AddOrEditTeacherComponent, { teacher });
   }
 
-  delete(teacher: Teacher) {
-    console.log(teacher);
+  async delete(teacher: Teacher) {
+    const result = await this.utils.common.customAlert('Vous êtes sur le point de supprimer ce professeur', 'Attention', ['Annuler', 'Continuer']);
+
+    if (result === 0) { return; }
+    await this.teachersRepository.remove(teacher._id);
   }
 
   ngOnInit() {
+    this.teachersRepository.stream
+      .subscribe((teachers: Teacher[]) => {
+        this.data = [...teachers];
+      });
   }
 
 }

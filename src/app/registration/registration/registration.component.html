@@ -1,4 +1,4 @@
-<div class="d-flex flex-column" [formGroup]="registrationForm">
+<div class="registration d-flex flex-column col-12 col-md-10" [formGroup]="registrationForm">
   <div common-title class="section-title">{{headers[currentPage]}}</div>
   <mat-divider style="margin: 10px 0 30px 0"></mat-divider>
 
@@ -9,80 +9,83 @@
       <mat-radio-button value="F">F</mat-radio-button>
     </mat-radio-group>
     <div class="row">
-      <app-input [control]="registrationForm.get('lastname')" name="lastname" placeholder="Nom"
-                 formControlName="lastname" class="inputs col-12 col-sm-6"></app-input>
-      <app-input [control]="registrationForm.get('firstname')" name="firstname" placeholder="Prénom"
-                 formControlName="firstname" class="inputs col-12 col-sm-6"></app-input>
-      <app-date view="multi-year" [control]="registrationForm.get('birthday')" label="Date de naissance"
-                class="col-12 col-sm-6"></app-date>
-      <app-input name="birthCity" placeholder="Lieu de naissance" formControlName="birthCity"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="address" placeholder="Adresse" formControlName="address"
-                 class="inputs col-12 col-sm-6"></app-input>
-
-      <button (click)="print()">print</button>
+      <app-input [control]="registrationForm.get('lastname')" name="lastname" formControlName="lastname" class="inputs col-12 col-sm-6">Nom</app-input>
+      <app-input [control]="registrationForm.get('firstname')" name="firstname" formControlName="firstname" class="inputs col-12 col-sm-6">Prénom</app-input>
+      <app-date view="multi-year" [control]="registrationForm.get('birthday')" class="col-12 col-sm-6">Date de naissance</app-date>
+      <app-input name="birthCity" formControlName="birthCity" class="inputs col-12 col-sm-6">Lieu de naissance</app-input>
+      <app-input name="address" formControlName="address" class="inputs col-12 col-sm-6">Adresse</app-input>
     </div>
   </div>
 
   <div *ngIf="currentPage == 1">
+    <label class="genre">Ce élève a t'il un frère ou une soeur ?</label>
+    <mat-radio-group [(ngModel)]="studentHasSibling" [ngModelOptions]="{ standalone: true }">
+      <mat-radio-button style="margin-right:40px;" [value]="true">Oui</mat-radio-button>
+      <mat-radio-button [value]="false">Non</mat-radio-button>
+    </mat-radio-group>
+
+    <div *ngIf="studentHasSibling" class="row">
+      <app-select class="col-6" [control]="siblingClassroom" [options]="classrooms" displayKey="name" [formControl]="siblingClassroom">Classe du frère ou soeur</app-select>
+      <app-select class="col-6" [control]="sibling" [options]="siblingClassroomStudents" displayKey="lastname" [formControl]="sibling">Nom du frère ou soeur</app-select>
+    </div>
     <h5>Père</h5>
     <div class="row">
-      <app-input name="fathersFirstname" placeholder="Nom" formControlName="fathersFirstname"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="fathersLastnme" placeholder="Prénom" formControlName="fathersLastname"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="fathersJob" placeholder="Profession" formControlName="fathersJob"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="fathersPhone" placeholder="Téléphone" formControlName="fathersPhone"
-                 class="inputs col-12 col-sm-6" type="tel"></app-input>
+      <app-input name="fathersFirstname" formControlName="fathersFirstname" class="inputs col-12 col-sm-6">Nom</app-input>
+      <app-input name="fathersLastnme" formControlName="fathersLastname" class="inputs col-12 col-sm-6">Prénom</app-input>
+      <app-input name="fathersJob" formControlName="fathersJob" class="inputs col-12 col-sm-6">Profession</app-input>
+      <app-input name="fathersPhone" formControlName="fathersPhone" class="inputs col-12 col-sm-6" type="tel">Téléphone</app-input>
     </div>
 
     <h5 style="margin-top: 20px;">Mère</h5>
     <div class="row">
-      <app-input name="mothersFirstname" placeholder="Nom" formControlName="mothersFirstname"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="mothersLastnme" placeholder="Prénom" formControlName="mothersLastname"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="mothersJob" placeholder="Profession" formControlName="mothersJob"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="mothersPhone" placeholder="Téléphone" formControlName="mothersPhone"
-                 class="inputs col-12 col-sm-6" type="tel"></app-input>
+      <app-input name="mothersFirstname" formControlName="mothersFirstname" class="inputs col-12 col-sm-6">Nom</app-input>
+      <app-input name="mothersLastnme" formControlName="mothersLastname" class="inputs col-12 col-sm-6">Prénom</app-input>
+      <app-input name="mothersJob" formControlName="mothersJob" class="inputs col-12 col-sm-6">Profession</app-input>
+      <app-input name="mothersPhone" formControlName="mothersPhone" class="inputs col-12 col-sm-6" type="tel">Téléphone</app-input>
     </div>
   </div>
 
   <div *ngIf="currentPage == 2">
-    <app-select [control]="registrationForm.get('classroom')" label="Classe" [options]="classrooms" displayKey="name"
-                formControlName="classroom"></app-select>
+    <app-select [control]="registrationForm.get('classroom')" [options]="classrooms" displayKey="name" formControlName="classroom">Classe</app-select>
+    <label class="genre">La date d'inscription est il différente ?</label>
+    <mat-radio-group [(ngModel)]="registationDateIsDifferent" [ngModelOptions]="{ standalone: true }">
+      <mat-radio-button style="margin-right:40px;" [value]="true">Oui</mat-radio-button>
+      <mat-radio-button [value]="false">Non</mat-radio-button>
+    </mat-radio-group>
+    <app-date *ngIf="registationDateIsDifferent" view="multi-year" [control]="registrationForm.get('registrationDate')" class="col-12 col-sm-6">Date d'inscription</app-date>
+
+
     <h5 style="margin-top: 20px;">Parcours</h5>
     <div class="row">
-      <app-input name="lastSchool" placeholder="Ancien établissement" formControlName="lastSchool"
-                 class="inputs col-12 col-sm-6"></app-input>
-      <app-input name="lastClass" placeholder="Dernière classe suivie" formControlName="lastClass"
-                 class="inputs col-12 col-sm-6"></app-input>
+      <app-input name="lastSchool" formControlName="lastSchool" class="inputs col-12 col-sm-6">Ancien établissement</app-input>
+      <app-input name="lastClass" formControlName="lastClass" class="inputs col-12 col-sm-6">Dernière classe suivie</app-input>
     </div>
   </div>
 
   <div *ngIf="currentPage == 3" class="d-flex flex-column justify-content-between">
     <div formGroupName="payment" class="col-12 my-2">
       <div formArrayName="fees">
-        <div *ngFor="let subPayment of subPayments.controls; let i = index" [formGroup]="subPayment" class="d-flex align-items-center justify-content-between">
-          <div class="d-flex flex-column w-50">
+        <div *ngFor="let subPayment of subPayments.controls; let i = index" [formGroup]="subPayment" class="d-flex align-items-center my-3">
+          <div style="flex-basis: 0" class="d-flex flex-column flex-grow-1">
             <label>{{ subPayment?.value?.fee.name }}</label>
             <mat-form-field appearance="outline">
               <input type="number" matInput formControlName="amount" />
             </mat-form-field>
             <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('invalid')">{{subPayment.get('amount')?.errors?.invalid}}</span>
+            <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('min')">La valeur est invalide</span>
           </div>
 
-          <div class="stats d-flex">
-            <div class="font-weight-bold">
-              <div class="title">Montant</div>
-              <div class="value">{{subPayment?.value?.fee?.amount | spaced: 'FCFA' }}</div>
+          <div style="flex-basis: 0" class="stats d-flex flex-grow-1 mx-5">
+            <div class="d-flex align-items-center flex-grow-1">
+              <div class="font-weight-bold">
+                <div class="title">Montant</div>
+                <div class="value">{{subPayment?.value?.fee?.amount | spaced: 'FCFA' }}</div>
+              </div>
             </div>
 
-            <div class="ml-5 font-weight-bold" *ngIf="i == 0">
-              <div class="title">1ère Tranche</div>
-              <div class="value">{{subPayment?.value?.fee?.tranches[0]['amount'] | spaced: 'FCFA' }}</div>
+            <div style="flex-basis: 0" class="balance flex-grow-1">
+              <div class="title">Reste</div>
+              <div class="value">{{getBalance(subPayment.value) | spaced: 'FCFA'}}</div>
             </div>
           </div>
         </div>
@@ -91,21 +94,23 @@
 
     <div class="col-12 my-2">
       <span *ngIf="filterFees().length <= 0">Il n'y a plus de contributions à ajouter</span>
-      <app-select *ngIf="filterFees().length > 0" label="Ajouter une contribution à payer" class="inputs col-12 col-sm-6"
+      <app-select *ngIf="filterFees().length > 0" class="inputs"
                   [options]="filterFees()"
                   displayKey="name" valueKey="_id"
                   addEmptyOption="true"
                   [formControl]="feeTypeToAdd">
+        Ajouter une contribution à payer
       </app-select>
     </div>
   </div>
 
+  <div class="actions d-flex justify-content-end align-items-center">
+    <button (click)="back()" *ngIf="currentPage != 0" mat-flat-button>Précédent</button>
+    <app-action-button (appClick)="save()" color="primary"
+                       [isBusy]="isBusy"
+                       [isReady]="isReady">
+      {{currentPage == 3 ? 'Finaliser l\'inscription' : 'Suivant'}}
+    </app-action-button>
+  </div>
 </div>
-<div class="actions d-flex justify-content-end align-items-center">
-  <button (click)="back()" *ngIf="currentPage != 0" mat-flat-button>Précédent</button>
-  <app-action-button (click)="save()" color="primary"
-                     [isBusy]="isBusy"
-                     [isReady]="isReady"
-                     [text]="currentPage == 3 ? 'Finaliser l\'inscription' : 'Suivant'">
-  </app-action-button>
-</div>
+

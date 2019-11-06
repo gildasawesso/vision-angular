@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {FinanceStudentsComponent} from './finance-students/finance-students.component';
-import {FinanceStudentsListComponent} from './finance-students/finance-students-list/finance-students-list.component';
+import {FinanceStudentsComponent} from './students/finance-students.component';
+import {FinanceStudentsListComponent} from './students/finance-students-list/finance-students-list.component';
 import {FinanceComponent} from './finance.component';
-import {PaymentsComponent} from './finance-students/fees/payments/payments.component';
+import {PaymentsComponent} from './students/fees/payments/payments.component';
 import {ExpensesListComponent} from './expenses/expenses-list/expenses-list.component';
 import {ExpensesComponent} from './expenses/expenses.component';
 import {IncomesComponent} from './incomes/incomes.component';
 import {IncomesListComponent} from './incomes/incomes-list/incomes-list.component';
-import {FinanceDashboardComponent} from './finance-students/finance-dashboard/finance-dashboard.component';
-import {FeesComponent} from './finance-students/fees/fees.component';
-import {FeeCategoriesComponent} from './finance-students/fees/fee-categories/fee-categories.component';
+import {FinanceDashboardComponent} from './students/finance-dashboard/finance-dashboard.component';
+import {FeesComponent} from './students/fees/fees.component';
+import {FeeCategoriesComponent} from './students/fees/fee-categories/fee-categories.component';
 import {ExpenseTypesComponent} from './expenses/expense-types/expense-types.component';
 import {IncomeTypesComponent} from './incomes/income-types/income-types.component';
 

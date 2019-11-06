@@ -1,11 +1,13 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import {SharedModule} from './shared/shared.module';
-import {HttpClientModule} from '@angular/common/http';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AuthInterceptor} from './core/interceptors/auth.interceptor';
+import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
+import {PermissionsService} from './core/services/permissions.service';
 
 @NgModule({
   declarations: [
@@ -15,12 +17,27 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
-    SharedModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxPermissionsModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    PermissionsService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (permissionsService: PermissionsService, ps: NgxPermissionsService ) => async () => {
+        const permissions = await permissionsService.permissions;
+        ps.loadPermissions(permissions);
+      },
+      deps: [PermissionsService, NgxPermissionsService],
+      multi: true
+    }],
   bootstrap: [AppComponent],
-  entryComponents: [
-  ]
+  entryComponents: []
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -1,6 +1,10 @@
-<h3 class="welcome-message text-center text-white">Bienvenue</h3>
-<div class="row justify-content-center text-white">
+<h3 class="welcome-message">Bienvenue</h3>
+<div class="row justify-content-center" style="color: white;">
   <ng-container *ngFor="let menuItem of menuItems">
-    <app-menu-item [navigationUrl]="menuItem.url" class="col-12 col-sm-6 col-md-3" [title]="menuItem.title" [image]="menuItem.image"></app-menu-item>
+    <app-menu-item [navigationUrl]="menuItem.url" class="col-12 col-sm-6 col-md-3"
+                   [title]="menuItem.title"
+                   [image]="menuItem.image"
+                   *ngxPermissionsOnly="[menuItem.permission, 'ADMIN']">
+    </app-menu-item>
   </ng-container>
 </div>

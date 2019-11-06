@@ -1,12 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
-import {SubjectsRepository} from '../../../repositories/subjects.repository';
-import {FeeTypesRepository} from '../../../repositories/fee-types.repository';
+import {SubjectsRepository} from '../../../core/repositories/subjects.repository';
+import {FeeTypesRepository} from '../../../core/repositories/fee-types.repository';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Utils} from '../../../shared/utils';
-import {ClassroomsRepository} from '../../../repositories/classrooms.repository';
-import {Classroom} from '../../../models/classroom';
-import {TeachersRepository} from '../../../repositories/teachers.repository';
+import {Utils} from '../../../core/shared/utils';
+import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
+import {Classroom} from '../../../core/models/classroom';
+import {TeachersRepository} from '../../../core/repositories/teachers.repository';
 
 @Component({
   selector: 'app-add-or-edit-classroom',

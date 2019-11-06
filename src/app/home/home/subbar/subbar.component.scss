@@ -1,0 +1,32 @@
+@import 'angular-material.theme';
+@import '../../../../../node_modules/@angular/material/theming';
+@import 'variables';
+
+:host {
+  font-size: 14px;
+  margin: 12px 30px;
+  color: $subbar_grey;
+  text-transform: capitalize;
+  display: flex;
+
+  .subbar-link {
+    margin-right: 50px;
+
+    &.subbar-link-active {
+      position: relative;
+      padding-bottom: 6px;
+
+      &::after {
+        background-color: mat-color($primary, 700);
+        bottom: 0;
+        content: '';
+        display: block;
+        height: 3px;
+        left: 50%;
+        position: absolute;
+        transform: translate(-50%,0);
+        width: 75%;
+      }
+    }
+  }
+}
