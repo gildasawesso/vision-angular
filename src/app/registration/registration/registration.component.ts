@@ -107,9 +107,7 @@ export class RegistrationComponent implements OnInit {
   filterFees() {
     return this.feeTypes.filter(ft => {
       const subPaymentAlreadyInForm = this.subPayments.controls.find(subPaymentGroup => {
-        console.log(subPaymentGroup.get('fee').value);
         const subPaymentId = subPaymentGroup.get('fee').value._id;
-        console.log(subPaymentId);
         return ft._id === subPaymentId;
       });
       return subPaymentAlreadyInForm === undefined;
@@ -125,6 +123,7 @@ export class RegistrationComponent implements OnInit {
 
     this.isBusy = true;
     const newStudents = this.registrationForm.value;
+    console.log(newStudents);
     const student: Student = await this.studentsRepository.add(newStudents);
 
     const newRegistration: Registration = {
