@@ -92,10 +92,10 @@ export class RegistrationComponent implements OnInit {
   }
 
   back() {
-    if (!this.registrationForm.valid) {
-      this.utils.form.invalidatedForm(this.registrationForm);
-      return;
-    }
+    // if (!this.registrationForm.valid) {
+    //   this.utils.form.invalidatedForm(this.registrationForm);
+    //   return;
+    // }
 
     this.currentPage -= 1;
     if (this.currentPage <= 1) {
@@ -124,6 +124,7 @@ export class RegistrationComponent implements OnInit {
     this.isBusy = true;
     const newStudents = this.registrationForm.value;
     console.log(newStudents);
+    delete newStudents.payment;
     const student: Student = await this.studentsRepository.add(newStudents);
 
     const newRegistration: Registration = {
