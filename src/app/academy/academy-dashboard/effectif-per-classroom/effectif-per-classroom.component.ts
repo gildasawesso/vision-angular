@@ -54,7 +54,7 @@ export class EffectifPerClassroomComponent implements OnInit {
               }),
               flatMap(c => c),
               map(classroom => {
-                return this.registrationsRepository.totalStudentsForClassroom(registrations, classroom).length;
+                return this.registrationsRepository.studentsForClassroom(registrations, classroom).length;
               }),
             );
         }),

@@ -12,6 +12,7 @@ const routes: Routes = [
       { path: 'academy', loadChildren: () => import('../academy/academy.module').then(m => m.AcademyModule) },
       { path: 'registration', loadChildren: () => import('../registration/registration.module').then(m => m.RegistrationModule) },
       { path: 'staff', loadChildren: () => import('../staff/staff.module').then(m => m.StaffModule) },
+      { path: 'notes', loadChildren: () => import('../notes/notes.module').then(m => m.NotesModule) },
       { path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule) }
     ]
   }

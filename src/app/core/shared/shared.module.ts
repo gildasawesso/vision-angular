@@ -25,6 +25,7 @@ import { BigButtonComponent } from './components/big-button/big-button.component
 import {NgxPermissionsModule} from 'ngx-permissions';
 import {ChartsModule} from 'ng2-charts';
 import { ChartHostDirective } from './directives/chart-host.directive';
+import { AdvancedSelectComponent } from './components/advanced-select/advanced-select.component';
 
 const components = [
   AdmissionComponent,
@@ -41,6 +42,7 @@ const components = [
   DelComponent,
   DateComponent,
   BigButtonComponent,
+  AdvancedSelectComponent
 ];
 
 const directives = [
@@ -65,6 +67,7 @@ const modules = [
     ...components,
     ...pipes,
     ...directives,
+    AdvancedSelectComponent,
   ],
   imports: [
     ...modules,

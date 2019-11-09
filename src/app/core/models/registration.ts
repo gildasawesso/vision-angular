@@ -8,4 +8,5 @@ export class Registration {
   classroom: Classroom;
   schoolYear: SchoolYear;
   registrationDate: Date;
+  isReregistration: boolean;
 }

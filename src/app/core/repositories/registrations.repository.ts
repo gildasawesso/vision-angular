@@ -31,7 +31,7 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
     );
   }
 
-  totalStudentsForClassroom(registrations: Registration[], classroom: Classroom) {
+  studentsForClassroom(registrations: Registration[], classroom: Classroom) {
     return classroom ? registrations.filter(r => r.classroom._id === classroom._id).map(r => r.student) : registrations.map(r => r.student);
   }
 }

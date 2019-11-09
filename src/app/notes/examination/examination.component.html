@@ -1,0 +1,14 @@
+<div class="d-flex align-items-center ml-4 mb-3">
+  <h5 class="mr-4">Liste des examinations</h5>
+  <button mat-flat-button color="primary" (click)="add()">Ajouter une examination</button>
+</div>
+
+<div>
+  <app-table
+    [mapping]="mapping"
+    [data]="data"
+    (edit)="edit($event)"
+    (delete)="delete($event)"
+    [optionPermissions]="optionsPermissions"
+    [includeOption]="'payment'"></app-table>
+</div>

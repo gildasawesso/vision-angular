@@ -9,7 +9,7 @@ import {SchoolyearsRepository} from '../repositories/schoolyears.repository';
 export class RegistrationsDatasource extends BaseDatasource<Registration> {
 
   constructor(private schoolyearRepository: SchoolyearsRepository) {
-    super('/registrations', 'populate=student&populate=classroom&populate=schoolYear');
+    super('/registrations');
   }
 
   async list(): Promise<Registration[]> {

@@ -5,7 +5,7 @@ export abstract class BaseDatasource<T> {
 
   api: ApiService;
 
-  protected constructor(protected url: string, protected toPopulate?: string) {
+  protected constructor(protected url: string, protected toPopulate: string = '') {
     this.api = inject(ApiService);
   }
 

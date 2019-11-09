@@ -1,0 +1,10 @@
+<div>
+  <app-advanced-select [options]="classroomsRepository.stream | async" displayKey="name" valueKey="_id" [control]="classroomFormControl">Classe</app-advanced-select>
+  <app-select [options]="classroomSubjects" displayKey="name" valueKey="_id" [value]="subjectFormControl">Matière</app-select>
+  <app-date [control]="examinationDateFormControl">Date de l'examination</app-date>
+  <app-select [options]="examinationTypesRepository.stream | async">Type de l'examination</app-select>
+</div>
+<div class="d-flex">
+  <button mat-raised-button>Annuler</button>
+  <button mat-raised-button>Ajouter une examination</button>
+</div>

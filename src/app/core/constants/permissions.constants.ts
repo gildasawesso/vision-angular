@@ -10,5 +10,10 @@ export const permissionsConstants = {
 
   addPayment: 'addPayment',
   editPayment: 'editPayment',
-  deletePayment: 'deletePayment'
+  deletePayment: 'deletePayment',
+
+  accessNotes: 'accessNotesModule',
+  addExamination: 'addExamination',
+  editExamination: 'editExamination',
+  deleteExamination: 'deleteExamination'
 };

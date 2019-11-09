@@ -81,4 +81,10 @@ export const menuConfig = [
       // { text: 'réinscription', url: '/registration/re-register', submenu: null },
     ]
   },
+  {
+    notes: [
+      { text: 'exmaninations', url: '/notes/examinations', submenu: null },
+      { text: 'bulletins', url: '/notes/bulletins', submenu: null },
+    ]
+  },
 ];

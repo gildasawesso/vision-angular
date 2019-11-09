@@ -58,21 +58,24 @@ export class RegistrationComponent implements OnInit {
     registrationDate: [moment().format()],
     payment: this.paymentForm
   });
+  feeTypeToAdd = new FormControl();
+  siblingClassroom = new FormControl();
+  sibling = new FormControl();
+
+
   headers = ['Informations personnelles', 'Informations sur les parents', 'École', 'Contribution'];
   currentPage = 0;
   registrationFee: number;
   firstTermSchoolFee: number;
-  feeTypeToAdd = new FormControl();
   classrooms: Classroom[];
   schoolYears: SchoolYear[];
   feeTypes: FeeType[] = [];
   registrations: Registration[] = [];
   isBusy = false;
   registationDateIsDifferent = false;
+  isReregistration = false;
   studentHasSibling = false;
-  siblingClassroom = new FormControl();
   siblingClassroomStudents = [];
-  sibling = new FormControl();
   isReady = this.currentPage !== MAX_PAGE ? true : this.registrationForm.valid;
 
   constructor(private formBuilder: FormBuilder,
@@ -131,7 +134,8 @@ export class RegistrationComponent implements OnInit {
       student,
       classroom: student.classroom,
       schoolYear: this.schoolYears[0],
-      registrationDate: newStudents.registrationDate
+      registrationDate: newStudents.registrationDate,
+      isReregistration: this.isReregistration
     };
     await this.registrationRepository.add(newRegistration);
 
@@ -268,7 +272,8 @@ export class RegistrationComponent implements OnInit {
 
     this.siblingClassroom.valueChanges
       .subscribe((classroom: Classroom) => {
-        this.siblingClassroomStudents = this.registrationRepository.totalStudentsForClassroom(this.registrations, classroom);
+        this.siblingClassroomStudents = this.registrationRepository.studentsForClassroom(this.registrations, classroom);
+        console.log(this.siblingClassroomStudents);
       });
 
     this.sibling.valueChanges
