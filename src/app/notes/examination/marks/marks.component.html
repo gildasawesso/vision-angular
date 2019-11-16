@@ -4,7 +4,7 @@
   <h4 class="flex-fill text-capitalize">{{mark.student.firstname + ' ' + mark.student.lastname | titlecase}}</h4>
   <div class="d-flex align-items-center">
     <mat-form-field appearance="outline">
-      <input matInput placeholder="note" [(ngModel)]="mark.mark" (ngModelChange)="onModelChange($event, mark)"/>
+      <input matInput placeholder="note" [(ngModel)]="mark.mark" (ngModelChange)="onModelChange($event)"/>
     </mat-form-field>
     <div>/{{examination.subject.markBy}}</div>
   </div>
