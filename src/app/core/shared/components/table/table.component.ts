@@ -15,11 +15,13 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
   @Input() data;
   @Input() mapping;
   @Input() includeOption;
+  @Input() customElements;
   @Input() optionPermissions: { [optionName: string]: string };
 
   @Output() edit = new EventEmitter();
   @Output() delete = new EventEmitter();
   @Output() printPayment = new EventEmitter();
+  @Output() viewNotes = new EventEmitter();
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort: MatSort;
@@ -39,6 +41,10 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
 
   onDelete(element: any) {
     this.delete.emit(element);
+  }
+
+  onViewNotes(element: any) {
+    this.viewNotes.emit(element);
   }
 
   valueFromColumnDisplayed(valueDisplayed, model?: any) {

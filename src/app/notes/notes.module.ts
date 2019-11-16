@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { ExaminationComponent } from './examination/examination.component';
 import { BulletinsComponent } from './bulletins/bulletins.component';
-import { ExaminationTypeComponent } from './examination/examination-type/examination-type.component';
 import {NotesComponent} from './notes.component';
 import {SharedModule} from '../core/shared/shared.module';
 import {NotesRoutingModule} from './notes-routing.module';
 import {AddOrEditExaminationComponent} from './examination/add-or-edit-examination/add-or-edit-examination.component';
+import { AddOrEditExaminationTypeComponent } from './examination/add-or-edit-examination-type/add-or-edit-examination-type.component';
+import { MarksComponent } from './examination/marks/marks.component';
 
 
 
@@ -14,15 +15,18 @@ import {AddOrEditExaminationComponent} from './examination/add-or-edit-examinati
     NotesComponent,
     ExaminationComponent,
     BulletinsComponent,
-    ExaminationTypeComponent,
-    AddOrEditExaminationComponent
+    AddOrEditExaminationComponent,
+    AddOrEditExaminationTypeComponent,
+    MarksComponent
   ],
   imports: [
     NotesRoutingModule,
     SharedModule
   ],
   entryComponents: [
-    AddOrEditExaminationComponent
+    AddOrEditExaminationComponent,
+    AddOrEditExaminationTypeComponent,
+    MarksComponent
   ]
 })
 export class NotesModule { }

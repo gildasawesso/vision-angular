@@ -10,4 +10,8 @@ export class ExaminationsDatasource extends BaseDatasource<Examination> {
   constructor() {
     super('/examinations');
   }
+
+  updateStudents(examination: Examination) {
+    return this.api.patch(`${this.url}/${examination._id}/marks`, examination).toPromise();
+  }
 }

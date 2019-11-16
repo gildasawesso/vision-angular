@@ -13,6 +13,19 @@ import {TeachersRepository} from '../../../core/repositories/teachers.repository
 })
 export class AddOrEditSubjectComponent implements OnInit {
 
+  subjectForm = this.formBuilder.group({
+    _id: null,
+    name: [''],
+    code: [''],
+    teachers: [],
+    markBy: [20],
+    coefficient: [1]
+  });
+  title = `Ajout d'un nouveau cours`;
+  submitText = `Ajout le cours`;
+  subject: Subject;
+  markByList = [10, 20];
+
   constructor(private formBuilder: FormBuilder,
               @Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<AddOrEditSubjectComponent>,
@@ -28,15 +41,7 @@ export class AddOrEditSubjectComponent implements OnInit {
     }
   }
 
-  subjectForm = this.formBuilder.group({
-    _id: null,
-    name: [''],
-    code: [''],
-    teachers: []
-  });
-  title = `Ajout d'un nouveau cours`;
-  submitText = `Ajout le cours`;
-  subject: Subject;
+
 
   save() {
     if (this.subjectForm.valid) {

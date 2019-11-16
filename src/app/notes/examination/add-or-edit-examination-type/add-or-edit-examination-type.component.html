@@ -1,0 +1,10 @@
+<div>
+  <mat-form-field appearance="outline">
+    <mat-label>Type d'examination</mat-label>
+    <input matInput [formControl]="type"/>
+  </mat-form-field>
+  <div class="d-flex">
+    <button mat-flat-button (click)="close()">Annuler</button>
+    <button mat-raised-button (click)="add()">Ajouter</button>
+  </div>
+</div>

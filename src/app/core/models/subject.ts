@@ -5,4 +5,6 @@ export class Subject {
   code: string;
   name: string;
   teachers: Array<Teacher>;
+  markBy: number;
+  coefficient: number;
 }

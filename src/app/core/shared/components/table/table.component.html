@@ -12,6 +12,12 @@
           </td>
         </ng-container>
 
+        <ng-container *ngSwitchCase="mapping['notes']">
+          <td *matCellDef="let element" mat-cell>
+            <button mat-raised-button (click)="onViewNotes(element)">Notes</button>
+          </td>
+        </ng-container>
+
         <ng-container *ngSwitchCase="mapping['finance_payments_designation']">
           <td *matCellDef="let element" mat-cell>
             <ng-container *ngTemplateOutlet="optionsTemplate; context: { element: element }"></ng-container>

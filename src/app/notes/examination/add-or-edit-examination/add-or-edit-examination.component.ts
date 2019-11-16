@@ -27,7 +27,7 @@ export class AddOrEditExaminationComponent implements OnInit {
   constructor(private examinationsRepository: ExaminationsRepository,
               public classroomsRepository: ClassroomsRepository,
               public examinationTypesRepository: ExaminationTypesRepository,
-              private dialogRef: MatDialogRef<AddOrEditExaminationComponent>,
+              public dialogRef: MatDialogRef<AddOrEditExaminationComponent>,
               private schoolyearsRepository: SchoolyearsRepository,
               private utils: Utils) {
   }
@@ -35,7 +35,6 @@ export class AddOrEditExaminationComponent implements OnInit {
   handleOnClassroomSelected() {
     this.classroomFormControl.valueChanges
       .subscribe((classroom: Classroom) => {
-        console.log(classroom);
         this.classroomSubjects = classroom.subjects;
       });
   }
@@ -52,7 +51,9 @@ export class AddOrEditExaminationComponent implements OnInit {
 
       try {
         await this.examinationsRepository.add(examination);
+        this.dialogRef.close();
       } catch (e) {
+        console.error(e.error);
         this.utils.common.alert(e.error.message);
       }
     } else {

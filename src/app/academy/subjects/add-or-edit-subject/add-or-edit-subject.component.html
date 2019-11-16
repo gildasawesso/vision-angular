@@ -9,6 +9,17 @@
               formControlName="teachers" [multiple]="true">
     Enseignants
   </app-select>
+
+<div class="inputs col-12 col-sm-6" style="margin-top: 10px;">
+  <div>Ce cour est noté sur : </div>
+  <mat-form-field appearance="outline" color="primary" class="col-12 p-0">
+    <select matNativeControl required formControlName="markBy">
+      <option *ngFor="let option of markByList" [value]="option">{{option}}</option>
+    </select>
+  </mat-form-field>
+</div>
+
+  <app-input formControlName="coefficient" class="inputs col-12 col-sm-6" type="number">Coefficient</app-input>
 </div>
 
 <div class="ml-auto mr-4">
