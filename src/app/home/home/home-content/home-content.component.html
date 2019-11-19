@@ -1,4 +1,4 @@
-<h3 class="welcome-message">Bienvenue</h3>
+<h3 class="welcome-message">Bienvenue dans <span style="color: dodgerblue">AGORASOFT</span>, {{authService.currentUser.firstname | titlecase}}</h3>
 <div class="row justify-content-center" style="color: white;">
   <ng-container *ngFor="let menuItem of menuItems">
     <app-menu-item [navigationUrl]="menuItem.url" class="col-12 col-sm-6 col-md-3"

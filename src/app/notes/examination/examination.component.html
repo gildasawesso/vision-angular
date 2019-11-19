@@ -4,16 +4,16 @@
     <div class="d-flex align-items-center" *ngFor="let examType of examinationTypes">
       <div class="flex-fill">{{examType.name}}</div>
       <div>
-        <button mat-icon-button (click)="editExaminationType(examType)"><mat-icon>edit</mat-icon></button>
-        <button mat-icon-button color="warn" (click)="deleteExamType(examType)"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button (click)="editExaminationType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.editExaminationType]"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="warn" (click)="deleteExamType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.deleteExaminationType]"><mat-icon>delete</mat-icon></button>
       </div>
     </div>
-    <button mat-stroked-button color="accent" (click)="addExaminationType()">Ajouter un type d'examination</button>
+    <button mat-stroked-button color="accent" (click)="addExaminationType()" *ngxPermissionsOnly="['ADMIN', constants.permissions.addExaminationType]">Ajouter un type d'examination</button>
   </div>
   <div class="flex-fill">
     <div class="d-flex align-items-center ml-4 mb-3">
       <h5 class="mr-4">Liste des examinations</h5>
-      <button mat-flat-button color="primary" (click)="add()">Ajouter une examination</button>
+      <button mat-flat-button color="primary" (click)="add()" *ngxPermissionsOnly="['ADMIN', constants.permissions.addExamination]">Ajouter une examination</button>
     </div>
 
     <div>

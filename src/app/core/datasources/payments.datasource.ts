@@ -8,6 +8,6 @@ import {Payment} from '../models/payment';
 export class PaymentsDatasource extends BaseDatasource<Payment> {
 
   constructor() {
-    super('/payments', 'populate=student&populate=schoolYear&populate=classroom&populate=registrationFee&populate=schoolFee&sort=-_id');
+    super('/payments', 'populate=student&populate=schoolYear&populate=classroom&populate=registrationFee&populate=reregistrationFee&populate=schoolFee&sort=-_id');
   }
 }

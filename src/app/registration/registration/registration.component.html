@@ -46,14 +46,14 @@
   </div>
 
   <div *ngIf="currentPage == 2">
-    <app-select [control]="registrationForm.get('classroom')" [options]="classrooms" displayKey="name" formControlName="classroom">Classe</app-select>
     <div class="mt-3">
-      <label class="genre">L'élève réalise un réinscription ?</label>
+      <label class="genre">L'élève réalise t'il une réinscription ?</label>
       <mat-radio-group [(ngModel)]="isReregistration" [ngModelOptions]="{ standalone: true }">
         <mat-radio-button style="margin-right:40px;" [value]="true">Oui</mat-radio-button>
         <mat-radio-button [value]="false">Non</mat-radio-button>
       </mat-radio-group>
     </div>
+
     <div class="mt-3">
       <label class="genre">La date d'inscription est il différente ?</label>
       <mat-radio-group [(ngModel)]="registationDateIsDifferent" [ngModelOptions]="{ standalone: true }">
@@ -62,6 +62,8 @@
       </mat-radio-group>
     </div>
     <app-date *ngIf="registationDateIsDifferent" view="multi-year" [control]="registrationForm.get('registrationDate')" class="col-12 col-sm-6">Date d'inscription</app-date>
+
+    <app-select *ngIf="isReregistration != null" [control]="registrationForm.get('classroom')" [options]="classrooms" displayKey="name" formControlName="classroom">Classe</app-select>
 
 
     <h5 style="margin-top: 20px;">Parcours</h5>
@@ -111,6 +113,8 @@
         Ajouter une contribution à payer
       </app-select>
     </div>
+
+    <app-input formControlName="feesReduction" class="inputs col-12">Réduction sur l'écolage</app-input>
   </div>
 
   <div class="actions d-flex justify-content-end align-items-center">

@@ -16,23 +16,31 @@
               formControlName="subjects" [multiple]="true">
     Cours
   </app-select>
-  <app-select name="registrationFee"
+  <app-select
               [options]="feesRepository.stream | async"
               displayKey="name" valueKey="_id"
              formControlName="registrationFee"
-             class="inputs col-12 col-sm-6">
+             class="inputs col-12">
     Frais d'inscription
   </app-select>
 
-  <app-select name="registrationFee"
+  <app-select
               [options]="feesRepository.stream | async"
               displayKey="name" valueKey="_id"
               formControlName="schoolFee"
-              class="inputs col-12 col-sm-6">
+              class="inputs col-12">
     Frais de scolarité
   </app-select>
 
-  <div class="ml-auto mr-4">
+  <app-select
+              [options]="feesRepository.stream | async"
+              displayKey="name" valueKey="_id"
+              formControlName="reregistrationFee"
+              class="inputs col-12">
+    Frais de réinscription
+  </app-select>
+
+  <div class="ml-auto mr-4 mt-3">
     <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
     <button (click)="save()" mat-flat-button color="primary">{{submitText}}</button>
   </div>

@@ -9,6 +9,7 @@ export class Classroom {
   capacity: number;
   teacher: Teacher;
   registrationFee: FeeType;
+  reregistrationFee: FeeType;
   schoolFee: FeeType;
   subjects: Array<Subject>;
 }

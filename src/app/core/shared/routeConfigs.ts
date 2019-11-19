@@ -65,7 +65,10 @@ export const menuConfig = [
   },
   {
     settings: [
-      { text: 'paramètres généraux', url: '/settings', submenu: null },
+      { text: 'paramètres généraux', url: '/settings', submenu: [
+          {text: 'Informations sur l\'école', url: '/settings/school'},
+          {text: 'Années scolaires', url: '/settings/schoolyears'},
+        ] },
     ]
   },
   {

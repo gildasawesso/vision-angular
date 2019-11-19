@@ -21,6 +21,7 @@ export class AddOrEditClassroomComponent implements OnInit {
     capacity: [''],
     teacher: [null],
     registrationFee: [null],
+    reregistrationFee: [null],
     schoolFee: [null],
     subjects: [null]
   });

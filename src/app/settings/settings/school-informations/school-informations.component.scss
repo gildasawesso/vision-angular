@@ -1,0 +1,10 @@
+@import 'app.colors';
+
+:host {
+  .school {
+    padding: 28px;
+    background-color: white;
+    border-radius: 7px;
+    box-shadow: $shadow;
+  }
+}

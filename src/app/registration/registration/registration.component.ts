@@ -56,6 +56,7 @@ export class RegistrationComponent implements OnInit {
     lastSchool: [''],
     classroom: [''],
     registrationDate: [moment().format()],
+    feesReduction: [0],
     payment: this.paymentForm
   });
   feeTypeToAdd = new FormControl();
@@ -73,7 +74,7 @@ export class RegistrationComponent implements OnInit {
   registrations: Registration[] = [];
   isBusy = false;
   registationDateIsDifferent = false;
-  isReregistration = false;
+  isReregistration = null;
   studentHasSibling = false;
   siblingClassroomStudents = [];
   isReady = this.currentPage !== MAX_PAGE ? true : this.registrationForm.valid;
@@ -135,7 +136,8 @@ export class RegistrationComponent implements OnInit {
       classroom: student.classroom,
       schoolYear: this.schoolYears[0],
       registrationDate: newStudents.registrationDate,
-      isReregistration: this.isReregistration
+      isReregistration: this.isReregistration,
+      feesReduction: newStudents.feesReduction,
     };
     await this.registrationRepository.add(newRegistration);
 
@@ -180,6 +182,7 @@ export class RegistrationComponent implements OnInit {
     this.subFeesForm.reset();
     this.subFeesForm.clear();
     this.subFeesForm.markAsUntouched();
+    this.isReregistration = null;
 
     this.registrationForm.get('classroom').setErrors(null);
     this.registrationForm.patchValue({gender: 'M'});
@@ -194,6 +197,12 @@ export class RegistrationComponent implements OnInit {
         const classroom = this.classrooms.find(c => c._id === obj._id);
         if (classroom.registrationFee === undefined || classroom.registrationFee === null) {
           this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des frais d'inscription`);
+          this.registrationForm.controls.classroom.setValue('', {emitEvent: false});
+          return;
+        }
+
+        if (classroom.reregistrationFee === undefined || classroom.reregistrationFee === null) {
+          this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des frais de réinscription`);
           this.registrationForm.controls.classroom.setValue('', {emitEvent: false});
           return;
         }
@@ -216,7 +225,8 @@ export class RegistrationComponent implements OnInit {
           classroom,
           fees: []
         };
-        const subPayment = { fee: classroom.registrationFee, amount: 0 };
+        const fee = this.isReregistration ? classroom.reregistrationFee : classroom.registrationFee;
+        const subPayment = { fee, amount: 0 };
         this.addPaymentToPaymentsFormArray(payment, subPayment);
 
         this.registrationFee = classroom.registrationFee.amount;
@@ -249,7 +259,7 @@ export class RegistrationComponent implements OnInit {
 
     this.registrationRepository.stream
       .subscribe((registrations: Registration[]) => {
-        this.registrations = registrations;
+        this.registrations = [...registrations];
       });
 
     this.onClassroomSelected();

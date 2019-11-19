@@ -16,6 +16,7 @@ import {MarksComponent} from './marks/marks.component';
 })
 export class ExaminationComponent implements OnInit {
 
+  constants = constants;
   examinationTypes: ExaminationType[] = [];
   data = [];
   mapping = {
@@ -60,8 +61,11 @@ export class ExaminationComponent implements OnInit {
   }
 
   async editExaminationType(type: ExaminationType) {
-    type.name = await this.utils.common.modalWithResult(AddOrEditExaminationTypeComponent, {type: null});
-    await this.examinationTypesRepository.update(type, type._id);
+    const name = await this.utils.common.modalWithResult(AddOrEditExaminationTypeComponent, { type });
+    if (name != null) {
+      type.name = name;
+      await this.examinationTypesRepository.update(type, type._id);
+    }
   }
 
   async deleteExamType(type: ExaminationType) {

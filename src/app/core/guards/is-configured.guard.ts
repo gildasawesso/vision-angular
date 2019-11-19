@@ -25,16 +25,16 @@ export class IsConfiguredGuard implements CanActivate, CanActivateChild {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.isConfiugred();
+    return this.isConfigured();
   }
   canActivateChild(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.isConfiugred();
+    return this.isConfigured();
   }
 
   // todo make api to check everything in the server side
-  async isConfiugred() {
+  async isConfigured() {
 
     if (!this.configuration.isAdminConfigured) {
       const usersAvailable = await this.api.get('/r/users/count').toPromise();

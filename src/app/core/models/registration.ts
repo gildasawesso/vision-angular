@@ -9,4 +9,5 @@ export class Registration {
   schoolYear: SchoolYear;
   registrationDate: Date;
   isReregistration: boolean;
+  feesReduction: number;
 }
