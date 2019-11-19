@@ -6,6 +6,7 @@
   <app-table [data]="data"
              [mapping]="mapping"
              (edit)="edit($event)"
-             (delete)="delete($event)">
+             (delete)="delete($event)"
+             [optionPermissions]="optionsPermissions">
   </app-table>
 </div>

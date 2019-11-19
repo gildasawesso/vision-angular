@@ -27,8 +27,9 @@ export class PrintUtil {
         return {
           designation: subPayement.fee.name,
           amount: subPayement.fee.amount,
+          reduction: Number(subPayement.reduction),
           payed: subPayement.amount,
-          balance: subPayement.fee.amount - subPayement.amount,
+          balance: subPayement.fee.amount - subPayement.amount - Number(subPayement.reduction),
         };
       });
     const data = {
@@ -47,11 +48,13 @@ export class PrintUtil {
         return {
           designation: fee.designation,
           amount: this.spaced(fee.amount),
+          reduction: this.spaced(fee.reduction),
           payed: this.spaced(fee.payed),
           balance: this.spaced(fee.balance)
         };
       }),
       totalAmount: this.spaced(fees.reduce((acc, cur) => acc + cur.amount, 0), 'FCFA'),
+      totalReduction: this.spaced(fees.reduce((acc, cur) => acc + cur.reduction, 0), 'FCFA'),
       totalPayed: this.spaced(fees.reduce((acc, cur) => acc + cur.payed, 0), 'FCFA'),
       totalBalance: this.spaced(fees.reduce((acc, cur) => acc + cur.balance, 0), 'FCFA'),
     };

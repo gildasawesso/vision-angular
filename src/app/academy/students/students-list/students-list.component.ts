@@ -7,6 +7,7 @@ import {Classroom} from '../../../core/models/classroom';
 import {Student} from '../../../core/models/student';
 import {Utils} from '../../../core/shared/utils';
 import {EditStudentComponent} from '../edit-student/edit-student.component';
+import {constants} from '../../../core/constants';
 
 @Component({
   selector: 'app-students-list',
@@ -27,6 +28,7 @@ export class StudentsListComponent implements OnInit {
     gender: 'Sexe',
     options: 'Options'
   };
+  optionsPermissions = { edit: constants.permissions.editStudent, delete: constants.permissions.deleteStudent };
   students: Student[];
   data = [];
 
@@ -40,7 +42,7 @@ export class StudentsListComponent implements OnInit {
     const result = await this.utils.common.customAlert('Vous êtes sur le point de supprimer un élève', null, ['Annuler', 'Je continue']);
     if (result === 1) {
       await this.studentsRepository.remove(student._id);
-      this.utils.common.toast(`Lélève ${student.lastname} a bien été supprimé`);
+      this.utils.common.toast(`L'élève ${student.lastname} a bien été supprimé`);
     }
   }
 

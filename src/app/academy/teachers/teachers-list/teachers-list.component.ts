@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Classroom} from '../../../core/models/classroom';
-import {MatTableDataSource} from '@angular/material';
 import {Utils} from '../../../core/shared/utils';
 import {TeachersRepository} from '../../../core/repositories/teachers.repository';
 import {AddOrEditTeacherComponent} from '../add-or-edit-teacher/add-or-edit-teacher.component';
 import {Teacher} from '../../../core/models/teacher';
+import {constants} from '../../../core/constants';
 
 @Component({
   selector: 'app-teachers-list',
@@ -25,6 +24,7 @@ export class TeachersListComponent implements OnInit {
     qualifications: 'Qualifications',
     options: 'Options'
   };
+  optionsPermissions = { edit: constants.permissions.editTeacher, delete: constants.permissions.deleteTeacher };
 
   async add() {
     await this.utils.common.modal(AddOrEditTeacherComponent, { teacher: null });

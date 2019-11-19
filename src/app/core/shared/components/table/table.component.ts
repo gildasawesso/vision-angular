@@ -69,6 +69,7 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
           return this.displayAppendedValues(values);
         case 'array':
           const array = this.resolve(keySplitted[1], object);
+          if (array == null) { return ''; }
           const arrayDisplayProperty = keySplitted[2];
           const separator = keySplitted[3];
           return this.displayArray(array, arrayDisplayProperty, separator);

@@ -10,4 +10,5 @@ export class Registration {
   registrationDate: Date;
   isReregistration: boolean;
   feesReduction: number;
+  registrationFeeReduction: number;
 }

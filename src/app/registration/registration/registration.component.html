@@ -82,6 +82,7 @@
             <mat-form-field appearance="outline">
               <input type="number" matInput formControlName="amount" />
             </mat-form-field>
+            <app-input formControlName="reduction" class="inputs" type="number">Réduction sur {{subPayment?.value?.fee.name}}</app-input>
             <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('invalid')">{{subPayment.get('amount')?.errors?.invalid}}</span>
             <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('min')">La valeur est invalide</span>
           </div>
@@ -95,8 +96,8 @@
             </div>
 
             <div style="flex-basis: 0" class="balance flex-grow-1">
-              <div class="title">Reste</div>
-              <div class="value">{{getBalance(subPayment.value) | spaced: 'FCFA'}}</div>
+              <div class="title">Reste après réduction</div>
+              <div class="value">{{getBalance(subPayment.value)  | spaced: 'FCFA'}}</div>
             </div>
           </div>
         </div>
@@ -114,7 +115,9 @@
       </app-select>
     </div>
 
-    <app-input formControlName="feesReduction" class="inputs col-12">Réduction sur l'écolage</app-input>
+<!--    <mat-divider class="mt-4"></mat-divider>-->
+<!--    <app-input formControlName="feesReduction" class="inputs col-12" type="number">Réduction sur l'écolage</app-input>-->
+<!--    <app-input formControlName="registrationFeeReduction" class="inputs col-12" type="number">Réduction sur l'inscription ou réinscription</app-input>-->
   </div>
 
   <div class="actions d-flex justify-content-end align-items-center">

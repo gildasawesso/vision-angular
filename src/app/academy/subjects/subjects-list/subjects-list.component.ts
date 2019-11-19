@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {MatTableDataSource} from '@angular/material';
 import {Utils} from '../../../core/shared/utils';
 import {SubjectsRepository} from '../../../core/repositories/subjects.repository';
 import {Subject} from '../../../core/models/subject';
 import {AddOrEditSubjectComponent} from '../add-or-edit-subject/add-or-edit-subject.component';
+import {constants} from '../../../core/constants';
 
 @Component({
   selector: 'app-courses-list',
@@ -22,6 +22,7 @@ export class SubjectsListComponent implements OnInit {
     'array teachers lastname': 'Enseignants',
     options: 'Options'
   };
+  optionsPermissions = { edit: constants.permissions.editSubject, delete: constants.permissions.deleteSubject };
 
   async add() {
     await this.utils.common.modal(AddOrEditSubjectComponent, { subject: null });

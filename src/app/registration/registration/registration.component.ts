@@ -57,6 +57,7 @@ export class RegistrationComponent implements OnInit {
     classroom: [''],
     registrationDate: [moment().format()],
     feesReduction: [0],
+    registrationFeeReduction: [0],
     payment: this.paymentForm
   });
   feeTypeToAdd = new FormControl();
@@ -119,7 +120,8 @@ export class RegistrationComponent implements OnInit {
   }
 
   getBalance(subpayment) {
-    return subpayment.fee.amount - subpayment.amount;
+    const balance = subpayment.fee.amount - (subpayment.amount + Number(subpayment.reduction));
+    return balance < 0 ? 0 : balance;
   }
 
   async save() {
@@ -138,6 +140,7 @@ export class RegistrationComponent implements OnInit {
       registrationDate: newStudents.registrationDate,
       isReregistration: this.isReregistration,
       feesReduction: newStudents.feesReduction,
+      registrationFeeReduction: newStudents.registrationFeeReduction
     };
     await this.registrationRepository.add(newRegistration);
 
@@ -163,7 +166,8 @@ export class RegistrationComponent implements OnInit {
       this.subPayments.push(this.formBuilder.group({
         fee: subPayment.fee,
         amount: [subPayment.amount, [this.utils.form.registrationFeeValidator(subPayment), Validators.min(0)]],
-        isRegistration: true
+        isRegistration: true,
+        reduction: 0
       }));
     } else {
       this.subPayments.push(this.formBuilder.group({

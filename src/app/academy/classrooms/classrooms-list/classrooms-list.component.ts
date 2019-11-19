@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {MatTableDataSource} from '@angular/material';
 import {Classroom} from '../../../core/models/classroom';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {Utils} from '../../../core/shared/utils';
 import {AddOrEditClassroomComponent} from '../add-or-edit-classroom/add-or-edit-classroom.component';
+import {constants} from '../../../core/constants';
 
 @Component({
   selector: 'app-classes-list',
@@ -21,6 +21,7 @@ export class ClassroomsListComponent implements OnInit {
     'schoolFee.amount': 'Frais de scolarité',
     options: 'Options'
   };
+  optionsPermissions = { edit: constants.permissions.editClassroom, delete: constants.permissions.deleteClassroom };
 
   constructor(public classroomRepository: ClassroomsRepository,
               private utils: Utils) {

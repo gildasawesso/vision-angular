@@ -9,7 +9,7 @@ export class Payment {
   schoolYear: SchoolYear = null;
   registrationFee?: FeeType = null;
   schoolFee?: FeeType = null;
-  fees: Array<{fee: FeeType, amount: number}> = null;
+  fees: Array<{fee: FeeType, amount: number, reduction: number}> = null;
   classroom: Classroom = null;
   amount = 0;
   paymentDate = '';
