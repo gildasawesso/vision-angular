@@ -58,7 +58,8 @@ export class AddOrEditPaymentComponent implements OnInit {
     fees: [],
     classroom: [],
     reduction: [],
-    amount: [0]
+    amount: [0],
+    paymentDate: []
   });
 
   save() {

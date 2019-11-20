@@ -34,6 +34,8 @@
 
   <app-input [control]="this.paymentForm.get('reduction')" formControlName="reduction" type="number" class="inputs col-6">Réduction</app-input>
 
+  <app-date view="multi-year" [control]="paymentForm.get('paymentDate')" class="col-12 col-sm-6">Date de payement</app-date>
+
   <mat-divider></mat-divider>
 </div>
 
