@@ -1,7 +1,7 @@
 <h4>{{title}}</h4>
 <div class="row" [formGroup]="subjectForm">
   <app-input formControlName="name" class="inputs col-12 col-sm-6">Nom</app-input>
-  <app-input formControlName="code" class="inputs col-12 col-sm-6">Code</app-input>
+  <app-input formControlName="code" class="inputs col-12 col-sm-6">Nom à afficher sur le bulletin</app-input>
 
   <app-select class="inputs col-12 col-sm-6"
               [options]="teachersRepository.stream | async"
