@@ -17,29 +17,25 @@
     Élève
   </app-select>
 
-<div class="inputs col-12 col-sm-6">
-<div class="d-flex flex-column">
-  <label>Type de contribution</label>
-  <mat-form-field appearance="outline" color="primary" >
-    <select matNativeControl formControlName="schoolFee" [compareWith]="utils.common.compareFn">
-      <option *ngFor="let option of feeTypesRepository.stream | async" [ngValue]="option">{{option.name}}</option>
-    </select>
-  </mat-form-field>
-</div>
-</div>
+  <div class="inputs col-12 col-sm-6 mt-3">
+    <div class="d-flex flex-column">
+      <label>Type de contribution</label>
+      <mat-form-field appearance="outline" color="primary">
+        <select matNativeControl formControlName="schoolFee" [compareWith]="utils.common.compareFn">
+          <option *ngFor="let option of feeTypesRepository.stream | async" [ngValue]="option">{{option.name}}</option>
+        </select>
+      </mat-form-field>
+    </div>
+  </div>
 
-<!--  <app-select class="inputs col-12 col-sm-6"-->
-<!--              [options]="feeTypesRepository.stream | async"-->
-<!--              displayKey="name" valueKey="_id"-->
-<!--              formControlName="schoolFee">-->
-<!--    Type de contribution-->
-<!--  </app-select>-->
+  <app-input [control]="this.paymentForm.get('amount')" name="amount" formControlName="amount" type="number" class="inputs col-6">Montant payé</app-input>
 
-  <div class="col-12 col-sm-4">{{totalSchoolFeeAmount()}}</div>
-  <div class="col-12 col-sm-4">{{studentSchoolFeesPaymentsAmount()}}</div>
+  <app-input [control]="this.paymentForm.get('reduction')" formControlName="reduction" type="number" class="inputs col-6">Réduction</app-input>
+
+  <div class="col-12 col-sm-4">{{totalSchoolFeeAmount() | spaced: 'FCFA'}}</div>
+  <div class="col-12 col-sm-4">{{studentSchoolFeesPaymentsAmount() | spaced: 'FCFA'}}</div>
   <div class="col-12 col-sm-4"></div>
 
-  <app-input [control]="this.paymentForm.get('amount')" name="amount" formControlName="amount" type="number" class="inputs col-12">Montant payé</app-input>
 </div>
 
 <div class="ml-auto mt-5">

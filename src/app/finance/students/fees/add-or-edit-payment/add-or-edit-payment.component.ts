@@ -15,6 +15,7 @@ import {PaymentsRepository} from '../../../../core/repositories/payments.reposit
 import {SchoolyearsRepository} from '../../../../core/repositories/schoolyears.repository';
 import {RegistrationsRepository} from '../../../../core/repositories/registrations.repository';
 import {Registration} from '../../../../core/models/registration';
+import {debug} from 'util';
 
 @Component({
   selector: 'app-add-or-edit-payment',
@@ -56,6 +57,7 @@ export class AddOrEditPaymentComponent implements OnInit {
     schoolFee: [{value: '', disabled: true}],
     fees: [],
     classroom: [],
+    reduction: [],
     amount: [0]
   });
 
@@ -71,9 +73,9 @@ export class AddOrEditPaymentComponent implements OnInit {
   }
 
   async create() {
-    const payment: Payment = this.paymentForm.value;
+    const payment: Payment | any = this.paymentForm.value;
     payment.classroom = this.classroomSelected.value;
-    payment.fees = [ { fee: payment.schoolFee, amount: Number(payment.amount) } ];
+    payment.fees = [ { fee: payment.schoolFee, amount: Number(payment.amount), reduction: Number(payment.reduction) } ];
     payment.schoolYear = this.schoolYears[0];
     await this.paymentsRepository.add(payment);
   }
@@ -90,20 +92,24 @@ export class AddOrEditPaymentComponent implements OnInit {
 
   currentStudentPayments() {
     if (this.paymentForm.get('student').value == null) { return []; }
-    return this.payments.filter(p => p.student._id === this.paymentForm.get('student').value._id && p.schoolYear._id === this.schoolYears[0]._id);
+    return this.payments.filter(p => {
+      if (p.student == null) { return false; }
+      return p.student._id === this.paymentForm.get('student').value._id && p.schoolYear._id === this.schoolYears[0]._id;
+    });
   }
 
   studentSchoolFeesPayments() {
     const payments = this.currentStudentPayments();
 
     const feeType: FeeType = this.paymentForm.get('schoolFee').value;
-    return payments.map(p => {
-      return p.fees.find(f => f.fee._id === feeType._id);
+    return payments.filter(p => {
+      return p.fees.find(f => f.fee._id.toString() === feeType._id.toString()) !== undefined;
     });
   }
 
   studentSchoolFeesPaymentsAmount() {
     const schoolFeesPayments = this.studentSchoolFeesPayments();
+    console.log(schoolFeesPayments);
     return schoolFeesPayments.reduce((acc, cur) => acc + cur.amount, 0);
   }
 
