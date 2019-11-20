@@ -172,24 +172,18 @@ export class RegistrationComponent implements OnInit {
     } else {
       this.subPayments.push(this.formBuilder.group({
         fee: subPayment.fee,
-        amount: [subPayment.amount, [this.utils.form.feeValidator(subPayment), Validators.min(0)]]
+        amount: [subPayment.amount, [this.utils.form.feeValidator(subPayment), Validators.min(0)]],
+        reduction: 0
       }));
     }
-    console.log(payment);
+  }
+
+  removeSubpayment(index: number) {
+    this.subPayments.removeAt(index);
   }
 
   resetAllForms() {
-    this.registrationForm.reset();
-    this.registrationForm.markAsUntouched();
-    this.paymentForm.reset();
-    this.paymentForm.markAsUntouched();
-    this.subFeesForm.reset();
-    this.subFeesForm.clear();
-    this.subFeesForm.markAsUntouched();
-    this.isReregistration = null;
-
-    this.registrationForm.get('classroom').setErrors(null);
-    this.registrationForm.patchValue({gender: 'M'});
+    location.reload();
   }
 
   onClassroomSelected() {

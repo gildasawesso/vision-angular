@@ -74,37 +74,40 @@
   </div>
 
   <div *ngIf="currentPage == 3" class="d-flex flex-column justify-content-between">
-    <div formGroupName="payment" class="col-12 my-2">
+    <div formGroupName="payment" class="col-12 p-0">
       <div formArrayName="fees">
-        <div *ngFor="let subPayment of subPayments.controls; let i = index" [formGroup]="subPayment" class="d-flex align-items-center my-3">
-          <div style="flex-basis: 0" class="d-flex flex-column flex-grow-1">
-            <label>{{ subPayment?.value?.fee.name }}</label>
-            <mat-form-field appearance="outline">
-              <input type="number" matInput formControlName="amount" />
-            </mat-form-field>
-            <app-input formControlName="reduction" class="inputs" type="number">Réduction sur {{subPayment?.value?.fee.name}}</app-input>
-            <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('invalid')">{{subPayment.get('amount')?.errors?.invalid}}</span>
-            <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('min')">La valeur est invalide</span>
-          </div>
-
-          <div style="flex-basis: 0" class="stats d-flex flex-grow-1 mx-5">
-            <div class="d-flex align-items-center flex-grow-1">
-              <div class="font-weight-bold">
-                <div class="title">Montant</div>
-                <div class="value">{{subPayment?.value?.fee?.amount | spaced: 'FCFA' }}</div>
-              </div>
+        <div *ngFor="let subPayment of subPayments.controls; let i = index" [formGroup]="subPayment" class="d-flex align-items-center">
+          <button *ngIf="i != 0" (click)="removeSubpayment(i)" mat-icon-button color="warn" style="margin-left: -40px;"><mat-icon>delete</mat-icon></button>
+          <div class="sub-payment d-flex align-items-center flex-grow-1">
+            <div style="flex-basis: 0" class="d-flex flex-column flex-grow-1">
+              <label>{{ subPayment?.value?.fee.name }}</label>
+              <mat-form-field appearance="outline">
+                <input type="number" matInput formControlName="amount" />
+              </mat-form-field>
+              <app-input formControlName="reduction" class="inputs" type="number">Réduction sur {{subPayment?.value?.fee.name}}</app-input>
+              <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('invalid')">{{subPayment.get('amount')?.errors?.invalid}}</span>
+              <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('min')">La valeur est invalide</span>
             </div>
 
-            <div style="flex-basis: 0" class="balance flex-grow-1">
-              <div class="title">Reste après réduction</div>
-              <div class="value">{{getBalance(subPayment.value)  | spaced: 'FCFA'}}</div>
+            <div style="flex-basis: 0" class="stats d-flex flex-grow-1 mx-5">
+              <div class="d-flex align-items-center flex-grow-1">
+                <div class="font-weight-bold">
+                  <div class="title">Montant</div>
+                  <div class="value">{{subPayment?.value?.fee?.amount | spaced: 'FCFA' }}</div>
+                </div>
+              </div>
+
+              <div style="flex-basis: 0" class="balance flex-grow-1">
+                <div class="title">Reste après réduction</div>
+                <div class="value">{{getBalance(subPayment.value)  | spaced: 'FCFA'}}</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-12 my-2">
+    <div class="col-12 my-2 mx-0">
       <span *ngIf="filterFees().length <= 0">Il n'y a plus de contributions à ajouter</span>
       <app-select *ngIf="filterFees().length > 0" class="inputs"
                   [options]="filterFees()"

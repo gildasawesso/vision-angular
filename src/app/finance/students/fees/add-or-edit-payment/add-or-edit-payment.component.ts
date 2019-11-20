@@ -109,7 +109,7 @@ export class AddOrEditPaymentComponent implements OnInit {
 
   studentSchoolFeesPaymentsAmount() {
     const schoolFeesPayments = this.studentSchoolFeesPayments();
-    console.log(schoolFeesPayments);
+    if (schoolFeesPayments.length <= 0) { return 0; }
     return schoolFeesPayments.reduce((acc, cur) => acc + cur.amount, 0);
   }
 
