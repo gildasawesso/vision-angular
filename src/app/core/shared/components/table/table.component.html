@@ -18,6 +18,10 @@
           </td>
         </ng-container>
 
+        <ng-container *ngSwitchCase="mapping['paymentDate']">
+          <td *matCellDef="let element" mat-cell>{{(element.paymentDate ? element.paymentDate : element.createdAt) | date: 'dd MMMM yyyy'}}</td>
+        </ng-container>
+
         <ng-container *ngSwitchCase="mapping['finance_payments_designation']">
           <td *matCellDef="let element" mat-cell>
             <ng-container *ngTemplateOutlet="optionsTemplate; context: { element: element }"></ng-container>

@@ -21,7 +21,7 @@ export class PaymentsComponent implements OnInit {
   mapping = {
     'append student.firstname student.lastname': 'Nom de l\'élève',
     'classroom.name': 'Classe',
-    'date createdAt': 'Date de payement',
+    paymentDate: 'Date de payement',
     'array fees fee.name': 'Type de contribution',
     amount: 'Montant',
     options: 'Options',
