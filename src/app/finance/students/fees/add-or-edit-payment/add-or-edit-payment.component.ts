@@ -54,7 +54,7 @@ export class AddOrEditPaymentComponent implements OnInit {
     student: [],
     schoolYear: [],
     registrationFee: [],
-    schoolFee: [{value: '', disabled: true}],
+    schoolFee: [{value: '', disabled: false}],
     fees: [],
     classroom: [],
     reduction: [],
@@ -103,7 +103,11 @@ export class AddOrEditPaymentComponent implements OnInit {
 
     const feeType: FeeType = this.paymentForm.get('schoolFee').value;
     return payments.filter(p => {
-      return p.fees.find(f => f.fee._id.toString() === feeType._id.toString()) !== undefined;
+      try {
+        return p.fees.find(f => f.fee._id.toString() === feeType._id.toString()) !== undefined;
+      } catch (e) {
+        return false;
+      }
     });
   }
 
@@ -118,7 +122,7 @@ export class AddOrEditPaymentComponent implements OnInit {
       .subscribe((classroom: Classroom) => {
         this.paymentForm.reset();
         this.studentsFiltred = this.registrations.filter(r => r.classroom._id === classroom._id).map(r => r.student);
-        this.paymentForm.patchValue({schoolFee: classroom.schoolFee});
+        this.paymentForm.get('schoolFee').patchValue(classroom.schoolFee, {emitEvent: true});
       });
 
     this.studentsRepository.stream

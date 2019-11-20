@@ -1,4 +1,11 @@
 :host {
   display: flex;
   flex-direction: column;
+
+  .balance {
+    padding: 14px;
+    background-color: #fafafa;
+    border-radius: 7px;
+    margin-top: 14px;
+  }
 }

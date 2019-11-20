@@ -9,13 +9,15 @@
   </app-select>
 </div>
 
-<div class="row" [formGroup]="paymentForm" *ngIf="classroomSelected.value">
-  <app-select class="inputs col-12 col-sm-6"
-              [options]="students"
-              displayKey="lastname" valueKey="_id"
-              formControlName="student">
-    Élève
-  </app-select>
+<div class="row" [formGroup]="paymentForm" >
+  <div *ngIf="classroomSelected.value" class="mt-3 col-12 col-sm-6 d-flex flex-column">
+    <label>Élève</label>
+    <mat-form-field appearance="outline" color="primary">
+      <select matNativeControl formControlName="student" [compareWith]="utils.common.compareFn">
+        <option *ngFor="let student of studentsFiltred" [ngValue]="student">{{student.firstname}} {{student.lastname}}</option>
+      </select>
+    </mat-form-field>
+  </div>
 
   <div class="inputs col-12 col-sm-6 mt-3">
     <div class="d-flex flex-column">
@@ -32,10 +34,19 @@
 
   <app-input [control]="this.paymentForm.get('reduction')" formControlName="reduction" type="number" class="inputs col-6">Réduction</app-input>
 
-  <div class="col-12 col-sm-4">{{totalSchoolFeeAmount() | spaced: 'FCFA'}}</div>
-  <div class="col-12 col-sm-4">{{studentSchoolFeesPaymentsAmount() | spaced: 'FCFA'}}</div>
-  <div class="col-12 col-sm-4"></div>
+  <mat-divider></mat-divider>
+</div>
 
+<div class="balance d-flex align-items-center">
+  <div class="flex-fill">
+    <label>Montant de la scolarité</label>
+    <div>{{totalSchoolFeeAmount() | spaced: 'FCFA'}}</div>
+  </div>
+  <div class="flex-fill">
+    <label>Montant déjà payé par l'élève</label>
+    <div>{{studentSchoolFeesPaymentsAmount() | spaced: 'FCFA'}}</div>
+  </div>
+  <div class="flex-fill"></div>
 </div>
 
 <div class="ml-auto mt-5">

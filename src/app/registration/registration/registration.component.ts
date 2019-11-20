@@ -186,6 +186,13 @@ export class RegistrationComponent implements OnInit {
     location.reload();
   }
 
+  checkReduction(subPayment) {
+    const fee = subPayment.get('fee').value.amount;
+    const payed = subPayment.get('amount').value;
+    const reduction = subPayment.get('reduction').value;
+    return Number(payed) + Number(reduction) > Number(fee);
+  }
+
   onClassroomSelected() {
     this.registrationForm.controls.classroom.valueChanges
       .subscribe((obj: Classroom) => {

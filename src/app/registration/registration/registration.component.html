@@ -87,6 +87,7 @@
               <app-input formControlName="reduction" class="inputs" type="number">Réduction sur {{subPayment?.value?.fee.name}}</app-input>
               <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('invalid')">{{subPayment.get('amount')?.errors?.invalid}}</span>
               <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('min')">La valeur est invalide</span>
+              <span style="color: red;" *ngIf="checkReduction(subPayment)">La payement et la réduction sont supérieurs au montant de la contribution</span>
             </div>
 
             <div style="flex-basis: 0" class="stats d-flex flex-grow-1 mx-5">
