@@ -92,7 +92,6 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   displayArray(array, displayProperty, seperator = ' & ') {
-    // return array.reduce((acc, cur) => acc + ' ' + cur[displayProperty], '');
     const value = array.reduce((acc, cur) => acc + ' ' + seperator + ' ' + this.resolve(displayProperty, cur), '');
     return value.toString().slice(2);
   }

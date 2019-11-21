@@ -16,6 +16,7 @@ import {SchoolsRepository} from '../../core/repositories/schools.repository';
 import {FeeType} from '../../core/models/fee-type';
 import {FeeTypesRepository} from '../../core/repositories/fee-types.repository';
 import * as moment from 'moment';
+import {MatButtonToggleChange} from '@angular/material';
 
 const MAX_PAGE = 3;
 
@@ -112,6 +113,7 @@ export class RegistrationComponent implements OnInit {
   filterFees() {
     return this.feeTypes.filter(ft => {
       const subPaymentAlreadyInForm = this.subPayments.controls.find(subPaymentGroup => {
+        if (subPaymentGroup.get('fee').value == null) { return false; }
         const subPaymentId = subPaymentGroup.get('fee').value._id;
         return ft._id === subPaymentId;
       });
@@ -120,7 +122,13 @@ export class RegistrationComponent implements OnInit {
   }
 
   getBalance(subpayment) {
-    const balance = subpayment.fee.amount - (subpayment.amount + Number(subpayment.reduction));
+    let balance = 0;
+    if (subpayment.reductionType === 'percentage') {
+      const reduction = Number(subpayment.fee.amount) * Number(subpayment.reduction) / 100;
+      balance = subpayment.fee.amount - (subpayment.amount + reduction);
+    } else {
+      balance = subpayment.fee.amount - (subpayment.amount + Number(subpayment.reduction));
+    }
     return balance < 0 ? 0 : balance;
   }
 
@@ -129,7 +137,8 @@ export class RegistrationComponent implements OnInit {
 
     this.isBusy = true;
     const newStudents = this.registrationForm.value;
-    console.log(newStudents);
+    const newPayment: Payment = this.paymentForm.value;
+
     delete newStudents.payment;
     const student: Student = await this.studentsRepository.add(newStudents);
 
@@ -140,11 +149,17 @@ export class RegistrationComponent implements OnInit {
       registrationDate: newStudents.registrationDate,
       isReregistration: this.isReregistration,
       feesReduction: newStudents.feesReduction,
-      registrationFeeReduction: newStudents.registrationFeeReduction
+      registrationFeeReduction: newStudents.registrationFeeReduction,
+      reductions: newPayment.fees.map(f => {
+        return {
+          fee: f.fee,
+          reductionType: f.reductionType,
+          reduction: f.reduction
+        };
+      })
     };
     await this.registrationRepository.add(newRegistration);
 
-    const newPayment: Payment = this.paymentForm.value;
     newPayment.amount = newPayment.fees.reduce((acc, cur) => acc + cur.amount, 0);
     newPayment.student = student;
     newPayment.paymentDate = newStudents.registrationDate;
@@ -162,20 +177,34 @@ export class RegistrationComponent implements OnInit {
   addPaymentToPaymentsFormArray(payment, subPayment) {
     if (payment) {
       this.paymentForm.reset();
+      this.subPayments.clear();
       this.paymentForm.patchValue(payment);
       this.subPayments.push(this.formBuilder.group({
         fee: subPayment.fee,
         amount: [subPayment.amount, [this.utils.form.registrationFeeValidator(subPayment), Validators.min(0)]],
         isRegistration: true,
-        reduction: 0
+        reduction: 0,
+        reductionType: 'amount'
       }));
     } else {
       this.subPayments.push(this.formBuilder.group({
         fee: subPayment.fee,
         amount: [subPayment.amount, [this.utils.form.feeValidator(subPayment), Validators.min(0)]],
-        reduction: 0
+        reduction: 0,
+        reductionType: 'amount'
       }));
     }
+  }
+
+  onReductionTypeChanged(subPayment) {
+    const currentReductionType = subPayment.get('reductionType').value;
+    if (currentReductionType === 'percentage') {
+      subPayment.get('reductionType').patchValue('amount');
+    } else {
+      subPayment.get('reductionType').patchValue('percentage');
+      subPayment.get('reduction').setValidators([Validators.min(0), Validators.max(100)]);
+    }
+    subPayment.get('reduction').patchValue(0);
   }
 
   removeSubpayment(index: number) {
@@ -189,8 +218,16 @@ export class RegistrationComponent implements OnInit {
   checkReduction(subPayment) {
     const fee = subPayment.get('fee').value.amount;
     const payed = subPayment.get('amount').value;
-    const reduction = subPayment.get('reduction').value;
-    return Number(payed) + Number(reduction) > Number(fee);
+    const rawReduction = subPayment.get('reduction').value;
+    const reductionType = subPayment.get('reductionType').value;
+    let reduction = 0;
+
+    if (reductionType === 'percentage') {
+      reduction = Number(fee) * Number(rawReduction) / 100;
+    } else {
+      reduction = Number(rawReduction);
+    }
+    return Number(payed) + reduction > Number(fee);
   }
 
   onClassroomSelected() {

@@ -4,16 +4,26 @@ import {SchoolsRepository} from '../../repositories/schools.repository';
 import * as moment from 'moment';
 import {ApiService} from '../../services/api.service';
 import {Payment} from '../../models/payment';
+import {FeeType} from '../../models/fee-type';
+import {PaymentsRepository} from '../../repositories/payments.repository';
+import {Student} from '../../models/student';
+import {RegistrationsRepository} from '../../repositories/registrations.repository';
 
 moment.locale('fr');
 
 @Injectable()
 export class PrintUtil {
 
+  payments = [];
+  registrations = [];
+
   constructor(private dialog: MatDialog,
               private snackBar: MatSnackBar,
               private schools: SchoolsRepository,
-              private api: ApiService) {
+              private api: ApiService,
+              private paymentsRepository: PaymentsRepository,
+              private registrationsRepository: RegistrationsRepository) {
+    this.loadRepositories();
   }
 
   spaced(value, suffix = '') {
@@ -21,20 +31,55 @@ export class PrintUtil {
     return value.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ') + ' ' + suffix;
   }
 
+  studentPayments(student: Student) {
+    console.log(this.payments);
+    return this.payments.filter(p => p.student._id === student._id);
+  }
+
+  feeReduction(student: Student, fee: FeeType) {
+    console.log(this.registrations);
+    const registration = this.registrations.find(r => r.student._id === student._id);
+    if (registration === undefined) { return 0; }
+
+    const reductionForFee = registration.reductions.find(r => r.fee._id === fee._id);
+    if (reductionForFee === undefined) { return 0; }
+
+    if (reductionForFee.reductionType === 'percentage') {
+      return reductionForFee.fee.amount * reductionForFee.reduction / 100;
+    } else {
+      return reductionForFee.reduction;
+    }
+  }
+
+  paymentsForFee(oldPayments: Payment[], fee: FeeType) {
+    const subPayments = oldPayments.map(p => p.fees);
+    const subPaymentsFlattened = subPayments.reduce((acc, cur) => {
+      acc = [...acc, ...cur];
+      return acc;
+    }, []);
+    const feeSubPayments = subPaymentsFlattened.filter(p => p.fee._id === fee._id);
+    return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
+  }
+
   async registrationReceipt(payment: Payment | any) {
     const currentSchool = this.schools.list[0];
+    const studentPayments = this.studentPayments(payment.student);
+
     const fees = payment.fees.map((subPayement, index) => {
-        return {
+      const oldPayment = this.paymentsForFee(studentPayments, subPayement.fee) - subPayement.amount;
+      const reduction = this.feeReduction(payment.student, subPayement.fee);
+      return {
           designation: subPayement.fee.name,
           amount: subPayement.fee.amount,
-          reduction: Number(subPayement.reduction),
+          reduction,
           payed: subPayement.amount,
-          balance: subPayement.fee.amount - subPayement.amount - Number(subPayement.reduction),
+          oldPayments: oldPayment,
+          balance: subPayement.fee.amount - subPayement.amount - reduction - oldPayment,
         };
       });
     const data = {
       code: payment.code,
-      createdAt: moment(payment.paymentDate).format('DD MMMM YYYY'),
+      createdAt: payment.paymentDate ? moment(payment.paymentDate).format('DD MMMM YYYY') : moment(payment.createdAt).format('DD MMMM YYYY'),
       schoolYear: moment(payment.schoolYear.startDate).format('YYYY') + ' - ' + moment(payment.schoolYear.endDate).format('YYYY'),
       schoolName: currentSchool.name,
       schoolAddress: currentSchool.zipCode,
@@ -50,12 +95,14 @@ export class PrintUtil {
           amount: this.spaced(fee.amount),
           reduction: this.spaced(fee.reduction),
           payed: this.spaced(fee.payed),
+          oldPayments: this.spaced(fee.oldPayments),
           balance: this.spaced(fee.balance)
         };
       }),
       totalAmount: this.spaced(fees.reduce((acc, cur) => acc + cur.amount, 0), 'FCFA'),
       totalReduction: this.spaced(fees.reduce((acc, cur) => acc + cur.reduction, 0), 'FCFA'),
       totalPayed: this.spaced(fees.reduce((acc, cur) => acc + cur.payed, 0), 'FCFA'),
+      totalOldPayments: this.spaced(fees.reduce((acc, cur) => acc + cur.oldPayments, 0), 'FCFA'),
       totalBalance: this.spaced(fees.reduce((acc, cur) => acc + cur.balance, 0), 'FCFA'),
     };
     const options = {
@@ -71,6 +118,18 @@ export class PrintUtil {
   download(blob: Blob) {
     const url = URL.createObjectURL(blob);
     window.open(url);
+  }
+
+  loadRepositories() {
+    this.paymentsRepository.stream
+      .subscribe(payments => {
+        this.payments = payments;
+      });
+
+    this.registrationsRepository.stream
+      .subscribe(registrations => {
+        this.registrations = registrations;
+      });
   }
 }
 
