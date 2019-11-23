@@ -1,6 +1,6 @@
 <ng-content></ng-content>
-<mat-form-field *ngIf="!multiple" appearance="outline" color="primary">
-  <select matNativeControl required [(ngModel)]="value" [compareWith]="utils.common.compareFn">
+<mat-form-field *ngIf="!multiple" appearance="outline" color="primary" >
+  <select matNativeControl required [(ngModel)]="value" [compareWith]="utils.common.compareFn" [disabled]="disabled">
     <option *ngIf="addEmptyOption" [value]="null">{{ emptyLabel }}</option>
     <option *ngFor="let option of options" [ngValue]="option">{{option[displayKey]}}</option>
   </select>

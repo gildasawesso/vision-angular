@@ -17,6 +17,7 @@ import {Utils} from '../../utils';
 export class SelectComponent implements OnInit, ControlValueAccessor {
 
   @Input() label: string;
+  @Input() disabled = false;
   @Input() options: any[];
   @Input() valueKey: string;
   @Input() displayKey: string;
@@ -30,7 +31,6 @@ export class SelectComponent implements OnInit, ControlValueAccessor {
   @Input('type') type = 'text';
   propagateChange: (_: any) => void;
   onTouched: any;
-  disabled: boolean;
 
   constructor(public utils: Utils) { }
 

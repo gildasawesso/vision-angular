@@ -26,6 +26,7 @@ import {NgxPermissionsModule} from 'ngx-permissions';
 import {ChartsModule} from 'ng2-charts';
 import { ChartHostDirective } from './directives/chart-host.directive';
 import { AdvancedSelectComponent } from './components/advanced-select/advanced-select.component';
+import {StudentUtil} from './utils/student.util';
 
 const components = [
   AdmissionComponent,
@@ -89,6 +90,7 @@ const modules = [
     FormUtil,
     Common,
     PrintUtil,
+    StudentUtil,
     Utils
   ]
 })

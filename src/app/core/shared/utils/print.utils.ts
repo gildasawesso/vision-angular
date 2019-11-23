@@ -32,7 +32,6 @@ export class PrintUtil {
   }
 
   studentPayments(student: Student) {
-    console.log(this.payments);
     return this.payments.filter(p => p.student._id === student._id);
   }
 
