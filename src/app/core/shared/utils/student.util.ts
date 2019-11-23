@@ -3,11 +3,22 @@ import {Payment} from '../../models/payment';
 import {FeeType} from '../../models/fee-type';
 import {Student} from '../../models/student';
 import {Registration} from '../../models/registration';
+import {ExaminationsRepository} from '../../repositories/examinations.repository';
+import {Examination} from '../../models/examination';
+import {Classroom} from '../../models/classroom';
 
 @Injectable()
 export class StudentUtil {
 
-  constructor() {
+  examinations: Examination[] = [];
+
+  constructor(private examinationsRepository: ExaminationsRepository) {
+    this.init();
+  }
+
+  init() {
+    this.examinationsRepository.stream
+      .subscribe(examinations => this.examinations = examinations);
   }
 
   studentPayments(payments: Payment[], student: Student) {
@@ -37,6 +48,10 @@ export class StudentUtil {
     }, []);
     const feeSubPayments = subPaymentsFlattened.filter(p => p.fee._id === fee._id);
     return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
+  }
+
+  classroomExaminations(classroom: Classroom) {
+    return this.examinations.filter(e => e.classroom._id === classroom._id);
   }
 
 }

@@ -14,8 +14,8 @@ moment.locale('fr');
 @Injectable()
 export class PrintUtil {
 
-  payments = [];
-  registrations = [];
+  private payments = [];
+  private registrations = [];
 
   constructor(private dialog: MatDialog,
               private snackBar: MatSnackBar,
@@ -26,16 +26,16 @@ export class PrintUtil {
     this.loadRepositories();
   }
 
-  spaced(value, suffix = '') {
+  private spaced(value, suffix = '') {
     if (value === undefined || value == null ) { return value; }
     return value.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ') + ' ' + suffix;
   }
 
-  studentPayments(student: Student) {
+  private studentPayments(student: Student) {
     return this.payments.filter(p => p.student._id === student._id);
   }
 
-  feeReduction(student: Student, fee: FeeType) {
+  private feeReduction(student: Student, fee: FeeType) {
     console.log(this.registrations);
     const registration = this.registrations.find(r => r.student._id === student._id);
     if (registration === undefined) { return 0; }
@@ -50,7 +50,7 @@ export class PrintUtil {
     }
   }
 
-  paymentsForFee(oldPayments: Payment[], fee: FeeType) {
+  private paymentsForFee(oldPayments: Payment[], fee: FeeType) {
     const subPayments = oldPayments.map(p => p.fees);
     const subPaymentsFlattened = subPayments.reduce((acc, cur) => {
       acc = [...acc, ...cur];
@@ -58,6 +58,40 @@ export class PrintUtil {
     }, []);
     const feeSubPayments = subPaymentsFlattened.filter(p => p.fee._id === fee._id);
     return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
+  }
+
+  async bulletin(notes) {
+    const currentSchool = this.schools.list[0];
+    const data = {
+      matricule: notes.student.matricule,
+      schoolName: currentSchool.name,
+      studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
+      term: notes.term,
+      schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
+      classroom: notes.classroom.name,
+      subjects: notes.subjects.map(subjectAndExaminationType => {
+        const marks = {};
+        subjectAndExaminationType.examinationsByType.forEach((s, index) => {
+          marks[`mark${index + 1}`] = s.marks;
+        });
+        return {
+          name: subjectAndExaminationType.subject.name,
+          meanByTwenty: subjectAndExaminationType.meanByTwenty,
+          coef: subjectAndExaminationType.coef,
+          meanByCoefficient: subjectAndExaminationType.meanByCoefficient,
+          ...marks
+        };
+      })
+    };
+
+    const options = {
+      body: data,
+      responseType: 'blob'
+    };
+    console.log(options.body);
+    const file = await this.api.request('post', '/report/print/bulletin', options).toPromise();
+
+    this.download(file);
   }
 
   async registrationReceipt(payment: Payment | any) {
@@ -109,17 +143,16 @@ export class PrintUtil {
       responseType: 'blob'
     };
     const file = await this.api.request('post', '/report/print/registration', options).toPromise();
-    console.log(typeof file);
 
     this.download(file);
   }
 
-  download(blob: Blob) {
+  private download(blob: Blob) {
     const url = URL.createObjectURL(blob);
     window.open(url);
   }
 
-  loadRepositories() {
+  private loadRepositories() {
     this.paymentsRepository.stream
       .subscribe(payments => {
         this.payments = payments;

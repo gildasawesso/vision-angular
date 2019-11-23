@@ -1,8 +1,19 @@
 <div>
-  <mat-form-field appearance="outline">
-    <mat-label>Type d'examination</mat-label>
-    <input matInput [formControl]="type"/>
-  </mat-form-field>
+  <div class="d-flex flex-column">
+    <mat-form-field appearance="outline">
+      <mat-label>Type d'examination</mat-label>
+      <input matInput [formControl]="type"/>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Groupe d'examination</mat-label>
+      <select matNativeControl [formControl]="group">
+        <ng-container *ngFor="let group of array">
+          <option [value]="group" *ngIf="group != 0">{{group}}</option>
+        </ng-container>
+      </select>
+    </mat-form-field>
+  </div>
   <div class="d-flex">
     <button mat-flat-button (click)="close()">Annuler</button>
     <button mat-raised-button (click)="add()">{{btnMessage}}</button>

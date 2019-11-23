@@ -27,6 +27,7 @@ import {ChartsModule} from 'ng2-charts';
 import { ChartHostDirective } from './directives/chart-host.directive';
 import { AdvancedSelectComponent } from './components/advanced-select/advanced-select.component';
 import {StudentUtil} from './utils/student.util';
+import {ExaminationUtil} from './utils/examination.util';
 
 const components = [
   AdmissionComponent,
@@ -91,6 +92,7 @@ const modules = [
     Common,
     PrintUtil,
     StudentUtil,
+    ExaminationUtil,
     Utils
   ]
 })

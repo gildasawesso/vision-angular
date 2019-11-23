@@ -1,0 +1,21 @@
+@import 'app.colors';
+
+:host {
+  .classroom {
+    font-size: 1.3em;
+    margin: 10px 0;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 7px;
+
+    &.selected {
+      background-color: $primary;
+      color: white;
+    }
+  }
+
+  .student {
+    margin: 10px 0;
+    padding: 10px;
+  }
+}

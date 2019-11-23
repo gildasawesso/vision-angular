@@ -53,18 +53,16 @@ export class ExaminationComponent implements OnInit {
   }
 
   async addExaminationType() {
-    const examinationTypeName: any = await this.utils.common.modalWithResult(AddOrEditExaminationTypeComponent, { type: null });
-    const examinationType: any = {
-      name: examinationTypeName
-    };
-    await this.examinationTypesRepository.add(examinationType);
+    const examinationType: ExaminationType = await this.utils.common.modalWithResult(AddOrEditExaminationTypeComponent, { type: null });
+    if (examinationType) {
+      await this.examinationTypesRepository.add(examinationType);
+    }
   }
 
   async editExaminationType(type: ExaminationType) {
-    const name = await this.utils.common.modalWithResult(AddOrEditExaminationTypeComponent, { type });
-    if (name != null) {
-      type.name = name;
-      await this.examinationTypesRepository.update(type, type._id);
+    const examinationType = await this.utils.common.modalWithResult(AddOrEditExaminationTypeComponent, { type });
+    if (examinationType != null) {
+      await this.examinationTypesRepository.update(examinationType, type._id);
     }
   }
 

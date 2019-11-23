@@ -1,4 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ClassroomsRepository} from '../../core/repositories/classrooms.repository';
+import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
+import {Classroom} from '../../core/models/classroom';
+import {Registration} from '../../core/models/registration';
+import {ExaminationsRepository} from '../../core/repositories/examinations.repository';
+import {Examination} from '../../core/models/examination';
+import {Utils} from '../../core/shared/utils';
+import {SchoolyearsRepository} from '../../core/repositories/schoolyears.repository';
+import {SchoolYear} from '../../core/models/school-year';
+import {SubjectsRepository} from '../../core/repositories/subjects.repository';
+import {Subject} from '../../core/models/subject';
+import {Student} from '../../core/models/student';
 
 @Component({
   selector: 'app-bulletins',
@@ -7,9 +19,137 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BulletinsComponent implements OnInit {
 
-  constructor() { }
+  classrooms: Classroom[] = [];
+  registrations: Registration[] = [];
+  subjects: Subject[] = [];
+  schoolYear: SchoolYear;
+  examinations: Examination[] = [];
+  selected = -1;
+  classroomSelected: Classroom;
+
+  get classroomStudents() {
+    return this.registrationsRepository.studentsForClassroom(this.registrations, this.classroomSelected);
+  }
+
+  get classroomStudentsExamainations() {
+    return this.classroomStudents.map(student => {
+      return {
+        student,
+        classroom: this.classroomSelected,
+        schoolYear: this.schoolYear,
+        term: this.schoolYear.sessions[0].name,
+        subjects: this.classroomSelected.subjects.map(subject => {
+          const marksByExaminationType = this.marksByExaminationType(student, subject);
+          const meanByTwenty = marksByExaminationType.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationType.length;
+          return {
+            subject,
+            meanByTwenty,
+            coef: subject.coefficient,
+            meanByCoefficient: meanByTwenty * subject.coefficient,
+            examinationsByType: marksByExaminationType
+          };
+        })
+      };
+    });
+  }
+
+  marksByExaminationType(student: Student, subject: Subject) {
+    return this.classroomExaminationTypes.map(type => {
+      const currentSubjectAndTypeExaminations = this.classroomExaminations.filter(e => e.subject._id === subject._id && e.type._id === type._id);
+      const marksSum = currentSubjectAndTypeExaminations.reduce((acc, cur) => acc + cur.marks.find(m => m.student._id === student._id).mark, 0);
+      return {
+        examinationType: type,
+        marks: marksSum / currentSubjectAndTypeExaminations.length
+      };
+    });
+  }
+
+  get classroomExaminations() {
+    return this.utils.examination.classroomExaminations(this.classroomSelected);
+  }
+
+  get subjectExaminations() {
+    return this.classroomSelected.subjects.map(s => {
+      return {
+        subject: s,
+        examinations: this.classroomExaminations.filter(e => e.subject._id === s._id)
+      };
+    });
+  }
+
+  get subjectExaminationsByType() {
+    return this.subjectExaminations.map(subjectAndExaminations => {
+      return {
+        subject: subjectAndExaminations.subject,
+        examinationsByType: this.classroomExaminationTypes.map(type => {
+          return {
+            examinationType: type,
+            examinations: subjectAndExaminations.examinations.filter(e => e.type._id === type._id)
+          };
+        })
+      };
+    });
+  }
+
+  get studentsMarksGroupedBySubject() {
+    return this.subjectExaminationsByType.map(subjectByType => {
+      return {
+        subject: subjectByType.subject,
+        marks: subjectByType.examinationsByType.map(examinationByType => {
+          return {
+            examinationType: examinationByType.examinationType,
+            students: this.classroomStudents.map(student => {
+              return {
+                student,
+                mark: examinationByType.examinations.map(e => e.marks.find(m => m.student._id === student._id))
+              };
+            })
+          };
+        })
+      };
+    });
+  }
+
+  get classroomExaminationTypes() {
+    return this.utils.examination.classroomExaminationTypes(this.classroomSelected);
+  }
+
+  constructor(private classroomsRepository: ClassroomsRepository,
+              private registrationsRepository: RegistrationsRepository,
+              private examinationsRepository: ExaminationsRepository,
+              private schoolyearsRepository: SchoolyearsRepository,
+              private subjectsRepository: SubjectsRepository,
+              private utils: Utils) {
+  }
+
+  selectClassroom(classroom: Classroom, index: number) {
+    this.selected = index;
+    this.classroomSelected = classroom;
+
+    console.log(this.classroomStudentsExamainations);
+  }
+
+  async printBulletin(student: Student) {
+    const marks = this.classroomStudentsExamainations;
+    const currentStudentMarks = marks.find(m => m.student._id === student._id);
+    await this.utils.print.bulletin(currentStudentMarks);
+  }
 
   ngOnInit() {
+    this.classroomsRepository.stream
+      .subscribe(classrooms => this.classrooms = classrooms);
+
+    this.registrationsRepository.stream
+      .subscribe(registrations => this.registrations = registrations);
+
+    this.examinationsRepository.stream
+      .subscribe(examinations => this.examinations = examinations);
+
+    this.schoolyearsRepository.stream
+      .subscribe(schoolYears => this.schoolYear = schoolYears[0]);
+
+    this.subjectsRepository.stream
+      .subscribe(subjects => this.subjects = subjects);
   }
 
 }
