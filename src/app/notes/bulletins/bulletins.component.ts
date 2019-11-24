@@ -201,7 +201,7 @@ export class BulletinsComponent implements OnInit {
       bulletins.push(this.printMultipleBulletin(student));
     });
 
-    this.utils.print.download(bulletins);
+    // this.utils.print.download(bulletins);
   }
 
   ngOnInit() {
