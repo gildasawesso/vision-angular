@@ -62,20 +62,36 @@ export class PrintUtil {
 
   async bulletin(notes) {
     const currentSchool = this.schools.list[0];
+    const examTypes = {};
+    const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
+    const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
+    const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
+    notes.examinationsTypes.forEach((e, index) => {
+      examTypes[`examType${index + 1}`] = e;
+    });
     const data = {
       matricule: notes.student.matricule,
       schoolName: currentSchool.name,
+      sex: notes.student.gender,
+      status: Number(generalMean) >= 10 ? 'Passant' : 'Ajournée',
       studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
-      term: notes.term,
+      term: notes.term.toUpperCase(),
       schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
       classroom: notes.classroom.name,
+      ...examTypes,
+      totalPoints,
+      totalCoef,
+      mainRank: notes.mainRank,
+      bestClassroomMean: notes.bestClassroomMean,
+      lastClassroomMean: notes.lastClassroomMean,
+      generalMean,
       subjects: notes.subjects.map(subjectAndExaminationType => {
         const marks = {};
         subjectAndExaminationType.examinationsByType.forEach((s, index) => {
           marks[`mark${index + 1}`] = s.marks;
         });
         return {
-          name: subjectAndExaminationType.subject.name,
+          name: subjectAndExaminationType.subject.code,
           meanByTwenty: subjectAndExaminationType.meanByTwenty.toFixed(2),
           coef: subjectAndExaminationType.coef,
           rank: subjectAndExaminationType.rank,
@@ -92,7 +108,7 @@ export class PrintUtil {
       responseType: 'blob'
     };
     console.log(options.body);
-    const file = await this.api.request('post', '/report/print/bulletin', options).toPromise();
+    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes`, options).toPromise();
 
     this.download(file);
   }

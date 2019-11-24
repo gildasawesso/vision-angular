@@ -12,6 +12,7 @@ import {SubjectsRepository} from '../../core/repositories/subjects.repository';
 import {Subject} from '../../core/models/subject';
 import {Student} from '../../core/models/student';
 import {ExaminationType} from '../../core/models/examination-type';
+import {generate} from 'rxjs';
 
 @Component({
   selector: 'app-bulletins',
@@ -50,9 +51,11 @@ export class BulletinsComponent implements OnInit {
 
   get classroomStudentsExamainations() {
     this.notesBySubject = {};
+    console.log(this.classroomExaminationTypes);
     return this.classroomStudents.map(student => {
       return {
         student,
+        examinationsTypes: this.classroomExaminationTypes.map(t => t.name),
         classroom: this.classroomSelected,
         schoolYear: this.schoolYear,
         term: this.schoolYear.sessions[0].name,
@@ -61,6 +64,7 @@ export class BulletinsComponent implements OnInit {
             subject,
           };
           const marksByExaminationType = this.marksByExaminationType(student, subject);
+          const totalMarks = marksByExaminationType.reduce((acc, cur) => acc + cur.marks, 0);
           const meanByTwenty = marksByExaminationType.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationType.length;
           const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject.find(m => m.subject._id === subject._id).examinations;
           const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
@@ -69,6 +73,7 @@ export class BulletinsComponent implements OnInit {
           const lastRankMean = studentMarksForCurrentSubjectSorted[studentMarksForCurrentSubjectSorted.length - 1].meanByTwenty;
           return {
             subject,
+            totalMarks,
             meanByTwenty,
             coef: subject.coefficient,
             rank,
@@ -97,7 +102,7 @@ export class BulletinsComponent implements OnInit {
       const marksSum = currentSubjectAndTypeExaminations.reduce((acc, cur) => acc + cur.marks.find(m => m.student._id === student._id).mark, 0);
       return {
         examinationType: type,
-        marks: marksSum / currentSubjectAndTypeExaminations.length
+        marks: currentSubjectAndTypeExaminations.length >= 1 ? marksSum / currentSubjectAndTypeExaminations.length : 0
       };
     });
   }
@@ -144,13 +149,25 @@ export class BulletinsComponent implements OnInit {
   selectClassroom(classroom: Classroom, index: number) {
     this.selected = index;
     this.classroomSelected = classroom;
-
-    console.log(this.classroomStudentsExamainations);
   }
 
   async printBulletin(student: Student) {
     const marks = this.classroomStudentsExamainations;
-    const currentStudentMarks = marks.find(m => m.student._id === student._id);
+    const studentAndGeneralMean = marks.map(m => {
+      const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
+      const totalPoints = m.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
+      const genralMean = totalPoints / totalCoef;
+      return {
+        student: m.student,
+        mean: genralMean
+      };
+    });
+    const studentAndMeanSorted = studentAndGeneralMean.sort((s1, s2) => s2.mean - s1.mean);
+    const currentStudentRank = studentAndMeanSorted.findIndex(m => m.student._id === student._id);
+    const currentStudentMarks: any = marks.find(m => m.student._id === student._id);
+    currentStudentMarks.mainRank = currentStudentRank + 1;
+    currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
+    currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
     await this.utils.print.bulletin(currentStudentMarks);
   }
 
