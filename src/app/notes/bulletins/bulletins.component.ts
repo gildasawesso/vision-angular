@@ -11,6 +11,7 @@ import {SchoolYear} from '../../core/models/school-year';
 import {SubjectsRepository} from '../../core/repositories/subjects.repository';
 import {Subject} from '../../core/models/subject';
 import {Student} from '../../core/models/student';
+import {ExaminationType} from '../../core/models/examination-type';
 
 @Component({
   selector: 'app-bulletins',
@@ -26,12 +27,29 @@ export class BulletinsComponent implements OnInit {
   examinations: Examination[] = [];
   selected = -1;
   classroomSelected: Classroom;
+  notesBySubject: any;
 
-  get classroomStudents() {
-    return this.registrationsRepository.studentsForClassroom(this.registrations, this.classroomSelected);
+  get studentsMarksGroupedBySubject() {
+    return this.subjectExaminationsByType.map(subjectByType => {
+
+      const studentsMarks = this.classroomStudents.map(student => {
+        const markPerExaminationType = this.marksByExaminationType(student, subjectByType.subject);
+        const meanByTwenty = markPerExaminationType.reduce((acc, cur) => acc + cur.marks, 0) / markPerExaminationType.length;
+        return {
+          student,
+          meanByTwenty
+        };
+      });
+
+      return {
+        subject: subjectByType.subject,
+        examinations: studentsMarks
+      };
+    });
   }
 
   get classroomStudentsExamainations() {
+    this.notesBySubject = {};
     return this.classroomStudents.map(student => {
       return {
         student,
@@ -39,18 +57,38 @@ export class BulletinsComponent implements OnInit {
         schoolYear: this.schoolYear,
         term: this.schoolYear.sessions[0].name,
         subjects: this.classroomSelected.subjects.map(subject => {
+          this.notesBySubject[subject._id] = {
+            subject,
+          };
           const marksByExaminationType = this.marksByExaminationType(student, subject);
           const meanByTwenty = marksByExaminationType.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationType.length;
+          const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject.find(m => m.subject._id === subject._id).examinations;
+          const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
+          const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
+          const firstRankMean = studentMarksForCurrentSubjectSorted[0].meanByTwenty;
+          const lastRankMean = studentMarksForCurrentSubjectSorted[studentMarksForCurrentSubjectSorted.length - 1].meanByTwenty;
           return {
             subject,
             meanByTwenty,
             coef: subject.coefficient,
+            rank,
+            firstRankMean,
+            lastRankMean,
             meanByCoefficient: meanByTwenty * subject.coefficient,
             examinationsByType: marksByExaminationType
           };
         })
       };
     });
+  }
+
+  get classroomStudents() {
+    return this.registrationsRepository.studentsForClassroom(this.registrations, this.classroomSelected);
+  }
+
+  rank(subject: Subject, examinationType: ExaminationType) {
+    const examinations = this.classroomExaminations.filter(e => e.subject._id === subject._id && e.type._id === examinationType._id);
+
   }
 
   marksByExaminationType(student: Student, subject: Subject) {
@@ -85,25 +123,6 @@ export class BulletinsComponent implements OnInit {
           return {
             examinationType: type,
             examinations: subjectAndExaminations.examinations.filter(e => e.type._id === type._id)
-          };
-        })
-      };
-    });
-  }
-
-  get studentsMarksGroupedBySubject() {
-    return this.subjectExaminationsByType.map(subjectByType => {
-      return {
-        subject: subjectByType.subject,
-        marks: subjectByType.examinationsByType.map(examinationByType => {
-          return {
-            examinationType: examinationByType.examinationType,
-            students: this.classroomStudents.map(student => {
-              return {
-                student,
-                mark: examinationByType.examinations.map(e => e.marks.find(m => m.student._id === student._id))
-              };
-            })
           };
         })
       };

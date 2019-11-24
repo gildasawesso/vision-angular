@@ -76,9 +76,12 @@ export class PrintUtil {
         });
         return {
           name: subjectAndExaminationType.subject.name,
-          meanByTwenty: subjectAndExaminationType.meanByTwenty,
+          meanByTwenty: subjectAndExaminationType.meanByTwenty.toFixed(2),
           coef: subjectAndExaminationType.coef,
-          meanByCoefficient: subjectAndExaminationType.meanByCoefficient,
+          rank: subjectAndExaminationType.rank,
+          firstRankMean: subjectAndExaminationType.firstRankMean.toFixed(2),
+          lastRankMean: subjectAndExaminationType.lastRankMean,
+          meanByCoefficient: subjectAndExaminationType.meanByCoefficient.toFixed(2),
           ...marks
         };
       })
