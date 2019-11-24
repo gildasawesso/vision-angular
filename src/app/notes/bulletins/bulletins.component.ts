@@ -171,6 +171,39 @@ export class BulletinsComponent implements OnInit {
     await this.utils.print.bulletin(currentStudentMarks);
   }
 
+  async printMultipleBulletin(student: Student) {
+    const marks = this.classroomStudentsExamainations;
+    const studentAndGeneralMean = marks.map(m => {
+      const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
+      const totalPoints = m.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
+      const genralMean = totalPoints / totalCoef;
+      return {
+        student: m.student,
+        mean: genralMean
+      };
+    });
+    const studentAndMeanSorted = studentAndGeneralMean.sort((s1, s2) => s2.mean - s1.mean);
+    const currentStudentRank = studentAndMeanSorted.findIndex(m => m.student._id === student._id);
+    const currentStudentMarks: any = marks.find(m => m.student._id === student._id);
+    currentStudentMarks.mainRank = currentStudentRank + 1;
+    currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
+    currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
+    return this.utils.print.bulletinBlob(currentStudentMarks);
+  }
+
+  async printClassroomBulletins(classroom: Classroom, index: number) {
+    this.classroomSelected = classroom;
+    this.selected = index;
+
+    const bulletins = [];
+
+    this.classroomStudents.forEach(student => {
+      bulletins.push(this.printMultipleBulletin(student));
+    });
+
+    this.utils.print.download(bulletins);
+  }
+
   ngOnInit() {
     this.classroomsRepository.stream
       .subscribe(classrooms => this.classrooms = classrooms);
