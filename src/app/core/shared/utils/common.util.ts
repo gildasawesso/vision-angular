@@ -2,6 +2,7 @@ import {Component, ComponentFactoryResolver, Injectable, Type, ViewContainerRef}
 import {MatDialog, MatDialogRef, MatSnackBar} from '@angular/material';
 import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.component';
 import {CustomizableAlertDialogComponent} from '../components/customizable-alert-dialog/customizable-alert-dialog.component';
+import {LoadingComponent} from '../components/loading/loading.component';
 
 @Injectable()
 export class Common {
@@ -57,6 +58,13 @@ export class Common {
   toast(body: string) {
     this.snackBar.open(body, null, {
       duration: 5000
+    });
+  }
+
+  loading(message) {
+    return this.dialog.open(LoadingComponent, {
+      disableClose: true,
+      data: { message }
     });
   }
 

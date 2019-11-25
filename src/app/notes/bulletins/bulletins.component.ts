@@ -51,7 +51,7 @@ export class BulletinsComponent implements OnInit {
 
   get classroomStudentsExamainations() {
     this.notesBySubject = {};
-    console.log(this.classroomExaminationTypes);
+    console.log(this.classroomSelected);
     return this.classroomStudents.map(student => {
       return {
         student,
@@ -152,26 +152,30 @@ export class BulletinsComponent implements OnInit {
   }
 
   async printBulletin(student: Student) {
-    const marks = this.classroomStudentsExamainations;
-    const studentAndGeneralMean = marks.map(m => {
-      const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
-      const totalPoints = m.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
-      const genralMean = totalPoints / totalCoef;
-      return {
-        student: m.student,
-        mean: genralMean
-      };
-    });
-    const studentAndMeanSorted = studentAndGeneralMean.sort((s1, s2) => s2.mean - s1.mean);
-    const currentStudentRank = studentAndMeanSorted.findIndex(m => m.student._id === student._id);
-    const currentStudentMarks: any = marks.find(m => m.student._id === student._id);
-    currentStudentMarks.mainRank = currentStudentRank + 1;
-    currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
-    currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
-    await this.utils.print.bulletin(currentStudentMarks);
+    if (this.canGenerateClassroomBulletin()) {
+      const loading = this.utils.common.loading(`Le Bulletin de ${student.firstname} ${student.lastname} est en cours de génération`);
+      const marks = this.classroomStudentsExamainations;
+      const studentAndGeneralMean = marks.map(m => {
+        const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
+        const totalPoints = m.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
+        const genralMean = totalPoints / totalCoef;
+        return {
+          student: m.student,
+          mean: genralMean
+        };
+      });
+      const studentAndMeanSorted = studentAndGeneralMean.sort((s1, s2) => s2.mean - s1.mean);
+      const currentStudentRank = studentAndMeanSorted.findIndex(m => m.student._id === student._id);
+      const currentStudentMarks: any = marks.find(m => m.student._id === student._id);
+      currentStudentMarks.mainRank = currentStudentRank + 1;
+      currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
+      currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
+      await this.utils.print.bulletin(currentStudentMarks);
+      loading.close();
+    }
   }
 
-  async printMultipleBulletin(student: Student) {
+  setupBulletin(student: Student) {
     const marks = this.classroomStudentsExamainations;
     const studentAndGeneralMean = marks.map(m => {
       const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
@@ -188,20 +192,43 @@ export class BulletinsComponent implements OnInit {
     currentStudentMarks.mainRank = currentStudentRank + 1;
     currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
     currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
-    return this.utils.print.bulletinBlob(currentStudentMarks);
+
+    return currentStudentMarks;
   }
 
   async printClassroomBulletins(classroom: Classroom, index: number) {
     this.classroomSelected = classroom;
     this.selected = index;
 
-    const bulletins = [];
+    if (this.canGenerateClassroomBulletin()) {
+      const bulletins = this.classroomStudents.map(student => this.setupBulletin(student));
+      const loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
+      await this.utils.print.classroomBulletin(bulletins);
+      loading.close();
+    }
+  }
 
-    this.classroomStudents.forEach(student => {
-      bulletins.push(this.printMultipleBulletin(student));
-    });
+  canGenerateClassroomBulletin() {
+    if (this.classroomSelected.subjects == null || this.classroomSelected.subjects.length <= 0) {
+      this.utils.common.toast('Cette classe ne dispose pas de cours');
+      return false;
+    }
 
-    // this.utils.print.download(bulletins);
+    if (this.classroomStudents.length <= 0) {
+      this.utils.common.toast('Aucun élève n\'est présent dans cette classe');
+      return false;
+    }
+
+    return true;
+  }
+
+  canGenerateStudentBulletin(student: Student) {
+    if (this.classroomSelected.subjects == null || this.classroomSelected.subjects.length <= 0) {
+      this.utils.common.toast('la classe de cet élève ne dispose pas de cours');
+      return false;
+    }
+
+    return true;
   }
 
   ngOnInit() {

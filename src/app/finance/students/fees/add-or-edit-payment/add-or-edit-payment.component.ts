@@ -206,6 +206,7 @@ export class AddOrEditPaymentComponent implements OnInit {
     this.classroomSelected.valueChanges
       .subscribe((classroom: Classroom) => {
         this.paymentForm.reset();
+        this.subPayments.clear();
         this.studentsFiltred = this.registrations.filter(r => r.classroom._id === classroom._id).map(r => r.student);
         this.paymentForm.get('schoolFee').patchValue(classroom.schoolFee, {emitEvent: true});
       });
@@ -247,6 +248,7 @@ export class AddOrEditPaymentComponent implements OnInit {
   }
 
   checkReduction(subPayment) {
+    if (subPayment.get('fee').value == null) { return; }
     const fee = subPayment.get('fee').value.amount;
     const payed = subPayment.get('amount').value;
     const rawReduction = subPayment.get('reduction') ? subPayment.get('reduction').value : 0;

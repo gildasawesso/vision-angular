@@ -113,57 +113,60 @@ export class PrintUtil {
     this.download(file);
   }
 
-  async bulletinBlob(notes) {
-    const currentSchool = this.schools.list[0];
-    const examTypes = {};
-    const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
-    const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0).toFixed(2);
-    const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
-    notes.examinationsTypes.forEach((e, index) => {
-      examTypes[`examType${index + 1}`] = e;
+  async classroomBulletin(notesArray) {
+    const notesArrayProccessed = notesArray.map(notes => {
+      const currentSchool = this.schools.list[0];
+      const examTypes = {};
+      const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
+      const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0).toFixed(2);
+      const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
+      notes.examinationsTypes.forEach((e, index) => {
+        examTypes[`examType${index + 1}`] = e;
+      });
+      return {
+        matricule: notes.student.matricule,
+        schoolName: currentSchool.name,
+        examinationTypes: notes.examinationsTypes,
+        sex: notes.student.gender,
+        status: Number(generalMean) >= 10 ? 'Passant' : 'Ajournée',
+        studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
+        term: notes.term.toUpperCase(),
+        schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
+        classroom: notes.classroom.name,
+        ...examTypes,
+        totalPoints,
+        totalCoef,
+        mainRank: notes.mainRank,
+        bestClassroomMean: notes.bestClassroomMean,
+        lastClassroomMean: notes.lastClassroomMean,
+        generalMean,
+        subjects: notes.subjects.map(subjectAndExaminationType => {
+          const marks = {};
+          subjectAndExaminationType.examinationsByType.forEach((s, index) => {
+            marks[`mark${index + 1}`] = s.marks.toFixed(2);
+          });
+          return {
+            name: subjectAndExaminationType.subject.code,
+            meanByTwenty: subjectAndExaminationType.meanByTwenty.toFixed(2),
+            coef: subjectAndExaminationType.coef,
+            rank: subjectAndExaminationType.rank,
+            firstRankMean: subjectAndExaminationType.firstRankMean.toFixed(2),
+            lastRankMean: subjectAndExaminationType.lastRankMean,
+            meanByCoefficient: subjectAndExaminationType.meanByCoefficient.toFixed(2),
+            ...marks
+          };
+        })
+      };
     });
-    const data = {
-      matricule: notes.student.matricule,
-      schoolName: currentSchool.name,
-      sex: notes.student.gender,
-      status: Number(generalMean) >= 10 ? 'Passant' : 'Ajournée',
-      studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
-      term: notes.term.toUpperCase(),
-      schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
-      classroom: notes.classroom.name,
-      ...examTypes,
-      totalPoints,
-      totalCoef,
-      mainRank: notes.mainRank,
-      bestClassroomMean: notes.bestClassroomMean,
-      lastClassroomMean: notes.lastClassroomMean,
-      generalMean,
-      subjects: notes.subjects.map(subjectAndExaminationType => {
-        const marks = {};
-        subjectAndExaminationType.examinationsByType.forEach((s, index) => {
-          marks[`mark${index + 1}`] = s.marks.toFixed(2);
-        });
-        return {
-          name: subjectAndExaminationType.subject.code,
-          meanByTwenty: subjectAndExaminationType.meanByTwenty.toFixed(2),
-          coef: subjectAndExaminationType.coef,
-          rank: subjectAndExaminationType.rank,
-          firstRankMean: subjectAndExaminationType.firstRankMean.toFixed(2),
-          lastRankMean: subjectAndExaminationType.lastRankMean,
-          meanByCoefficient: subjectAndExaminationType.meanByCoefficient.toFixed(2),
-          ...marks
-        };
-      })
-    };
 
     const options = {
-      body: data,
+      body: notesArrayProccessed,
       responseType: 'blob'
     };
     console.log(options.body);
-    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes`, options).toPromise();
+    const file = await this.api.request('post', `/report/print/multiple`, options).toPromise();
 
-    return file;
+    this.download(file);
   }
 
   async registrationReceipt(payment: Payment | any) {
@@ -219,7 +222,7 @@ export class PrintUtil {
     this.download(file);
   }
 
-  download(blob: Blob) {
+  private download(blob: Blob) {
     const url = URL.createObjectURL(blob);
     window.open(url);
   }

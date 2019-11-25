@@ -1,21 +1,33 @@
 @import 'app.colors';
 
 :host {
-  .classroom {
-    font-size: 1.3em;
-    margin: 10px 0;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 7px;
+  .classrooms {
+    height: 70vh;
+    overflow: auto;
 
-    &.selected {
-      background-color: $primary;
-      color: white;
+    .classroom {
+      font-size: 1.3em;
+      margin: 10px 0;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 7px;
+
+      &.selected {
+        background-color: $primary;
+        color: white;
+      }
     }
   }
 
-  .student {
-    margin: 10px 0;
-    padding: 10px;
+
+  .students {
+    overflow: auto;
+    height: 70vh;
+
+    .student {
+      margin: 10px 0;
+      padding: 10px;
+    }
   }
+
 }

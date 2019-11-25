@@ -28,6 +28,7 @@ import { ChartHostDirective } from './directives/chart-host.directive';
 import { AdvancedSelectComponent } from './components/advanced-select/advanced-select.component';
 import {StudentUtil} from './utils/student.util';
 import {ExaminationUtil} from './utils/examination.util';
+import { LoadingComponent } from './components/loading/loading.component';
 
 const components = [
   AdmissionComponent,
@@ -44,7 +45,8 @@ const components = [
   DelComponent,
   DateComponent,
   BigButtonComponent,
-  AdvancedSelectComponent
+  AdvancedSelectComponent,
+  LoadingComponent
 ];
 
 const directives = [
@@ -61,7 +63,8 @@ const modules = [
   FormsModule,
   ReactiveFormsModule,
   NgxPermissionsModule,
-  ChartsModule
+  ChartsModule,
+  RouterModule
 ];
 
 @NgModule({
@@ -69,11 +72,9 @@ const modules = [
     ...components,
     ...pipes,
     ...directives,
-    AdvancedSelectComponent,
   ],
   imports: [
     ...modules,
-    RouterModule,
   ],
   exports: [
     ...components,
@@ -85,7 +86,8 @@ const modules = [
     AlertDialogComponent,
     AlertDialogYesNoComponent,
     AlertDialogYesWithInputComponent,
-    CustomizableAlertDialogComponent
+    CustomizableAlertDialogComponent,
+    LoadingComponent
   ],
   providers: [
     FormUtil,
