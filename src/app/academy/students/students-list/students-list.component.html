@@ -1,14 +1,19 @@
-<div>
-  <app-select label="Classe" [formControl]="classroomSelected" [options]="classroomsRepository.stream | async" displayKey="name" valueKey="_id"></app-select>
+<div class="row">
+  <div class="col-3">
+    <h3>Classes</h3>
+    <div class="classrooms">
+      <div (click)="selectClassroom(classroom, i)" *ngFor="let classroom of classroomsRepository.stream | async; let i = index;"  class="classroom d-flex align-items-stretch"  [ngClass]="{'selected': selected == i}">
+        {{classroom.name}}
+      </div>
+    </div>
+  </div>
 
-  <div *ngIf="classroomSelected.touched">
+  <div class="col-9" *ngIf="selected != -1">
+    <h3>Élèves</h3>
     <app-table [mapping]="mapping"
                [data]="this.students"
                (edit)="edit($event)"
                (delete)="delete($event)"
-                [optionPermissions]="optionsPermissions"></app-table>
-  </div>
-  <div *ngIf="!classroomSelected.touched">
-    <h2 class="text-center mt-5">Sélèctionnez une classe pour visualiser ses élèves</h2>
+               [optionPermissions]="optionsPermissions"></app-table>
   </div>
 </div>

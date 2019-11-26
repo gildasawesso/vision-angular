@@ -4,12 +4,31 @@
 </div>
 
 <div>
-  <app-table
-    [mapping]="mapping"
-    [data]="data"
-    (printPayment)="printReceipt($event)"
-    (edit)="edit($event)"
-    (delete)="delete($event)"
-    [optionPermissions]="optionsPermissions"
-    [includeOption]="'payment'"></app-table>
+
 </div>
+
+
+<div class="row">
+  <div class="col-2">
+    <h3>Classes</h3>
+    <div class="classrooms">
+      <div (click)="selectClassroom(null, -1)" class="classroom d-flex align-items-center"  [ngClass]="{'selected': classroomSelectedIndex == -1}">Toutes les classes</div>
+      <div (click)="selectClassroom(classroom, i)" *ngFor="let classroom of classrooms; let i = index;"  class="classroom d-flex align-items-center"  [ngClass]="{'selected': classroomSelectedIndex == i}">
+        {{classroom.name}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-10">
+    <h3>Élèves</h3>
+    <app-table
+      [mapping]="mapping"
+      [data]="paymentsFiltred"
+      (printPayment)="printReceipt($event)"
+      (edit)="edit($event)"
+      (delete)="delete($event)"
+      [optionPermissions]="optionsPermissions"
+      [includeOption]="'payment'"></app-table>
+  </div>
+</div>
+

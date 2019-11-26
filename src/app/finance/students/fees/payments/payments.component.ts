@@ -4,6 +4,9 @@ import {Payment} from '../../../../core/models/payment';
 import {Utils} from '../../../../core/shared/utils';
 import {AddOrEditPaymentComponent} from '../add-or-edit-payment/add-or-edit-payment.component';
 import {constants} from '../../../../core/constants';
+import {Classroom} from '../../../../core/models/classroom';
+import {ClassroomsRepository} from '../../../../core/repositories/classrooms.repository';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-scholarships',
@@ -14,10 +17,15 @@ export class PaymentsComponent implements OnInit {
 
   constructor(public paymentRepository: PaymentsRepository,
               private utils: Utils,
-              private changeDetector: ChangeDetectorRef) {
+              private changeDetector: ChangeDetectorRef,
+              private classroomsRepository: ClassroomsRepository) {
   }
 
-  data = [];
+  classroomSelected = new FormControl('');
+  classroomSelectedIndex = -1;
+  classrooms: Classroom[] = [];
+  payments: Payment[] = [];
+  paymentsFiltred: Payment[] = [];
   mapping = {
     'append student.firstname student.lastname': 'Nom de l\'élève',
     'classroom.name': 'Classe',
@@ -27,6 +35,22 @@ export class PaymentsComponent implements OnInit {
     options: 'Options',
   };
   optionsPermissions = { edit: constants.permissions.editPayment, delete: constants.permissions.deletePayment };
+
+  selectClassroom(classroom: Classroom, index) {
+    this.classroomSelected.patchValue(classroom);
+    this.classroomSelectedIndex = index;
+
+    this.refreshList();
+  }
+
+  refreshList() {
+    let payments = [...this.payments];
+    if (this.classroomSelected.value !== null || this.classroomSelected.value !== '') {
+      payments = payments.filter(p => p.classroom._id == null);
+      console.log(payments);
+    }
+    this.paymentsFiltred = payments;
+  }
 
   async add() {
     await this.utils.common.modal(AddOrEditPaymentComponent, { payment: null });
@@ -58,7 +82,13 @@ export class PaymentsComponent implements OnInit {
   ngOnInit() {
     this.paymentRepository.stream
       .subscribe(payments => {
-        this.data = [...payments];
+        this.payments = [...payments];
+        this.paymentsFiltred = [...payments];
+      });
+
+    this.classroomsRepository.stream
+      .subscribe(classrooms => {
+        this.classrooms = classrooms;
       });
   }
 

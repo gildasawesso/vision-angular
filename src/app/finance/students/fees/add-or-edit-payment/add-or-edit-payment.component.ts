@@ -46,6 +46,7 @@ export class AddOrEditPaymentComponent implements OnInit {
     amount: [0],
     paymentDate: [moment().format()]
   });
+  isReady = true;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               private formBuilder: FormBuilder,
@@ -220,6 +221,7 @@ export class AddOrEditPaymentComponent implements OnInit {
 
         const subPayment = {fee: student.classroom.schoolFee, amount: 0};
         this.addSubPayment(subPayment);
+        this.isReady = true;
       });
   }
 

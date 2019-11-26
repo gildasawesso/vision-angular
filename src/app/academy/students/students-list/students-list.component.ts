@@ -8,6 +8,8 @@ import {Student} from '../../../core/models/student';
 import {Utils} from '../../../core/shared/utils';
 import {EditStudentComponent} from '../edit-student/edit-student.component';
 import {constants} from '../../../core/constants';
+import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
+import {Registration} from '../../../core/models/registration';
 
 @Component({
   selector: 'app-students-list',
@@ -18,9 +20,12 @@ export class StudentsListComponent implements OnInit {
 
   constructor(public studentsRepository: StudentsRepository,
               public classroomsRepository: ClassroomsRepository,
+              private registrationsRepository: RegistrationsRepository,
               private utils: Utils) {
   }
 
+  registrations: Registration[];
+  selected = -1;
   classroomSelected = new FormControl('');
   mapping = {
     matricule: 'Matricule',
@@ -32,7 +37,12 @@ export class StudentsListComponent implements OnInit {
   students: Student[];
   data = [];
 
+  selectClassroom(classroom: Classroom, index: number) {
+    this.selected = index;
+    this.classroomSelected.patchValue(classroom);
 
+    this.students = this.registrations.filter(r => r.classroom._id === classroom._id).map(r => r.student);
+  }
 
   async edit(student: Student) {
     await this.utils.common.modal(EditStudentComponent, { student }, true);
@@ -41,7 +51,9 @@ export class StudentsListComponent implements OnInit {
   async delete(student: Student) {
     const result = await this.utils.common.customAlert('Vous êtes sur le point de supprimer un élève', null, ['Annuler', 'Je continue']);
     if (result === 1) {
-      await this.studentsRepository.remove(student._id);
+      const studentRegistration = this.registrations.find(r => r.student._id === student._id);
+      await this.registrationsRepository.remove(studentRegistration._id);
+      this.students = this.registrations.filter(r => r.classroom._id === studentRegistration.classroom._id).map(r => r.student);
       this.utils.common.toast(`L'élève ${student.lastname} a bien été supprimé`);
     }
   }
@@ -55,6 +67,11 @@ export class StudentsListComponent implements OnInit {
     this.studentsRepository.stream.subscribe(students => {
       this.students = this.filterByClassroom(students);
     });
+
+    this.registrationsRepository.stream
+      .subscribe((registrations: Registration[]) => {
+        this.registrations = registrations;
+      });
   }
 
   filterByClassroom(students, classroomSelected?: Classroom) {

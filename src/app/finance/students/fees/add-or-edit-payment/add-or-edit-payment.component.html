@@ -167,7 +167,7 @@
 
 <div class="ml-auto mt-5">
   <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
-  <button *ngIf="classroomSelected.value" (click)="save()" mat-flat-button color="primary">Enrégistrer le payement</button>
+  <button *ngIf="classroomSelected.value" (click)="save()" mat-flat-button color="primary" [disabled]="notReady">Enrégistrer le payement</button>
   <button *ngIf="payment" (click)="save()" mat-flat-button color="primary">Modifier le payement</button>
 </div>
 

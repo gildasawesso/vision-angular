@@ -1,11 +1,35 @@
-@import "variables";
+@import "app.colors";
 
 :host {
   display: block;
   margin: 25px auto;
   border-radius: 7px;
 
-  app-select {
+  .classrooms {
+    height: 70vh;
+    overflow: auto;
 
+    .classroom {
+      font-size: 1.3em;
+      padding: 20px;
+      cursor: pointer;
+      border-radius: 7px;
+
+      &.selected {
+        background-color: $primary;
+        color: white;
+      }
+    }
+  }
+
+
+  .students {
+    overflow: auto;
+    height: 70vh;
+
+    .student {
+      margin: 10px 0;
+      padding: 10px;
+    }
   }
 }

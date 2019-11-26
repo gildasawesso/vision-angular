@@ -37,6 +37,7 @@ export class PrintUtil {
 
   private feeReduction(student: Student, fee: FeeType) {
     console.log(this.registrations);
+    console.log(this.registrations.filter(r => r.student == null));
     const registration = this.registrations.find(r => r.student._id === student._id);
     if (registration === undefined) { return 0; }
 
