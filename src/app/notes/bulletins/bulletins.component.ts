@@ -170,8 +170,13 @@ export class BulletinsComponent implements OnInit {
       currentStudentMarks.mainRank = currentStudentRank + 1;
       currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
       currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
-      await this.utils.print.bulletin(currentStudentMarks);
-      loading.close();
+      try {
+        await this.utils.print.bulletin(currentStudentMarks);
+        loading.close();
+      } catch (e) {
+        console.error(e);
+        this.utils.common.alert(JSON.stringify(e.error));
+      }
     }
   }
 
@@ -203,8 +208,13 @@ export class BulletinsComponent implements OnInit {
     if (this.canGenerateClassroomBulletin()) {
       const bulletins = this.classroomStudents.map(student => this.setupBulletin(student));
       const loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
-      await this.utils.print.classroomBulletin(bulletins);
-      loading.close();
+      try {
+        await this.utils.print.classroomBulletin(bulletins);
+        loading.close();
+      } catch (e) {
+        this.utils.common.alert(JSON.stringify(e.error));
+        loading.close();
+      }
     }
   }
 
