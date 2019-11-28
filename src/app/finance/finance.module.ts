@@ -17,7 +17,8 @@ import { AddOrEditTrancheComponent } from './students/fees/add-or-edit-tranche/a
 import { FeeCategoriesComponent } from './students/fees/fee-categories/fee-categories.component';
 import { ExpenseTypesComponent } from './expenses/expense-types/expense-types.component';
 import { IncomeTypesComponent } from './incomes/income-types/income-types.component';
-import { AddOrEditPaymentComponent } from './students/fees/add-or-edit-payment/add-or-edit-payment.component';
+import { EditPaymentComponent } from './students/fees/edit-payment/edit-payment.component';
+import { AddPaymentComponent } from './students/fees/add-payment/add-payment.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { AddOrEditPaymentComponent } from './students/fees/add-or-edit-payment/a
     FeeCategoriesComponent,
     ExpenseTypesComponent,
     IncomeTypesComponent,
-    AddOrEditPaymentComponent
+    EditPaymentComponent,
+    AddPaymentComponent
   ],
   imports: [
     SharedModule,
@@ -46,7 +48,8 @@ import { AddOrEditPaymentComponent } from './students/fees/add-or-edit-payment/a
   entryComponents: [
     AddOrEditFeeTypeComponent,
     AddOrEditTrancheComponent,
-    AddOrEditPaymentComponent
+    EditPaymentComponent,
+    AddPaymentComponent
   ]
 })
 export class FinanceModule { }

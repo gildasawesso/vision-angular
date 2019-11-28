@@ -19,16 +19,33 @@
     </div>
   </div>
 
-  <div class="col-10">
-    <h3>Élèves</h3>
-    <app-table
-      [mapping]="mapping"
-      [data]="paymentsFiltred"
-      (printPayment)="printReceipt($event)"
-      (edit)="edit($event)"
-      (delete)="delete($event)"
-      [optionPermissions]="optionsPermissions"
-      [includeOption]="'payment'"></app-table>
+  <div class="col-3" *ngIf="classroomSelectedIndex != -1">
+    <h3>Élève</h3>
+    <div class="students">
+      <div (click)="selectStudent(null, -1)" class="student d-flex align-items-center"  [ngClass]="{'selected': studentSelectedIndex == -1}">Tous les élèves</div>
+      <div (click)="selectStudent(student, i)" *ngFor="let student of classroomStudents; let i = index;"  class="student d-flex align-items-center"  [ngClass]="{'selected': studentSelectedIndex == i}">
+        {{student?.firstname}} {{student?.lastname}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <h3>Payements</h3>
+    <div class="payments">
+      <div *ngFor="let payment of paymentsFiltred">
+        <div class="payment d-flex align-items-center">
+          <div style="flex-basis: 0;" class="flex-grow-1">{{payment.paymentDate | date: 'dd MMMM yyyy' }}</div>
+          <ul style="flex-basis: 0;" class="d-flex flex-column flex-grow-1">
+            <li *ngFor="let fee of payment.fees">{{fee?.fee?.name | titlecase}}</li>
+          </ul>
+          <div style="flex-basis: 0;" class="flex-grow-1 d-flex justify-content-center">{{ payment.amount | spaced: 'FCFA' }}</div>
+          <button (click)="printReceipt(payment)" color="primary" mat-icon-button><mat-icon>print</mat-icon></button>
+          <button (click)="edit(payment)" color="accent" mat-icon-button><mat-icon>edit</mat-icon></button>
+          <button (click)="delete(payment)" color="warn" mat-icon-button><mat-icon>delete</mat-icon></button>
+        </div>
+        <mat-divider></mat-divider>
+      </div>
+    </div>
   </div>
 </div>
 

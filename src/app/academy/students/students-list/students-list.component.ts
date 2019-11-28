@@ -51,7 +51,7 @@ export class StudentsListComponent implements OnInit {
   async delete(student: Student) {
     const result = await this.utils.common.customAlert('Vous êtes sur le point de supprimer un élève', null, ['Annuler', 'Je continue']);
     if (result === 1) {
-      const studentRegistration = this.registrations.find(r => r.student._id === student._id);
+      const studentRegistration = this.utils.student.studentRegistration(this.registrations, student);
       await this.registrationsRepository.remove(studentRegistration._id);
       this.students = this.registrations.filter(r => r.classroom._id === studentRegistration.classroom._id).map(r => r.student);
       this.utils.common.toast(`L'élève ${student.lastname} a bien été supprimé`);

@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  .sub-payment {
+    background: #fafafa;
+    padding: 20px 5px;
+    margin-bottom: 7px;
+    border-radius: 7px;
+    margin-top: 24px;
+  }
+}

@@ -8,6 +8,8 @@ import {FeeType} from '../../models/fee-type';
 import {PaymentsRepository} from '../../repositories/payments.repository';
 import {Student} from '../../models/student';
 import {RegistrationsRepository} from '../../repositories/registrations.repository';
+import {Utils} from './index';
+import {StudentUtil} from './student.util';
 
 moment.locale('fr');
 
@@ -22,7 +24,8 @@ export class PrintUtil {
               private schools: SchoolsRepository,
               private api: ApiService,
               private paymentsRepository: PaymentsRepository,
-              private registrationsRepository: RegistrationsRepository) {
+              private registrationsRepository: RegistrationsRepository,
+              private studentUtils: StudentUtil) {
     this.loadRepositories();
   }
 
@@ -32,13 +35,11 @@ export class PrintUtil {
   }
 
   private studentPayments(student: Student) {
-    return this.payments.filter(p => p.student._id === student._id);
+    return this.studentUtils.studentPayments(this.payments, student);
   }
 
   private feeReduction(student: Student, fee: FeeType) {
-    console.log(this.registrations);
-    console.log(this.registrations.filter(r => r.student == null));
-    const registration = this.registrations.find(r => r.student._id === student._id);
+    const registration = this.studentUtils.studentRegistration(this.registrations, student);
     if (registration === undefined) { return 0; }
 
     const reductionForFee = registration.reductions.find(r => r.fee._id === fee._id);

@@ -15,19 +15,20 @@ import {SchoolyearsRepository} from '../../../../core/repositories/schoolyears.r
 import {RegistrationsRepository} from '../../../../core/repositories/registrations.repository';
 import {Registration} from '../../../../core/models/registration';
 import * as moment from 'moment';
+import {Reduction} from '../../../../core/models/reduction';
 
 @Component({
-  selector: 'app-add-or-edit-payment',
-  templateUrl: './add-or-edit-payment.component.html',
-  styleUrls: ['./add-or-edit-payment.component.scss']
+  selector: 'app-edit-payment',
+  templateUrl: './edit-payment.component.html',
+  styleUrls: ['./edit-payment.component.scss']
 })
-export class AddOrEditPaymentComponent implements OnInit {
+export class EditPaymentComponent implements OnInit {
 
   payments: Payment[] = [];
   feeTypes: FeeType[] = [];
   schoolYears: SchoolYear[];
   payment: Payment;
-  title = 'Nouveau payement';
+  reductions: Reduction[] = [];
   classroomSelected = new FormControl();
   students: Student[];
   studentsFiltred: Student[];
@@ -53,7 +54,7 @@ export class AddOrEditPaymentComponent implements OnInit {
               public classroomsRepository: ClassroomsRepository,
               private studentsRepository: StudentsRepository,
               public feeTypesRepository: FeeTypesRepository,
-              public dialogRef: MatDialogRef<AddOrEditPaymentComponent>,
+              public dialogRef: MatDialogRef<EditPaymentComponent>,
               public utils: Utils,
               private paymentsRepository: PaymentsRepository,
               private schoolyearsRepository: SchoolyearsRepository,
@@ -69,19 +70,28 @@ export class AddOrEditPaymentComponent implements OnInit {
   }
 
   initializeUpdatedPayment() {
-    this.title = 'Modification du payement';
     this.studentsFiltred = this.registrations.filter(r => r.classroom._id === this.payment.classroom._id).map(r => r.student);
     this.paymentForm.patchValue(this.payment);
+    console.log(this.payment.fees);
     this.payment.fees.forEach(f => this.subPayments.push(this.formBuilder.group(f)));
   }
 
   initializeReductions() {
-    this.subPayments.controls.forEach(c => {
-      const currentSubPaymentFee = c.get('fee').value;
-      const reductionObject = this.reductionFromFee(currentSubPaymentFee);
-      if (c.get('reductionType')) { c.get('reductionType').patchValue(reductionObject.type); }
-      c.get('reduction').patchValue(reductionObject.reductionAmount);
-    });
+    const registration = this.utils.student.studentRegistration(this.registrations, this.payment.student);
+    this.reductions = registration.reductions;
+  }
+
+  getReduction(feeType: FeeType) {
+    let reduction =  this.reductions.find(r => r.fee._id === feeType._id);
+    if (reduction === undefined) {
+      reduction = {
+        reduction: 0,
+        reductionType: 'amount',
+        fee: feeType
+      };
+      this.reductions.push(reduction);
+    }
+    return reduction;
   }
 
   save() {
@@ -113,7 +123,7 @@ export class AddOrEditPaymentComponent implements OnInit {
       return acc;
     }, 0);
     await this.paymentsRepository.update(payment, this.payment._id);
-    const currentRegistration = this.registrations.find(r => r.student._id === this.payment.student._id);
+    const currentRegistration = this.utils.student.studentRegistration(this.registrations, this.payment.student);
     currentRegistration.reductions = this.subPayments.value;
     await this.registrationsRepository.update(currentRegistration, currentRegistration._id);
   }
@@ -151,37 +161,12 @@ export class AddOrEditPaymentComponent implements OnInit {
     subPayment.get('reduction').patchValue(0);
   }
 
-  studentSchoolFeesPayments() {
-    const payments = this.currentStudentPayments();
-
-    const feeType: FeeType = this.paymentForm.get('schoolFee').value;
-    return payments.filter(p => {
-      try {
-        return p.fees.find(f => f.fee._id.toString() === feeType._id.toString()) !== undefined;
-      } catch (e) {
-        return false;
-      }
-    });
-  }
-
   oldPayments(subPayment) {
     return this.utils.student.feePayments(this.payments, subPayment.fee, this.paymentForm.get('student').value);
   }
 
-  studentSchoolFeesPaymentsAmount() {
-    const schoolFeesPayments = this.studentSchoolFeesPayments();
-    if (schoolFeesPayments.length <= 0) {
-      return 0;
-    }
-    return schoolFeesPayments.reduce((acc, cur) => acc + cur.amount, 0);
-  }
-
   reductionFromFee(fee: FeeType) {
-    console.log(this.paymentForm.get('student'));
-    if (this.paymentForm.get('student').value == null) {
-      return {type: 'amount', reductionAmount: 0};
-    }
-    const currentStudentRegistration = this.registrations.find(r => r.student._id === this.paymentForm.get('student').value._id);
+    const currentStudentRegistration = this.utils.student.studentRegistration(this.registrations, this.payment.student);
     const reductions = currentStudentRegistration.reductions;
     const feeReduction = reductions.find(r => r.fee._id === fee._id);
 

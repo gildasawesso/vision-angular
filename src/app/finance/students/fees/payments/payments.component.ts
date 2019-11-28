@@ -2,11 +2,15 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {PaymentsRepository} from '../../../../core/repositories/payments.repository';
 import {Payment} from '../../../../core/models/payment';
 import {Utils} from '../../../../core/shared/utils';
-import {AddOrEditPaymentComponent} from '../add-or-edit-payment/add-or-edit-payment.component';
+import {EditPaymentComponent} from '../edit-payment/edit-payment.component';
 import {constants} from '../../../../core/constants';
 import {Classroom} from '../../../../core/models/classroom';
 import {ClassroomsRepository} from '../../../../core/repositories/classrooms.repository';
 import {FormControl} from '@angular/forms';
+import {RegistrationsRepository} from '../../../../core/repositories/registrations.repository';
+import {Registration} from '../../../../core/models/registration';
+import {Student} from '../../../../core/models/student';
+import {AddPaymentComponent} from '../add-payment/add-payment.component';
 
 @Component({
   selector: 'app-scholarships',
@@ -15,20 +19,27 @@ import {FormControl} from '@angular/forms';
 })
 export class PaymentsComponent implements OnInit {
 
+  get classroomStudents() {
+    return this.registrations.filter(r => r.classroom._id === this.classroomSelected.value._id).map(r => r.student);
+  }
+
   constructor(public paymentRepository: PaymentsRepository,
               private utils: Utils,
               private changeDetector: ChangeDetectorRef,
-              private classroomsRepository: ClassroomsRepository) {
+              private classroomsRepository: ClassroomsRepository,
+              private registrationsRepository: RegistrationsRepository) {
   }
 
   classroomSelected = new FormControl('');
+  studentSelected = new FormControl('');
   classroomSelectedIndex = -1;
+  studentSelectedIndex = -1;
   classrooms: Classroom[] = [];
+  registrations: Registration[] = [];
+  registrationsFiltred: Registration[] = [];
   payments: Payment[] = [];
   paymentsFiltred: Payment[] = [];
   mapping = {
-    'append student.firstname student.lastname': 'Nom de l\'élève',
-    'classroom.name': 'Classe',
     paymentDate: 'Date de payement',
     'array fees fee.name': 'Type de contribution',
     amount: 'Montant',
@@ -40,24 +51,43 @@ export class PaymentsComponent implements OnInit {
     this.classroomSelected.patchValue(classroom);
     this.classroomSelectedIndex = index;
 
+    if (index !== -1) {
+      this.studentSelectedIndex = -1;
+    }
+
+    this.refreshList();
+  }
+
+  selectStudent(student: Student, index) {
+    this.studentSelected.patchValue(student);
+    this.studentSelectedIndex = index;
+
+    console.log(student);
+
     this.refreshList();
   }
 
   refreshList() {
     let payments = [...this.payments];
-    if (this.classroomSelected.value !== null || this.classroomSelected.value !== '') {
-      payments = payments.filter(p => p.classroom._id == null);
-      console.log(payments);
+    payments = payments.filter(p => p.student != null);
+
+    if (this.classroomSelectedIndex !== -1) {
+      payments = payments.filter(p => p.classroom._id === this.classroomSelected.value._id);
     }
+
+    if (this.studentSelectedIndex !== -1) {
+      payments = payments.filter(p => p.student._id === this.studentSelected.value._id);
+    }
+
     this.paymentsFiltred = payments;
   }
 
   async add() {
-    await this.utils.common.modal(AddOrEditPaymentComponent, { payment: null });
+    await this.utils.common.modal(AddPaymentComponent, { payment: null });
   }
 
   async edit(payment: Payment) {
-    await this.utils.common.modal(AddOrEditPaymentComponent, { payment });
+    await this.utils.common.modal(EditPaymentComponent, { payment });
   }
 
   async delete(payment: Payment) {
@@ -71,7 +101,6 @@ export class PaymentsComponent implements OnInit {
 
   async printReceipt(payment: Payment) {
     try {
-      console.log(payment);
       await this.utils.print.registrationReceipt(payment);
     } catch (e) {
       console.log(e);
@@ -84,11 +113,18 @@ export class PaymentsComponent implements OnInit {
       .subscribe(payments => {
         this.payments = [...payments];
         this.paymentsFiltred = [...payments];
+        this.refreshList();
       });
 
     this.classroomsRepository.stream
       .subscribe(classrooms => {
         this.classrooms = classrooms;
+      });
+
+    this.registrationsRepository.stream
+      .subscribe(registrations => {
+        this.registrations = registrations;
+        this.registrationsFiltred = [...registrations];
       });
   }
 
