@@ -1,4 +1,6 @@
-<h3>Modification de l'élève  {{student.lastname}}</h3>
+<h3>Modification de l'élève  {{student.lastname | uppercase}}</h3>
+<h3>Classe : {{studentClassroom.name | titlecase}}</h3>
+<mat-divider></mat-divider>
 
 <div [formGroup]="studentForm">
   <div common-title class="section-title">Informations personnelles</div>

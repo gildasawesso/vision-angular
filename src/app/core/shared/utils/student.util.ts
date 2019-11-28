@@ -7,13 +7,15 @@ import {ExaminationsRepository} from '../../repositories/examinations.repository
 import {Examination} from '../../models/examination';
 import {Classroom} from '../../models/classroom';
 import {SchoolYear} from '../../models/school-year';
+import {Common} from './common.util';
 
 @Injectable()
 export class StudentUtil {
 
   examinations: Examination[] = [];
 
-  constructor(private examinationsRepository: ExaminationsRepository) {
+  constructor(private examinationsRepository: ExaminationsRepository,
+              private commonUtil: Common) {
     this.init();
   }
 
@@ -31,6 +33,7 @@ export class StudentUtil {
   }
 
   classroomRegistrations(registrations: Registration[], classroom: Classroom, schoolYear?: SchoolYear) {
+    if (classroom == null) { return registrations; }
     return registrations.filter(r => {
       return r.classroom._id === classroom._id;
     });
@@ -39,7 +42,8 @@ export class StudentUtil {
   classroomStudents(registrations: Registration[], classroom: Classroom, schoolYear?: SchoolYear) {
     return this.classroomRegistrations(registrations, classroom, schoolYear)
       .filter(r => r.student != null)
-      .map(r => r.student);
+      .map(r => r.student)
+      .sort(this.commonUtil.dynamicSort('lastname'));
   }
 
   feeReduction(registrations: Registration[], student: Student, fee: FeeType) {

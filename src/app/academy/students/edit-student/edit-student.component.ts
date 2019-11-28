@@ -6,6 +6,7 @@ import {ClassroomsRepository} from '../../../core/repositories/classrooms.reposi
 import {StudentsRepository} from '../../../core/repositories/students.repository';
 import {Utils} from '../../../core/shared/utils';
 import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
+import {Classroom} from '../../../core/models/classroom';
 
 @Component({
   selector: 'app-edit-student',
@@ -14,13 +15,15 @@ import {RegistrationsRepository} from '../../../core/repositories/registrations.
 })
 export class EditStudentComponent implements OnInit {
 
+  studentClassroom: Classroom;
+
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<EditStudentComponent>,
               private formBuilder: FormBuilder,
               private classroomsRepository: ClassroomsRepository,
               private studentsRepository: StudentsRepository,
               private registrationsRepository: RegistrationsRepository,
-              private utils: Utils) {
+              public utils: Utils) {
     this.student = this.data.student;
     this.studentForm.patchValue(this.student);
   }
@@ -72,6 +75,10 @@ export class EditStudentComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.registrationsRepository.stream
+      .subscribe(registrations => {
+        this.studentClassroom = this.utils.student.studentRegistration(registrations, this.student).classroom;
+      });
   }
 
 }
