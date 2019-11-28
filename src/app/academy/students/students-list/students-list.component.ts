@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {StudentsRepository} from '../../../core/repositories/students.repository';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {FormControl} from '@angular/forms';
-import {filter, flatMap, switchMap} from 'rxjs/operators';
 import {Classroom} from '../../../core/models/classroom';
 import {Student} from '../../../core/models/student';
 import {Utils} from '../../../core/shared/utils';
@@ -46,6 +45,7 @@ export class StudentsListComponent implements OnInit {
 
   async edit(student: Student) {
     await this.utils.common.modal(EditStudentComponent, { student }, true);
+    this.registrationsRepository.refresh();
   }
 
   async delete(student: Student) {
@@ -59,28 +59,10 @@ export class StudentsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.classroomSelected.valueChanges
-      .subscribe((classroom: Classroom) => {
-        this.students = this.filterByClassroom(this.studentsRepository.list, classroom);
-      });
-
-    this.studentsRepository.stream.subscribe(students => {
-      this.students = this.filterByClassroom(students);
-    });
-
     this.registrationsRepository.stream
       .subscribe((registrations: Registration[]) => {
-        this.registrations = registrations;
+        this.registrations = [...registrations];
+        this.students = this.registrations.filter(r => r.classroom._id === this.classroomSelected.value._id).map(r => r.student);
       });
   }
-
-  filterByClassroom(students, classroomSelected?: Classroom) {
-    if (this.classroomSelected.value === '') {
-      return [];
-    } else {
-      const classroom = classroomSelected != null ? classroomSelected : this.classroomSelected.value;
-      return students.filter(student => student.classroom && student.classroom._id === classroom._id);
-    }
-  }
-
 }

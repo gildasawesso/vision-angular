@@ -2,10 +2,10 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Student} from '../../../core/models/student';
 import {FormBuilder} from '@angular/forms';
-import {Classroom} from '../../../core/models/classroom';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {StudentsRepository} from '../../../core/repositories/students.repository';
 import {Utils} from '../../../core/shared/utils';
+import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
 
 @Component({
   selector: 'app-edit-student',
@@ -19,6 +19,7 @@ export class EditStudentComponent implements OnInit {
               private formBuilder: FormBuilder,
               private classroomsRepository: ClassroomsRepository,
               private studentsRepository: StudentsRepository,
+              private registrationsRepository: RegistrationsRepository,
               private utils: Utils) {
     this.student = this.data.student;
     this.studentForm.patchValue(this.student);
@@ -57,10 +58,17 @@ export class EditStudentComponent implements OnInit {
     }
 
     const student: Student = this.studentForm.value;
-    await this.studentsRepository.update(student, this.student._id);
-    this.utils.common.toast(`L'élève ${student.lastname} a bien été modifié`);
-    this.isBusy = false;
-    this.dialogRef.close();
+    try {
+      await this.studentsRepository.update(student, this.student._id);
+      this.utils.common.toast(`L'élève ${student.lastname} a bien été modifié`);
+      this.registrationsRepository.refresh();
+      this.isBusy = false;
+      this.dialogRef.close();
+    } catch (e) {
+      console.error(e);
+      this.utils.common.alert(JSON.stringify(e));
+      this.isBusy = false;
+    }
   }
 
   ngOnInit() {

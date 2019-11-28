@@ -34,6 +34,10 @@ export abstract class BaseRepository<T> {
     return this.objects;
   }
 
+  refresh() {
+    this.init();
+  }
+
   set next(object: T[]) {
     this.genericBehavioSubject.next(object);
   }
