@@ -52,6 +52,9 @@
       <app-input name="lastClass" formControlName="lastClass"
                  class="inputs col-12 col-sm-6">Dernière classe suivie</app-input>
     </div>
+    <div class="row">
+      <app-advanced-select displayKey="name" [options]="classroomsRepository.stream | async" [control]="studentForm.get('classroom')">Changer la classe de l'élève</app-advanced-select>
+    </div>
   </div>
 </div>
 

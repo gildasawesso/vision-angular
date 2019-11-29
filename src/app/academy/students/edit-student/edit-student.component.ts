@@ -62,7 +62,10 @@ export class EditStudentComponent implements OnInit {
 
     const student: Student = this.studentForm.value;
     try {
-      await this.studentsRepository.update(student, this.student._id);
+      const studentUpdated = await this.studentsRepository.update(student, this.student._id);
+      const studentRegistration = this.utils.student.studentRegistration(this.registrationsRepository.list, studentUpdated);
+      studentRegistration.classroom = student.classroom;
+      await this.registrationsRepository.update(studentRegistration, studentRegistration._id);
       this.utils.common.toast(`L'élève ${student.lastname} a bien été modifié`);
       this.registrationsRepository.refresh();
       this.isBusy = false;
