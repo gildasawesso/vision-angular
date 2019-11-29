@@ -20,7 +20,7 @@ export class EditStudentComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<EditStudentComponent>,
               private formBuilder: FormBuilder,
-              private classroomsRepository: ClassroomsRepository,
+              public classroomsRepository: ClassroomsRepository,
               private studentsRepository: StudentsRepository,
               private registrationsRepository: RegistrationsRepository,
               public utils: Utils) {
