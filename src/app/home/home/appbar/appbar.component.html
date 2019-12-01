@@ -9,6 +9,16 @@
       </div>
     </div>
   <span class="flex-grow-1"></span>
+  <mat-form-field class="school-years" color="accent" appearance="outline">
+    <mat-select [(ngModel)]="currentSchoolYear" (ngModelChange)="onSchoolYearChange($event)" [compareWith]="compareFn">
+      <mat-option *ngFor="let schoolYear of schoolYears" [value]="schoolYear">{{schoolYear.startDate | date: 'yyyy'}} - {{schoolYear.endDate | date: 'yyyy'}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="terms" color="accent" appearance="outline">
+    <mat-select [(ngModel)]="currentTerm" (ngModelChange)="onTermChanged($event)" [compareWith]="compareFn">
+      <mat-option *ngFor="let session of currentSchoolYear?.sessions" [value]="session">{{ session?.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
   <div>
     <div [matMenuTriggerFor]="profileMenu" style="cursor: pointer;">
       <button mat-icon-button ><mat-icon>person</mat-icon></button>

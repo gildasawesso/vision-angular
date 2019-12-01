@@ -3,7 +3,6 @@
     <h5>Types d'examination</h5>
     <div class="d-flex align-items-center" *ngFor="let examType of examinationTypes">
       <div style="flex-basis: 0;" class="flex-fill">{{examType.name}}</div>
-      <div style="flex-basis: 0;" class="flex-fill">Groupe {{examType.group}}</div>
       <div>
         <button mat-icon-button (click)="editExaminationType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.editExaminationType]"><mat-icon>edit</mat-icon></button>
         <button mat-icon-button color="warn" (click)="deleteExamType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.deleteExaminationType]"><mat-icon>delete</mat-icon></button>
