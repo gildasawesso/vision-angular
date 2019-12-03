@@ -21,10 +21,18 @@ export class MarksComponent implements OnInit {
     this.examination = this.data.examination;
   }
 
-  onModelChange(note: number) {
+  async onModelChange(note: number) {
     if (note > this.examination.subject.markBy) {
       this.utils.common.toast('La note est supérieure à la note maximale');
+      return;
     }
+    await this.examinationsRepository.update(this.examination, this.examination._id);
+  }
+
+  marksSorted() {
+    return this.examination.marks.sort((m1, m2) => {
+      return m1.student.lastname.localeCompare(m2.student.lastname);
+    });
   }
 
   async save() {

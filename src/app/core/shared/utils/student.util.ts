@@ -8,39 +8,73 @@ import {Examination} from '../../models/examination';
 import {Classroom} from '../../models/classroom';
 import {SchoolYear} from '../../models/school-year';
 import {Common} from './common.util';
+import {RegistrationsRepository} from '../../repositories/registrations.repository';
+import {PaymentsRepository} from '../../repositories/payments.repository';
+import {SchoolyearsRepository} from '../../repositories/schoolyears.repository';
 
 @Injectable()
 export class StudentUtil {
 
   examinations: Examination[] = [];
+  registrations: Registration[] = [];
+  payments: Payment[] = [];
+  currentSchoolYear: SchoolYear;
 
   constructor(private examinationsRepository: ExaminationsRepository,
+              private registrationsRepository: RegistrationsRepository,
+              private paymentsRepository: PaymentsRepository,
+              private schoolyearsRepository: SchoolyearsRepository,
               private commonUtil: Common) {
     this.init();
   }
 
   init() {
-    this.examinationsRepository.stream
-      .subscribe(examinations => this.examinations = examinations);
+    this.examinationsRepository.stream.subscribe(examinations => this.examinations = examinations);
+    this.registrationsRepository.stream.subscribe(registrations => this.registrations = registrations);
+    this.paymentsRepository.stream.subscribe(payments => this.payments = payments);
+    this.schoolyearsRepository.selectedSchoolYear.subscribe(schoolYear => this.currentSchoolYear = schoolYear);
   }
 
   studentPayments(payments: Payment[], student: Student) {
-    return payments.filter(p => p.student ? p.student._id === student._id : false);
+    return payments.filter(p => {
+      if (student == null) { return false; }
+      return p.student ? p.student._id === student._id : false;
+    });
+  }
+
+  classroomsAllRegistrationsFeePayments(classroom: Classroom, schoolYear?: SchoolYear) {
+    const classroomStudents = this.classroomStudents(classroom);
+  }
+
+  allSStudentsPayments(classroom: Classroom, fee?: FeeType, schoolYear?: SchoolYear) {
+    const classroomStudents = this.classroomStudents(classroom);
+    const payments = classroomStudents.map(s => {
+      return this.feePayments(this.payments, fee, s);
+    });
+    return payments.reduce((acc, cur) => acc + cur, 0);
+  }
+
+  allPaymentsExpected(classroom: Classroom, fee?: FeeType, schoolYear?: SchoolYear) {
+    const classroomStudents = this.classroomStudents(classroom);
+    const payments = classroomStudents.map(s => {
+      return this.feePayments(this.payments, fee, s);
+    });
+    return payments.reduce((acc, cur) => acc + cur, 0);
   }
 
   studentRegistration(registrations: Registration[], student: Student) {
     return registrations.find(r => r.student ? r.student._id === student._id : false);
   }
 
-  classroomRegistrations(registrations: Registration[], classroom: Classroom, schoolYear?: SchoolYear) {
-    if (classroom == null) { return registrations; }
-    return registrations.filter(r => {
+  classroomRegistrations(classroom: Classroom) {
+    if (classroom == null) { return this.registrations; }
+    return this.registrations.filter(r => {
       return r.classroom._id === classroom._id;
     });
   }
 
-  classroomStudents(registrations: Registration[], classroom: Classroom, schoolYear?: SchoolYear) {
-    return this.classroomRegistrations(registrations, classroom, schoolYear)
+  classroomStudents(classroom: Classroom) {
+    return this.classroomRegistrations(classroom)
       .filter(r => r.student != null)
       .map(r => r.student)
       .sort(this.commonUtil.dynamicSort('lastname'));
@@ -74,5 +108,4 @@ export class StudentUtil {
   classroomExaminations(classroom: Classroom) {
     return this.examinations.filter(e => e.classroom._id === classroom._id);
   }
-
 }

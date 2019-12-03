@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-2">
+    <h3>Classes</h3>
+    <div class="classrooms">
+      <div *ngFor="let classroom of classrooms; let i = index;"  class="classroom d-flex align-items-center"  [ngClass]="{'selected': selected == i}">
+        <span class="flex-fill align-self-stretch d-flex align-items-center" (click)="selectClassroom(classroom, i)">{{classroom.name}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-10" *ngIf="selected != -1">
+    <h3>Élèves</h3>
+    <table class="table">
+      <thead class="d-flex flex-column">
+        <tr class="d-flex">
+          <th>Nom</th>
+          <th>Inscription</th>
+          <th *ngFor="let tranche of classroomSelected.schoolFee?.tranches">{{tranche.name}}</th>
+          <th>Total</th>
+          <th>Total Restant</th>
+        </tr>
+      </thead>
+      <tbody class="students d-flex flex-column">
+        <tr class="student d-flex" *ngFor="let student of classroomStudents">
+          <td>{{student?.firstname}} {{student?.lastname | uppercase}}</td>
+          <td class="registration-payments">{{currentStudentRegistrationFeePayed(student)}}/{{classroomSelected.registrationFee.amount}}</td>
+          <ng-container *ngFor="let tranche of tranchesMappedWithPayments(student)">
+            <td class="schoolfee-payments">
+              <div>{{tranche.payed}}/{{tranche.amount}}</div>
+              <div>Reste {{tranche.amount - tranche.payed}}</div>
+            </td>
+          </ng-container>
+          <td class="total-payed">{{currentStudentPayments(student)}}</td>
+          <td class="total-remaining">0</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th>{{allStudentPayments(classroomSelected.registrationFee) | spaced: 'FCFA'}}</th>
+          <th *ngFor="let tranche of classroomSelected.schoolFee?.tranches">{{tranche.name}}</th>
+          <th>{{allStudentPayments(classroomSelected.schoolFee)  | spaced: 'FCFA'}}</th>
+          <th>{{(allPaymentsExpected(classroomSelected.schoolFee) - allStudentPayments(classroomSelected.schoolFee)) | spaced: 'FCFA'}}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

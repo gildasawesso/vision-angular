@@ -29,6 +29,7 @@ import { AdvancedSelectComponent } from './components/advanced-select/advanced-s
 import {StudentUtil} from './utils/student.util';
 import {ExaminationUtil} from './utils/examination.util';
 import { LoadingComponent } from './components/loading/loading.component';
+import { CloseButtonComponent } from './components/close-button/close-button.component';
 
 const components = [
   AdmissionComponent,
@@ -46,7 +47,8 @@ const components = [
   DateComponent,
   BigButtonComponent,
   AdvancedSelectComponent,
-  LoadingComponent
+  LoadingComponent,
+  CloseButtonComponent
 ];
 
 const directives = [

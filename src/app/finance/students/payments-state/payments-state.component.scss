@@ -1,0 +1,81 @@
+@import 'app.colors';
+
+:host {
+  .classrooms {
+    height: 70vh;
+    overflow: auto;
+
+    .classroom {
+      font-size: 1.3em;
+      margin: 10px 0;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 7px;
+
+      &.selected {
+        background-color: $primary;
+        color: white;
+      }
+    }
+  }
+
+  table, thead, tbody {
+    display: block;
+  }
+
+  .table {
+    width: 100%;
+
+    thead {
+      width: 100%;
+      tr {
+        width: 100%;
+        th {
+          background-color: white;
+          position: sticky;
+          top: 0;
+        }
+      }
+    }
+
+    tbody {
+      width: 100%;
+
+      tr {
+        width: 100%;
+      }
+    }
+
+    .schoolfee-payments {
+      background-color: #E0F2F1;
+    }
+
+    .registration-payments {
+      background-color: #E3F2FD;
+    }
+
+    .total-payed {
+      background-color: #ef9a9a;
+    }
+
+    .total-remaining {
+      background-color: #FFFDE7;
+    }
+  }
+
+
+  .students {
+    overflow: auto;
+    height: 70vh;
+
+    .student {
+      margin: 10px 0;
+
+      td {
+        flex-grow: 1;
+        flex-basis: 0;
+      }
+    }
+  }
+
+}

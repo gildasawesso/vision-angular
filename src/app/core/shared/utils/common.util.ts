@@ -38,7 +38,8 @@ export class Common {
       panelClass: noPadding ? 'dialog-without-padding' : '',
       minWidth: '60%',
       height: '85%',
-      data
+      data,
+      disableClose: true,
     });
 
     return dialog.afterClosed().toPromise();

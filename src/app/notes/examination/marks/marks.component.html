@@ -1,7 +1,8 @@
+<app-close-button [dialog]="dialogRef"></app-close-button>
 <h1>Notes de : <b>{{examination.subject.name}}</b></h1>
 
-<div class="d-flex align-items-center mark" style="width: 100%;" *ngFor="let mark of examination.marks">
-  <h4 class="flex-fill text-capitalize">{{mark.student.firstname + ' ' + mark.student.lastname | titlecase}}</h4>
+<div class="d-flex align-items-center mark" style="width: 100%;" *ngFor="let mark of marksSorted()">
+  <h4 class="flex-fill text-capitalize">{{mark.student.lastname + ' ' + mark.student.firstname | titlecase}}</h4>
   <div class="d-flex align-items-center">
     <mat-form-field appearance="outline">
       <input matInput placeholder="note" [(ngModel)]="mark.mark" (ngModelChange)="onModelChange($event)"/>

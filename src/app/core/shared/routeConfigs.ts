@@ -7,7 +7,7 @@ export const menuConfig = [
         url: '/finance/students',
         submenu: [
           {text: 'payements des contributions', url: '/finance/students/payments'},
-          {text: 'élèves & classes', url: '/finance/students/list'},
+          {text: 'Etat', url: '/finance/students/state'},
           {text: 'Types de contributions', url: '/finance/students/fees'},
           {text: 'Catégories de contributions', url: '/finance/students/fee-categories'},
         ]

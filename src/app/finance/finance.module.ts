@@ -19,6 +19,7 @@ import { ExpenseTypesComponent } from './expenses/expense-types/expense-types.co
 import { IncomeTypesComponent } from './incomes/income-types/income-types.component';
 import { EditPaymentComponent } from './students/fees/edit-payment/edit-payment.component';
 import { AddPaymentComponent } from './students/fees/add-payment/add-payment.component';
+import { PaymentsStateComponent } from './students/payments-state/payments-state.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AddPaymentComponent } from './students/fees/add-payment/add-payment.com
     ExpenseTypesComponent,
     IncomeTypesComponent,
     EditPaymentComponent,
-    AddPaymentComponent
+    AddPaymentComponent,
+    PaymentsStateComponent
   ],
   imports: [
     SharedModule,

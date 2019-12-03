@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {FinanceStudentsComponent} from './students/finance-students.component';
-import {FinanceStudentsListComponent} from './students/finance-students-list/finance-students-list.component';
 import {FinanceComponent} from './finance.component';
 import {PaymentsComponent} from './students/fees/payments/payments.component';
 import {ExpensesListComponent} from './expenses/expenses-list/expenses-list.component';
@@ -13,6 +12,7 @@ import {FeesComponent} from './students/fees/fees.component';
 import {FeeCategoriesComponent} from './students/fees/fee-categories/fee-categories.component';
 import {ExpenseTypesComponent} from './expenses/expense-types/expense-types.component';
 import {IncomeTypesComponent} from './incomes/income-types/income-types.component';
+import {PaymentsStateComponent} from './students/payments-state/payments-state.component';
 
 const routes: Routes = [
   {
@@ -27,7 +27,7 @@ const routes: Routes = [
         path: 'students',
         component: FinanceStudentsComponent,
         children: [
-          { path: 'list', component: FinanceStudentsListComponent },
+          { path: 'state', component: PaymentsStateComponent },
           { path: 'payments', component: PaymentsComponent },
           { path: 'fees', component: FeesComponent },
           { path: 'fee-categories', component: FeeCategoriesComponent },
