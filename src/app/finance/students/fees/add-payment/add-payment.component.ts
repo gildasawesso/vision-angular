@@ -210,7 +210,7 @@ export class AddPaymentComponent implements OnInit {
       .subscribe((classroom: Classroom) => {
         this.paymentForm.reset();
         this.subPayments.clear();
-        this.studentsFiltred = this.utils.student.classroomStudents(this.registrations, classroom);
+        this.studentsFiltred = this.utils.student.classroomStudents(classroom);
         this.paymentForm.get('schoolFee').patchValue(classroom.schoolFee, {emitEvent: true});
       });
   }

@@ -16,7 +16,6 @@ import {SchoolsRepository} from '../../core/repositories/schools.repository';
 import {FeeType} from '../../core/models/fee-type';
 import {FeeTypesRepository} from '../../core/repositories/fee-types.repository';
 import * as moment from 'moment';
-import {MatButtonToggleChange} from '@angular/material';
 
 const MAX_PAGE = 3;
 

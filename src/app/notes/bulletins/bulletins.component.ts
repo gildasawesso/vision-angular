@@ -175,6 +175,7 @@ export class BulletinsComponent implements OnInit {
         loading.close();
       } catch (e) {
         console.error(e);
+        loading.close();
         this.utils.common.alert(JSON.stringify(e.error));
       }
     }

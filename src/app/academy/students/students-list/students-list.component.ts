@@ -40,7 +40,7 @@ export class StudentsListComponent implements OnInit {
     this.selected = index;
     this.classroomSelected.patchValue(classroom);
 
-    this.students = this.utils.student.classroomStudents(this.registrations, this.classroomSelected.value);
+    this.students = this.utils.student.classroomStudents(this.classroomSelected.value);
   }
 
   async edit(student: Student) {
@@ -53,7 +53,7 @@ export class StudentsListComponent implements OnInit {
     if (result === 1) {
       const studentRegistration = this.utils.student.studentRegistration(this.registrations, student);
       await this.registrationsRepository.remove(studentRegistration._id);
-      this.students = this.utils.student.classroomStudents(this.registrations, this.classroomSelected.value);
+      this.students = this.utils.student.classroomStudents(this.classroomSelected.value);
       this.utils.common.toast(`L'élève ${student.lastname} a bien été supprimé`);
     }
   }
@@ -62,7 +62,7 @@ export class StudentsListComponent implements OnInit {
     this.registrationsRepository.stream
       .subscribe((registrations: Registration[]) => {
         this.registrations = [...registrations];
-        this.students = this.utils.student.classroomStudents(this.registrations, this.classroomSelected.value);
+        this.students = this.utils.student.classroomStudents(this.classroomSelected.value);
       });
   }
 }
