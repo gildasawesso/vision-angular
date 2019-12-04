@@ -1,0 +1,11 @@
+<h4>
+  <ng-content></ng-content>
+</h4>
+<div class="items">
+  <div *ngIf="displayAll" (click)="itemSelected(null, -1)" class="item d-flex align-items-stretch"  [ngClass]="{'selected': selected == -1}">
+    <span class="flex-fill align-self-stretch d-flex align-items-center">Tout</span>
+  </div>
+  <div (click)="itemSelected(item, i)" *ngFor="let item of items; let i = index;"  class="item d-flex align-items-stretch"  [ngClass]="{'selected': selected == i}">
+    <span class="flex-fill align-self-stretch d-flex align-items-center" >{{item[displayKey]}}</span>
+  </div>
+</div>

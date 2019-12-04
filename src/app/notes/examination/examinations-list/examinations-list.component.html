@@ -1,0 +1,20 @@
+<button class="mb-3" mat-flat-button color="primary" (click)="add()" *ngxPermissionsOnly="['ADMIN', constants.permissions.addExamination]">Ajouter une examination</button>
+
+<div class="d-flex">
+  <app-list [items]="classrooms" [displayKey]="'name'" (onClicked)="ClassroomSelected = $event">Classes</app-list>
+
+  <app-list [displayAll]="true" *ngIf="isClassroomHasSubjects(classroomSelected)" [items]="classroomSelected.subjects" [displayKey]="'name'" (onClicked)="SubjectSelected = $event">Matières</app-list>
+
+  <app-list [displayAll]="true" *ngIf="isClassroomHasSubjects(classroomSelected)" [items]="examinationTypes" [displayKey]="'name'" (onClicked)="ExaminationTypeSelected = $event">Types de matières</app-list>
+
+  <div class="flex-grow-1">
+    <app-table
+      [mapping]="mapping"
+      [data]="data"
+      (edit)="edit($event)"
+      (delete)="delete($event)"
+      (viewNotes)="openNotesPage($event)"
+      [optionPermissions]="optionsPermissions">
+    </app-table>
+  </div>
+</div>

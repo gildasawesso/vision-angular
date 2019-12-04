@@ -86,8 +86,11 @@ export const menuConfig = [
   },
   {
     notes: [
-      { text: 'exmaninations', url: '/notes/examinations', submenu: null },
-      { text: 'bulletins', url: '/notes/bulletins', submenu: null },
+      { text: 'Exmaninations', url: '/notes/examinations', submenu: [
+          {text: 'Liste des examinations', url: '/notes/examinations/list'},
+          {text: 'Types d\'examinations', url: '/notes/examinations/types'},
+        ] },
+      { text: 'Bulletins', url: '/notes/bulletins', submenu: null },
     ]
   },
 ];

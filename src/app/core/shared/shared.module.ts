@@ -30,6 +30,7 @@ import {StudentUtil} from './utils/student.util';
 import {ExaminationUtil} from './utils/examination.util';
 import { LoadingComponent } from './components/loading/loading.component';
 import { CloseButtonComponent } from './components/close-button/close-button.component';
+import { ListComponent } from './components/list/list.component';
 
 const components = [
   AdmissionComponent,
@@ -74,6 +75,7 @@ const modules = [
     ...components,
     ...pipes,
     ...directives,
+    ListComponent,
   ],
   imports: [
     ...modules,
@@ -83,6 +85,7 @@ const modules = [
     ...pipes,
     ...directives,
     ...modules,
+    ListComponent,
   ],
   entryComponents: [
     AlertDialogComponent,

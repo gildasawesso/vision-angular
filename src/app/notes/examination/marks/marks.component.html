@@ -1,5 +1,10 @@
 <app-close-button [dialog]="dialogRef"></app-close-button>
-<h1>Notes de : <b>{{examination.subject.name}}</b></h1>
+<div class="d-flex">
+  <h3>Notes de : <b>{{examination.subject.name}}</b></h3>
+  <mat-form-field>
+    <input matNativeControl [(ngModel)]="searchTerm" (ngModelChange)="search($event)"/>
+  </mat-form-field>
+</div>
 
 <div class="d-flex align-items-center mark" style="width: 100%;" *ngFor="let mark of marksSorted()">
   <h4 class="flex-fill text-capitalize">{{mark.student.lastname + ' ' + mark.student.firstname | titlecase}}</h4>

@@ -11,6 +11,10 @@ export class ExaminationsDatasource extends BaseDatasource<Examination> {
     super('/examinations');
   }
 
+  async list(): Promise<Examination[]> {
+    return super.list();
+  }
+
   updateStudents(examination: Examination) {
     return this.api.patch(`${this.url}/${examination._id}/marks`, examination).toPromise();
   }

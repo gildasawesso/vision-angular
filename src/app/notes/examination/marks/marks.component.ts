@@ -13,12 +13,17 @@ import {Utils} from '../../../core/shared/utils';
 export class MarksComponent implements OnInit {
 
   examination: Examination;
+  searchTerm = '';
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               private examinationsRepository: ExaminationsRepository,
               public dialogRef: MatDialogRef<MarksComponent>,
               private utils: Utils) {
     this.examination = this.data.examination;
+  }
+
+  search(term) {
+    console.log(term);
   }
 
   async onModelChange(note: number) {

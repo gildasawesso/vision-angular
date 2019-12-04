@@ -1,0 +1,20 @@
+@import 'app.colors';
+
+.items {
+  height: 70vh;
+  overflow: auto;
+  padding: 0 10px;
+
+  .item {
+    font-size: 1.3em;
+    margin: 10px 0;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 7px;
+
+    &.selected {
+      background-color: $primary;
+      color: white;
+    }
+  }
+}

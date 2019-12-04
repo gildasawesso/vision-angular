@@ -7,6 +7,8 @@ import {NotesRoutingModule} from './notes-routing.module';
 import {AddOrEditExaminationComponent} from './examination/add-or-edit-examination/add-or-edit-examination.component';
 import { AddOrEditExaminationTypeComponent } from './examination/add-or-edit-examination-type/add-or-edit-examination-type.component';
 import { MarksComponent } from './examination/marks/marks.component';
+import { ExaminationTypesComponent } from './examination/examination-types/examination-types.component';
+import { ExaminationsListComponent } from './examination/examinations-list/examinations-list.component';
 
 
 
@@ -17,7 +19,9 @@ import { MarksComponent } from './examination/marks/marks.component';
     BulletinsComponent,
     AddOrEditExaminationComponent,
     AddOrEditExaminationTypeComponent,
-    MarksComponent
+    MarksComponent,
+    ExaminationTypesComponent,
+    ExaminationsListComponent
   ],
   imports: [
     NotesRoutingModule,
