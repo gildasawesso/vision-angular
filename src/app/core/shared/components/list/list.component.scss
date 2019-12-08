@@ -6,14 +6,14 @@
   padding: 0 10px;
 
   .item {
-    font-size: 1.3em;
+    font-size: 1.1em;
     margin: 10px 0;
     padding: 10px;
     cursor: pointer;
     border-radius: 7px;
 
     &.selected {
-      background-color: $primary;
+      background-color: $accent;
       color: white;
     }
   }

@@ -26,6 +26,8 @@ export class ExaminationsListComponent implements OnInit {
   data = [];
   mapping = {
     'date createdAt': 'Date de l\'examen',
+    'subject.code': 'Matière',
+    'type.name': 'Type d\'examination',
     notes: 'Notes',
     options: 'Options',
   };
@@ -36,11 +38,11 @@ export class ExaminationsListComponent implements OnInit {
   examinationTypeSelected: ExaminationType = null;
 
   set ClassroomSelected(classroom: Classroom) {
-    this.classroomSelected = classroom;
     if (!this.isClassroomHasSubjects(classroom)) {
       this.utils.common.toast('Cette classe ne contient aucune matière');
       return;
     }
+    this.classroomSelected = classroom;
     this.loadExaminations();
   }
 

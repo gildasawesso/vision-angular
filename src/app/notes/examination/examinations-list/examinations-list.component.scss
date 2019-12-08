@@ -1,6 +1,17 @@
+@import "app.colors";
+
 :host {
   app-list {
     display: block;
     margin: 0 10px;
+    background-color: white;
+    border-radius: 7px;
+    box-shadow: $shadow;
+  }
+
+  .classroom-not-selected {
+    font-size: 3em;
+    height: 100%;
+    text-align: center;
   }
 }
