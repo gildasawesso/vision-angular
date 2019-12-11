@@ -55,6 +55,7 @@ export class BulletinsComponent implements OnInit {
     return this.classroomStudents.map(student => {
       return {
         student,
+        classSize: this.utils.student.classroomStudents(this.classroomSelected).length,
         examinationsTypes: this.classroomExaminationTypes.map(t => t.name),
         classroom: this.classroomSelected,
         schoolYear: this.schoolYear,

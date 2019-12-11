@@ -74,6 +74,7 @@ export class PrintUtil {
       matricule: notes.student.matricule,
       schoolName: currentSchool.name,
       sex: notes.student.gender,
+      classSize: notes.classSize,
       status: Number(generalMean) >= 10 ? 'Passant' : 'Ajournée',
       studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
       term: notes.term.toUpperCase(),
@@ -98,7 +99,7 @@ export class PrintUtil {
           coef: subjectAndExaminationType.coef,
           rank: subjectAndExaminationType.rank,
           firstRankMean: subjectAndExaminationType.firstRankMean.toFixed(2),
-          lastRankMean: subjectAndExaminationType.lastRankMean,
+          lastRankMean: subjectAndExaminationType.lastRankMean.toFixed(2),
           meanByCoefficient: subjectAndExaminationType.meanByCoefficient.toFixed(2),
           ...marks
         };
@@ -129,6 +130,7 @@ export class PrintUtil {
         matricule: notes.student.matricule,
         schoolName: currentSchool.name,
         examinationTypes: notes.examinationsTypes,
+        classSize: notes.classSize,
         sex: notes.student.gender,
         status: Number(generalMean) >= 10 ? 'Passant' : 'Ajournée',
         studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
@@ -153,7 +155,7 @@ export class PrintUtil {
             coef: subjectAndExaminationType.coef,
             rank: subjectAndExaminationType.rank,
             firstRankMean: subjectAndExaminationType.firstRankMean.toFixed(2),
-            lastRankMean: subjectAndExaminationType.lastRankMean,
+            lastRankMean: subjectAndExaminationType.lastRankMean.toFixed(2),
             meanByCoefficient: subjectAndExaminationType.meanByCoefficient.toFixed(2),
             ...marks
           };
