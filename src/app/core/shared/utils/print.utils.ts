@@ -8,7 +8,6 @@ import {FeeType} from '../../models/fee-type';
 import {PaymentsRepository} from '../../repositories/payments.repository';
 import {Student} from '../../models/student';
 import {RegistrationsRepository} from '../../repositories/registrations.repository';
-import {Utils} from './index';
 import {StudentUtil} from './student.util';
 
 moment.locale('fr');
@@ -66,7 +65,7 @@ export class PrintUtil {
     const currentSchool = this.schools.list[0];
     const examTypes = {};
     const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
-    const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
+    const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0).toFixed(2);
     const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
     notes.examinationsTypes.forEach((e, index) => {
       examTypes[`examType${index + 1}`] = e;
@@ -90,7 +89,8 @@ export class PrintUtil {
       subjects: notes.subjects.map(subjectAndExaminationType => {
         const marks = {};
         subjectAndExaminationType.examinationsByType.forEach((s, index) => {
-          marks[`mark${index + 1}`] = s.marks;
+          // todo i touched here
+          marks[`mark${index + 1}`] = s.marks === undefined || s.marks == null ? '-' : s.marks;
         });
         return {
           name: subjectAndExaminationType.subject.code,
@@ -145,7 +145,7 @@ export class PrintUtil {
         subjects: notes.subjects.map(subjectAndExaminationType => {
           const marks = {};
           subjectAndExaminationType.examinationsByType.forEach((s, index) => {
-            marks[`mark${index + 1}`] = s.marks.toFixed(2);
+            marks[`mark${index + 1}`] = s.marks === undefined || s.marks == null ? '-' : s.marks;
           });
           return {
             name: subjectAndExaminationType.subject.code,
@@ -165,7 +165,6 @@ export class PrintUtil {
       body: notesArrayProccessed,
       responseType: 'blob'
     };
-    console.log(options.body);
     const file = await this.api.request('post', `/report/print/multiple`, options).toPromise();
 
     this.download(file);

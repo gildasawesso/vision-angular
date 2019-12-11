@@ -6,6 +6,11 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
+      <mat-label>Ordre d'apparition sur le bulletin</mat-label>
+      <input matInput [formControl]="displayOrder"/>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
       <mat-label>Groupe d'examination</mat-label>
       <select matNativeControl [formControl]="group">
         <ng-container *ngFor="let group of array">

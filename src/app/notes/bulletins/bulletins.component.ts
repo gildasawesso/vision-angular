@@ -35,7 +35,8 @@ export class BulletinsComponent implements OnInit {
 
       const studentsMarks = this.classroomStudents.map(student => {
         const markPerExaminationType = this.marksByExaminationType(student, subjectByType.subject);
-        const meanByTwenty = markPerExaminationType.reduce((acc, cur) => acc + cur.marks, 0) / markPerExaminationType.length;
+        const marksByExaminationTypeNotNull = markPerExaminationType.filter(m => m.marks != null);
+        const meanByTwenty = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
         return {
           student,
           meanByTwenty
@@ -51,7 +52,6 @@ export class BulletinsComponent implements OnInit {
 
   get classroomStudentsExamainations() {
     this.notesBySubject = {};
-    console.log(this.classroomSelected);
     return this.classroomStudents.map(student => {
       return {
         student,
@@ -64,8 +64,9 @@ export class BulletinsComponent implements OnInit {
             subject,
           };
           const marksByExaminationType = this.marksByExaminationType(student, subject);
-          const totalMarks = marksByExaminationType.reduce((acc, cur) => acc + cur.marks, 0);
-          const meanByTwenty = marksByExaminationType.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationType.length;
+          const marksByExaminationTypeNotNull = marksByExaminationType.filter(m => m.marks != null);
+          const totalMarks = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0);
+          const meanByTwenty = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
           const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject.find(m => m.subject._id === subject._id).examinations;
           const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
           const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
@@ -99,10 +100,12 @@ export class BulletinsComponent implements OnInit {
   marksByExaminationType(student: Student, subject: Subject) {
     return this.classroomExaminationTypes.map(type => {
       const currentSubjectAndTypeExaminations = this.classroomExaminations.filter(e => e.subject._id === subject._id && e.type._id === type._id);
+
       const marksSum = currentSubjectAndTypeExaminations.reduce((acc, cur) => acc + cur.marks.find(m => m.student._id === student._id).mark, 0);
+
       return {
         examinationType: type,
-        marks: currentSubjectAndTypeExaminations.length >= 1 ? marksSum / currentSubjectAndTypeExaminations.length : 0
+        marks: currentSubjectAndTypeExaminations.length >= 1 ? marksSum / currentSubjectAndTypeExaminations.length : null
       };
     });
   }
@@ -135,7 +138,8 @@ export class BulletinsComponent implements OnInit {
   }
 
   get classroomExaminationTypes() {
-    return this.utils.examination.classroomExaminationTypes(this.classroomSelected);
+    const examinations = this.utils.examination.classroomExaminationTypes(this.classroomSelected);
+    return examinations.sort((e1, e2) => e1.displayOrder - e2.displayOrder);
   }
 
   constructor(private classroomsRepository: ClassroomsRepository,
@@ -227,15 +231,6 @@ export class BulletinsComponent implements OnInit {
 
     if (this.classroomStudents.length <= 0) {
       this.utils.common.toast('Aucun élève n\'est présent dans cette classe');
-      return false;
-    }
-
-    return true;
-  }
-
-  canGenerateStudentBulletin(student: Student) {
-    if (this.classroomSelected.subjects == null || this.classroomSelected.subjects.length <= 0) {
-      this.utils.common.toast('la classe de cet élève ne dispose pas de cours');
       return false;
     }
 

@@ -1,8 +1,14 @@
 <div class="mr-3">
   <h5>Types d'examination</h5>
+  <div class="d-flex align-items-center">
+    <h3 style="flex-basis: 0;" class="flex-grow-1">Désignation</h3>
+    <h3 style="flex-basis: 0;" class="flex-grow-1">Ordre d'apparition sur le bulletin</h3>
+    <div style="flex-basis: 0;" class="flex-grow-1"></div>
+  </div>
   <div class="d-flex align-items-center" *ngFor="let examType of examinationTypes">
-    <div style="flex-basis: 0;" class="flex-fill">{{examType.name}}</div>
-    <div>
+    <div style="flex-basis: 0;" class="flex-grow-1">{{examType.name}}</div>
+    <div style="flex-basis: 0;" class="flex-grow-1">{{examType.displayOrder}}</div>
+    <div style="flex-basis: 0;" class="flex-grow-1">
       <button mat-icon-button (click)="editExaminationType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.editExaminationType]"><mat-icon>edit</mat-icon></button>
       <button mat-icon-button color="warn" (click)="deleteExamType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.deleteExaminationType]"><mat-icon>delete</mat-icon></button>
     </div>
