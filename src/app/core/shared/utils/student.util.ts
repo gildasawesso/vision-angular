@@ -114,10 +114,12 @@ export class StudentUtil {
         return 'Très faible';
       case mark <= 7.99:
         return 'Faible';
-      case mark <= 11.99:
+      case mark <= 8.99:
         return 'Insuffisant';
-      case mark <= 13.99:
+      case mark <= 11.99:
         return 'Passable';
+      case mark <= 13.99:
+        return 'Assez-Bien';
       case mark <= 15.99:
         return 'Bien';
       case mark <= 17.99:
@@ -126,8 +128,6 @@ export class StudentUtil {
         return 'Excellent';
     }
   }
-
-
 
   classroomExaminations(classroom: Classroom) {
     return this.examinations.filter(e => e.classroom._id === classroom._id);

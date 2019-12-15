@@ -67,7 +67,7 @@ export class BulletinsComponent implements OnInit {
           const marksByExaminationType = this.marksByExaminationType(student, subject);
           const marksByExaminationTypeNotNull = marksByExaminationType.filter(m => m.marks != null);
           const totalMarks = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0);
-          const meanByTwenty = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
+          const meanByTwenty = marksByExaminationTypeNotNull.length <= -1 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
           const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject.find(m => m.subject._id === subject._id).examinations;
           const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
           const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
@@ -78,12 +78,12 @@ export class BulletinsComponent implements OnInit {
             subject,
             totalMarks,
             meanByTwenty,
-            coef: subject.coefficient,
+            coef: meanByTwenty >= 0 ? subject.coefficient : 0,
             rank,
             firstRankMean,
             lastRankMean,
             appreciation,
-            meanByCoefficient: meanByTwenty * subject.coefficient,
+            meanByCoefficient: meanByTwenty >= 0 ? meanByTwenty * subject.coefficient : 0,
             examinationsByType: marksByExaminationType
           };
         })
@@ -103,12 +103,23 @@ export class BulletinsComponent implements OnInit {
   marksByExaminationType(student: Student, subject: Subject) {
     return this.classroomExaminationTypes.map(type => {
       const currentSubjectAndTypeExaminations = this.classroomExaminations.filter(e => e.subject._id === subject._id && e.type._id === type._id);
+      let subjectsToRemove = 0;
+      const marksSum = currentSubjectAndTypeExaminations.reduce((acc, cur) => {
+        const mark = cur.marks.find(m => m.student._id === student._id).mark;
+        if (mark == null) { subjectsToRemove += 1; }
+        return acc + mark;
+      }, 0);
 
-      const marksSum = currentSubjectAndTypeExaminations.reduce((acc, cur) => acc + cur.marks.find(m => m.student._id === student._id).mark, 0);
+      if (subjectsToRemove === currentSubjectAndTypeExaminations.length) {
+        return {
+          examinationType: type,
+          marks: null
+        };
+      }
 
       return {
         examinationType: type,
-        marks: currentSubjectAndTypeExaminations.length >= 1 ? marksSum / currentSubjectAndTypeExaminations.length : null
+        marks: currentSubjectAndTypeExaminations.length >= 1 ? marksSum / (currentSubjectAndTypeExaminations.length - subjectsToRemove) : null
       };
     });
   }
