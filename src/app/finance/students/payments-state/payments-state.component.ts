@@ -92,7 +92,6 @@ export class PaymentsStateComponent implements OnInit {
     let payments = this.utils.student.feePaymentsForOneStudent(this.classroomSelected.schoolFee, student);
     const tranches = this.classroomSelected.schoolFee.tranches;
     return tranches.map((tranche, index) => {
-      this.changeDetector.detectChanges();
       if (payments >= tranche.amount) {
         payments -= tranche.amount;
         this.updateTotalPaymentsByTranche(index, tranche.amount);
