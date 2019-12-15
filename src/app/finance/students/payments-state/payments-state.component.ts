@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
 import {ExaminationsRepository} from '../../../core/repositories/examinations.repository';
@@ -13,13 +13,13 @@ import {Examination} from '../../../core/models/examination';
 import {Student} from '../../../core/models/student';
 import {PaymentsRepository} from '../../../core/repositories/payments.repository';
 import {Payment} from '../../../core/models/payment';
-import {Tranche} from '../../../core/models/tranche';
 import {FeeType} from '../../../core/models/fee-type';
+import {from} from 'rxjs';
 
 @Component({
   selector: 'app-payments-state',
   templateUrl: './payments-state.component.html',
-  styleUrls: ['./payments-state.component.scss']
+  styleUrls: ['./payments-state.component.scss'],
 })
 export class PaymentsStateComponent implements OnInit {
 
@@ -29,12 +29,13 @@ export class PaymentsStateComponent implements OnInit {
   schoolYear: SchoolYear;
   examinations: Examination[] = [];
   payments: Payment[] = [];
+  totalPaymentsByTranche: Array<number> = [0, 0, 0];
 
   selected = -1;
   classroomSelected: Classroom;
 
   get classroomStudents() {
-    return this.registrationsRepository.studentsForClassroom(this.registrations, this.classroomSelected);
+    return this.utils.student.classroomStudents(this.classroomSelected);
   }
 
   constructor(private classroomsRepository: ClassroomsRepository,
@@ -43,20 +44,40 @@ export class PaymentsStateComponent implements OnInit {
               private schoolyearsRepository: SchoolyearsRepository,
               private subjectsRepository: SubjectsRepository,
               private paymentsRepository: PaymentsRepository,
-              public utils: Utils) {
+              public utils: Utils,
+              private changeDetector: ChangeDetectorRef) {
   }
 
   selectClassroom(classroom: Classroom, index: number) {
+    this.totalPaymentsByTranche =  [0, 0, 0];
     this.selected = index;
     this.classroomSelected = classroom;
   }
 
-  currentStudentRegistrationFeePayed(student: Student) {
-    return this.utils.student.feePayments(this.payments, this.classroomSelected.registrationFee, student);
+  updateTotalPaymentsByTranche(index, amount) {
+    this.totalPaymentsByTranche[index] += amount;
+  }
+
+  currentStudentRegistrationFeePayedWithReste(student: Student) {
+    const payed = this.utils.student.feePaymentsForOneStudent(this.classroomSelected.registrationFee, student);
+    const reduction = this.utils.student.feeReduction(student, this.classroomSelected.registrationFee);
+    const reste = this.classroomSelected.registrationFee.amount - payed - reduction;
+    const allPaymentsDone = reste <= 0;
+    return [{
+      payed,
+      reste,
+      reduction,
+      allPaymentsDone
+    }];
   }
 
   currentStudentPayments(student: Student) {
-    return this.utils.student.feePayments(this.payments, this.classroomSelected.schoolFee, student);
+    const payments = this.utils.student.feePaymentsForOneStudent(this.classroomSelected.schoolFee, student);
+    const reste = this.classroomSelected.schoolFee.amount - payments;
+    return [{
+      payments,
+      reste
+    }];
   }
 
   allStudentPayments(fee: FeeType) {
@@ -68,22 +89,28 @@ export class PaymentsStateComponent implements OnInit {
   }
 
   tranchesMappedWithPayments(student: Student) {
-    let payments = this.utils.student.feePayments(this.payments, this.classroomSelected.schoolFee, student);
+    let payments = this.utils.student.feePaymentsForOneStudent(this.classroomSelected.schoolFee, student);
     const tranches = this.classroomSelected.schoolFee.tranches;
-    return tranches.map(tranche => {
+    return tranches.map((tranche, index) => {
+      this.changeDetector.detectChanges();
       if (payments >= tranche.amount) {
         payments -= tranche.amount;
+        this.updateTotalPaymentsByTranche(index, tranche.amount);
         return {
           ...tranche,
           payed: tranche.amount
         };
       } else {
         if (payments > 0) {
+          const payed = payments;
+          payments = 0;
+          this.updateTotalPaymentsByTranche(index, payed);
           return {
             ...tranche,
-            payed: payments
+            payed
           };
         } else {
+          this.updateTotalPaymentsByTranche(index, 0);
           return {
             ...tranche,
             payed: 0

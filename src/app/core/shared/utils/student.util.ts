@@ -49,7 +49,7 @@ export class StudentUtil {
   allSStudentsPayments(classroom: Classroom, fee?: FeeType, schoolYear?: SchoolYear) {
     const classroomStudents = this.classroomStudents(classroom);
     const payments = classroomStudents.map(s => {
-      return this.feePayments(this.payments, fee, s);
+      return this.feePaymentsForOneStudent(fee, s);
     });
     return payments.reduce((acc, cur) => acc + cur, 0);
   }
@@ -57,13 +57,13 @@ export class StudentUtil {
   allPaymentsExpected(classroom: Classroom, fee?: FeeType, schoolYear?: SchoolYear) {
     const classroomStudents = this.classroomStudents(classroom);
     const payments = classroomStudents.map(s => {
-      return this.feePayments(this.payments, fee, s);
+      return this.feePaymentsForOneStudent(fee, s);
     });
     return payments.reduce((acc, cur) => acc + cur, 0);
   }
 
-  studentRegistration(registrations: Registration[], student: Student) {
-    return registrations.find(r => r.student ? r.student._id === student._id : false);
+  studentsRegistration(student: Student) {
+    return this.registrations.find(r => r.student ? r.student._id === student._id : false);
   }
 
   classroomRegistrations(classroom: Classroom) {
@@ -80,8 +80,8 @@ export class StudentUtil {
       .sort(this.commonUtil.dynamicSort('lastname'));
   }
 
-  feeReduction(registrations: Registration[], student: Student, fee: FeeType) {
-    const registration = registrations.find(r => r.student ? r.student._id === student._id : false);
+  feeReduction(student: Student, fee: FeeType) {
+    const registration = this.studentsRegistration(student);
     if (registration === undefined) { return 0; }
 
     const reductionForFee = registration.reductions.find(r => r.fee._id === fee._id);
@@ -94,16 +94,40 @@ export class StudentUtil {
     }
   }
 
-  feePayments(payments: Payment[], fee: FeeType, student: Student) {
-    const studentPayments = this.studentPayments(payments, student);
+  feePaymentsForOneStudent(fee: FeeType, student: Student) {
+    const studentPayments = this.studentPayments(this.payments, student);
     const subPayments = studentPayments.map(p => p.fees);
     const subPaymentsFlattened = subPayments.reduce((acc, cur) => {
       acc = [...acc, ...cur];
       return acc;
     }, []);
-    const feeSubPayments = subPaymentsFlattened.filter(p => p.fee._id === fee._id);
+    const feeSubPayments = subPaymentsFlattened.filter(p => {
+      if (p.fee == null) { return false; }
+      return p.fee._id === fee._id;
+    });
     return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
   }
+
+  appreciationFromMark(mark: number) {
+    switch (true) {
+      case mark <= 0.33:
+        return 'Très faible';
+      case mark <= 7.99:
+        return 'Faible';
+      case mark <= 11.99:
+        return 'Insuffisant';
+      case mark <= 13.99:
+        return 'Passable';
+      case mark <= 15.99:
+        return 'Bien';
+      case mark <= 17.99:
+        return 'Très Bien';
+      case mark <= 20:
+        return 'Excellent';
+    }
+  }
+
+
 
   classroomExaminations(classroom: Classroom) {
     return this.examinations.filter(e => e.classroom._id === classroom._id);

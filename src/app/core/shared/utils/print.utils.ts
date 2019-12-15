@@ -38,7 +38,7 @@ export class PrintUtil {
   }
 
   private feeReduction(student: Student, fee: FeeType) {
-    const registration = this.studentUtils.studentRegistration(this.registrations, student);
+    const registration = this.studentUtils.studentsRegistration(student);
     if (registration === undefined) { return 0; }
 
     const reductionForFee = registration.reductions.find(r => r.fee._id === fee._id);
@@ -67,6 +67,12 @@ export class PrintUtil {
     const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
     const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0).toFixed(2);
     const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
+    let blame = '';
+    const blameSubjectMark = notes.subjects.find(s => s.subject.name.split(' ')[0].toLowerCase() === 'conduite');
+    if (blameSubjectMark) {
+      const blameMeanByTwenty = blameSubjectMark.meanByTwenty;
+      blame = blameMeanByTwenty < 10 ? 'X' : '';
+    }
     notes.examinationsTypes.forEach((e, index) => {
       examTypes[`examType${index + 1}`] = e;
     });
@@ -87,6 +93,11 @@ export class PrintUtil {
       bestClassroomMean: notes.bestClassroomMean,
       lastClassroomMean: notes.lastClassroomMean,
       generalMean,
+      congratulations: Number(generalMean) >= 14 ? 'X' : '',
+      encouragement: Number(generalMean).toFixed(0) === '13' ? 'X' : '',
+      honor: Number(generalMean).toFixed(0) === '12' ? 'X' : '',
+      warning: Number(generalMean) < 7 ? 'X' : '',
+      blame,
       subjects: notes.subjects.map(subjectAndExaminationType => {
         const marks = {};
         subjectAndExaminationType.examinationsByType.forEach((s, index) => {
@@ -101,6 +112,7 @@ export class PrintUtil {
           firstRankMean: subjectAndExaminationType.firstRankMean.toFixed(2),
           lastRankMean: subjectAndExaminationType.lastRankMean.toFixed(2),
           meanByCoefficient: subjectAndExaminationType.meanByCoefficient.toFixed(2),
+          appreciation : subjectAndExaminationType.appreciation,
           ...marks
         };
       })

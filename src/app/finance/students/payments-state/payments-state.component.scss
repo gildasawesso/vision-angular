@@ -4,6 +4,12 @@
   .classrooms {
     height: 70vh;
     overflow: auto;
+    background-color: white;
+    border-radius: 7px;
+    box-shadow: $shadow;
+    padding: 10px;
+    position: sticky;
+    top: 24px;
 
     .classroom {
       font-size: 1.3em;
@@ -13,68 +19,101 @@
       border-radius: 7px;
 
       &.selected {
-        background-color: $primary;
+        background-color: $accent;
         color: white;
       }
     }
   }
 
-  table, thead, tbody {
-    display: block;
-  }
+  .payments-state-header {
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    box-shadow: $shadow;
+    border-radius: 2px;
 
-  .table {
-    width: 100%;
+    div {
+      flex-basis: 0;
+      flex-grow: 1;
+      padding: 10px 0;
+      display: flex;
+      flex-direction: column;
 
-    thead {
-      width: 100%;
-      tr {
-        width: 100%;
-        th {
-          background-color: white;
-          position: sticky;
-          top: 0;
-        }
+      span.amount {
+        font-weight: bold;
       }
     }
 
-    tbody {
-      width: 100%;
-
-      tr {
-        width: 100%;
-      }
-    }
-
-    .schoolfee-payments {
-      background-color: #E0F2F1;
-    }
-
-    .registration-payments {
+    .registration {
       background-color: #E3F2FD;
     }
 
-    .total-payed {
+    .school-fee {
+      background-color: #E0F2F1;
+    }
+
+    .total {
       background-color: #ef9a9a;
     }
 
-    .total-remaining {
+    .remaining {
       background-color: #FFFDE7;
     }
   }
 
-
-  .students {
+  .payments-state-body {
     overflow: auto;
-    height: 70vh;
+
+    //height: 65vh;
 
     .student {
-      margin: 10px 0;
+      background-color: white;
 
-      td {
-        flex-grow: 1;
-        flex-basis: 0;
+      .registration-payments {
+        background-color: #FAFAFA;
       }
+
+      .schoolfee-payments {
+        background-color: #FAFAFA;
+      }
+
+      .all-registration-fee-payments-done {
+        background-color: #2196F3;
+        color: white;
+        border-radius: 2px;
+      }
+
+
+      .all-school-fee-payments-done {
+        background-color: #009688;
+        color: white;
+        border-radius: 2px;
+      }
+
+      .check-icon {
+        img {
+          height: 20px;
+        }
+      }
+
+      div {
+        flex-basis: 0;
+        flex-grow: 1;
+        padding: 5px 5px;
+      }
+    }
+  }
+
+  .payments-state-total {
+    background-color: #2196F3;
+    padding: 5px 0;
+    color: white;
+
+    div {
+      flex-basis: 0;
+      flex-grow: 1;
+      padding: 5px 5px;
     }
   }
 

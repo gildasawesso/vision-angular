@@ -77,6 +77,7 @@ export class ExaminationsListComponent implements OnInit {
   }
 
   openNotesPage(examination: Examination) {
+    console.log(examination);
     this.utils.common.modal(MarksComponent, { examination }, true);
   }
 

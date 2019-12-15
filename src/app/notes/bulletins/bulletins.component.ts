@@ -72,6 +72,7 @@ export class BulletinsComponent implements OnInit {
           const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
           const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
           const firstRankMean = studentMarksForCurrentSubjectSorted[0].meanByTwenty;
+          const appreciation = this.utils.student.appreciationFromMark(meanByTwenty);
           const lastRankMean = studentMarksForCurrentSubjectSorted[studentMarksForCurrentSubjectSorted.length - 1].meanByTwenty;
           return {
             subject,
@@ -81,6 +82,7 @@ export class BulletinsComponent implements OnInit {
             rank,
             firstRankMean,
             lastRankMean,
+            appreciation,
             meanByCoefficient: meanByTwenty * subject.coefficient,
             examinationsByType: marksByExaminationType
           };
@@ -90,7 +92,7 @@ export class BulletinsComponent implements OnInit {
   }
 
   get classroomStudents() {
-    return this.registrationsRepository.studentsForClassroom(this.registrations, this.classroomSelected);
+    return this.utils.student.classroomStudents(this.classroomSelected);
   }
 
   rank(subject: Subject, examinationType: ExaminationType) {

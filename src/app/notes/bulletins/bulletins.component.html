@@ -14,7 +14,7 @@
     <div class="students">
       <div class="student" *ngFor="let student of classroomStudents">
         <div class="d-flex align-items-center justify-content-between">
-          <span>{{student?.firstname}} {{student?.lastname | uppercase}}</span>
+          <span>{{student?.lastname | uppercase}} {{student?.firstname}}</span>
           <button (click)="printBulletin(student)" mat-flat-button>Imprimer le bulletin</button>
         </div>
       </div>
