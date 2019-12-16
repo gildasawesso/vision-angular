@@ -30,6 +30,16 @@ export class PaymentsStateComponent implements OnInit {
   examinations: Examination[] = [];
   payments: Payment[] = [];
   totalPaymentsByTranche: Array<number> = [0, 0, 0];
+  exportExcelHeader = [
+    'Nom',
+    'Prénom',
+    'Montant Inscriptions',
+    'Montant Inscriptions Payé',
+    'Réductions Inscriptions',
+    'Inscriptions Reste à payer',
+    'Payement Total',
+    'Reste à Payer'
+  ];
 
   selected = -1;
   classroomSelected: Classroom;
@@ -52,6 +62,39 @@ export class PaymentsStateComponent implements OnInit {
     this.totalPaymentsByTranche =  [0, 0, 0];
     this.selected = index;
     this.classroomSelected = classroom;
+  }
+
+  async exportCurrentClassroom() {
+    const students = this.classroomStudents;
+    const exportData = students.map(student => {
+      const registrationState = this.currentStudentRegistrationFeePayedWithReste(student);
+      const schoolFeeState = this.tranchesMappedWithPayments(student);
+      const payments = this.currentStudentPayments(student);
+      const schoolFeeStates: any = {};
+      schoolFeeState.forEach(s => {
+          schoolFeeStates[s.name] = s.amount;
+          schoolFeeStates[`${s.name}Payed`] = s.payed;
+          schoolFeeStates[`${s.name}Reduction`] = 0;
+          schoolFeeStates[`${s.name}remaining`] = s.amount - s.payed;
+      });
+
+      return {
+        firstname: student.firstname,
+        lastname: student.lastname,
+        registrationFee: this.classroomSelected.registrationFee.amount,
+        registrationFeePayed: registrationState[0].payed,
+        registrationFeeReduction: registrationState[0].reduction,
+        registrationFeeRemaining: registrationState[0].reste,
+        TotalSchoolFeePayments: payments[0].payments,
+        ...schoolFeeStates,
+        TotalPaymentsRemaining: payments[0].reste
+      };
+    });
+    await this.exportExcel(exportData);
+  }
+
+  async exportExcel(data: any, header?: any) {
+    await this.utils.print.excel(data, header);
   }
 
   updateTotalPaymentsByTranche(index, amount) {

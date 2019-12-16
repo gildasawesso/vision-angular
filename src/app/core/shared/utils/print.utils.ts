@@ -204,6 +204,17 @@ export class PrintUtil {
     window.open(url);
   }
 
+  async excel(data, header?) {
+    const options = {
+      body: { data, header },
+      responseType: 'blob'
+    };
+    console.log(data);
+    const file = await this.api.request('post', `/report/print/excel`, options).toPromise();
+
+    this.download(file);
+  }
+
   private loadRepositories() {
     this.paymentsRepository.stream
       .subscribe(payments => {

@@ -9,7 +9,11 @@
   </div>
 
   <div class="col-10" *ngIf="selected != -1">
-    <h3>Élèves</h3>
+    <div class="buttons d-flex align-items-center justify-content-end">
+      <div>Exporter : </div>
+      <button mat-stroked-button color="accent">Toutes les classes</button>
+      <button mat-stroked-button color="accent" (click)="exportCurrentClassroom()">Classe sélectionnée</button>
+    </div>
     <div class="d-flex align-items-stretch payments-state-header">
       <div>Nom</div>
       <div class="registration">

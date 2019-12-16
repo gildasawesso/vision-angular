@@ -25,6 +25,12 @@
     }
   }
 
+  .buttons {
+    button {
+      margin: 5px 10px;
+    }
+  }
+
   .payments-state-header {
     margin-bottom: 10px;
     position: sticky;
@@ -32,6 +38,7 @@
     background-color: white;
     box-shadow: $shadow;
     border-radius: 2px;
+    font-size: 1.3em;
 
     div {
       flex-basis: 0;
@@ -44,26 +51,11 @@
         font-weight: bold;
       }
     }
-
-    .registration {
-      background-color: #E3F2FD;
-    }
-
-    .school-fee {
-      background-color: #E0F2F1;
-    }
-
-    .total {
-      background-color: #ef9a9a;
-    }
-
-    .remaining {
-      background-color: #FFFDE7;
-    }
   }
 
   .payments-state-body {
     overflow: auto;
+    font-size: 1.3em;
 
     //height: 65vh;
 
@@ -79,14 +71,14 @@
       }
 
       .all-registration-fee-payments-done {
-        background-color: #2196F3;
+        background-color: #4DB6AC;
         color: white;
         border-radius: 2px;
       }
 
 
       .all-school-fee-payments-done {
-        background-color: #009688;
+        background-color: #4DB6AC;
         color: white;
         border-radius: 2px;
       }
@@ -109,6 +101,8 @@
     background-color: #2196F3;
     padding: 5px 0;
     color: white;
+    position: sticky;
+    top: 58px;
 
     div {
       flex-basis: 0;
