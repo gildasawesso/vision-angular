@@ -76,6 +76,7 @@ export class PrintUtil {
   processNotes(notes) {
     const currentSchool = this.schools.list[0];
     const examTypes = {};
+    const isReRegistration = this.studentUtils.studentsRegistration(notes.student).isReregistration;
     const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
     const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0).toFixed(2);
     const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
@@ -94,7 +95,11 @@ export class PrintUtil {
       sex: notes.student.gender,
       examinationTypes: notes.examinationsTypes,
       classSize: notes.classSize,
-      status: Number(generalMean) >= 10 ? 'Passant' : 'Ajournée',
+      director: 'ATROKPOKODJI',
+      // todo get date from server
+      printingDate: moment().format('dddd DD MMMM YYYY'),
+      generalAppreciation: this.studentUtils.appreciationFromMark(Number(generalMean)),
+      status: isReRegistration ? 'Doublant' : 'Passant',
       studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
       term: notes.term.toUpperCase(),
       schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
