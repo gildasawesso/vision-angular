@@ -190,6 +190,6 @@ export class Common {
     if (decimals[1] === undefined) { return this.numToLetters(decimals[0]); }
     const numberBeforeDot = this.numToLetters(decimals[0]);
     const numberAfterDot = this.numToLetters(Number(decimals[1]));
-    return `${numberBeforeDot} virgule ${numberAfterDot}`;
+    return decimals[1][0] === '0' ? `${numberBeforeDot} virgule zéro ${numberAfterDot}` : `${numberBeforeDot} virgule ${numberAfterDot}`;
   }
 }

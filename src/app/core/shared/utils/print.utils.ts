@@ -69,7 +69,6 @@ export class PrintUtil {
       body: this.processNotes(notes),
       responseType: 'blob'
     };
-    console.log(options.body);
     const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes`, options).toPromise();
 
     this.download(file);
@@ -150,7 +149,6 @@ export class PrintUtil {
       body: notesArrayProccessed,
       responseType: 'blob'
     };
-    console.log(notesArrayProccessed);
     const file = await this.api.request('post', `/report/print/multiple`, options).toPromise();
 
     this.download(file);
@@ -219,7 +217,6 @@ export class PrintUtil {
       body: { data, header },
       responseType: 'blob'
     };
-    console.log(data);
     const file = await this.api.request('post', `/report/print/excel`, options).toPromise();
 
     this.download(file);
