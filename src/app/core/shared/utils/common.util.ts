@@ -189,7 +189,7 @@ export class Common {
     const decimals = num.toString().split('.');
     if (decimals[1] === undefined) { return this.numToLetters(decimals[0]); }
     const numberBeforeDot = this.numToLetters(decimals[0]);
-    const numberAfterDot = this.numToLetters(decimals[1]);
+    const numberAfterDot = this.numToLetters(Number(decimals[1]));
     return `${numberBeforeDot} virgule ${numberAfterDot}`;
   }
 }

@@ -104,7 +104,7 @@ export class PrintUtil {
       generalAppreciation: this.studentUtils.appreciationFromMark(Number(generalMean)),
       // status: isReRegistration ? 'Doublant' : 'Passant',
       status: '',
-      generalMeanInLetter: this.commonUtils.decimalToLetter(Number(generalMean)),
+      generalMeanInLetter: this.commonUtils.decimalToLetter(generalMean),
       studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
       term: notes.term.toUpperCase(),
       schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
