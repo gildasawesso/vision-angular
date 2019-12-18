@@ -98,9 +98,9 @@ export class PrintUtil {
       sex: notes.student.gender,
       examinationTypes: notes.examinationsTypes,
       classSize: notes.classSize,
-      director: 'ATROKPOKODJI',
+      director: 'ATROKPOCODJI',
       // todo get date from server
-      printingDate: moment().format('dddd DD MMMM YYYY'),
+      printingDate: moment().format('DD MMMM YYYY'),
       generalAppreciation: this.studentUtils.appreciationFromMark(Number(generalMean)),
       // status: isReRegistration ? 'Doublant' : 'Passant',
       status: '',
