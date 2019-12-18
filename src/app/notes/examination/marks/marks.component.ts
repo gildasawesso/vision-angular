@@ -31,7 +31,8 @@ export class MarksComponent implements OnInit {
       this.utils.common.toast('La note est supérieure à la note maximale');
       return;
     }
-    await this.examinationsRepository.update(this.examination, this.examination._id);
+    const x = await this.examinationsRepository.update(this.examination, this.examination._id);
+    console.log(x);
   }
 
   marksSorted() {

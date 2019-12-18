@@ -110,11 +110,11 @@ export class StudentUtil {
 
   appreciationFromMark(mark: number) {
     switch (true) {
-      case mark <= 0.33:
+      case mark <= 3.99:
         return 'Très faible';
       case mark <= 7.99:
         return 'Faible';
-      case mark <= 8.99:
+      case mark <= 9.99:
         return 'Insuffisant';
       case mark <= 11.99:
         return 'Passable';

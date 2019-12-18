@@ -105,7 +105,13 @@ export class BulletinsComponent implements OnInit {
       const currentSubjectAndTypeExaminations = this.classroomExaminations.filter(e => e.subject._id === subject._id && e.type._id === type._id);
       let subjectsToRemove = 0;
       const marksSum = currentSubjectAndTypeExaminations.reduce((acc, cur) => {
-        const mark = cur.marks.find(m => m.student._id === student._id).mark;
+        const markObject = cur.marks.find(m => m.student._id === student._id);
+        if (markObject === undefined) {
+          subjectsToRemove += 1;
+          return acc;
+        }
+
+        const mark = markObject.mark;
         if (mark == null) { subjectsToRemove += 1; }
         return acc + mark;
       }, 0);
@@ -171,7 +177,9 @@ export class BulletinsComponent implements OnInit {
 
   async printBulletin(student: Student) {
     if (this.canGenerateClassroomBulletin()) {
-      const loading = this.utils.common.loading(`Le Bulletin de ${student.firstname} ${student.lastname} est en cours de génération`);
+      let loading;
+      try {
+      loading = this.utils.common.loading(`Le Bulletin de ${student.firstname} ${student.lastname} est en cours de génération`);
       const marks = this.classroomStudentsExamainations;
       const studentAndGeneralMean = marks.map(m => {
         const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
@@ -188,10 +196,8 @@ export class BulletinsComponent implements OnInit {
       currentStudentMarks.mainRank = currentStudentRank + 1;
       currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
       currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
-      try {
-        await this.utils.print.bulletin(currentStudentMarks);
-
-        loading.close();
+      await this.utils.print.bulletin(currentStudentMarks);
+      loading.close();
       } catch (e) {
         console.error(e);
         loading.close();
@@ -224,14 +230,16 @@ export class BulletinsComponent implements OnInit {
   async printClassroomBulletins(classroom: Classroom, index: number) {
     this.classroomSelected = classroom;
     this.selected = index;
+    let loading;
 
     if (this.canGenerateClassroomBulletin()) {
-      const loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
+      try {
+      loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
       await this.utils.common.sleep(300);
       const bulletins = this.classroomStudents.map(student => this.setupBulletin(student));
-      try {
-        await this.utils.print.classroomBulletin(bulletins);
-        loading.close();
+
+      await this.utils.print.classroomBulletin(bulletins);
+      loading.close();
       } catch (e) {
         this.utils.common.alert(JSON.stringify(e.error));
         loading.close();
