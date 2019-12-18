@@ -92,6 +92,7 @@ export class PrintUtil {
     return {
       matricule: notes.student.matricule,
       schoolName: currentSchool.name,
+      schoolSubName: currentSchool.subName,
       sex: notes.student.gender,
       examinationTypes: notes.examinationsTypes,
       classSize: notes.classSize,
@@ -99,7 +100,8 @@ export class PrintUtil {
       // todo get date from server
       printingDate: moment().format('dddd DD MMMM YYYY'),
       generalAppreciation: this.studentUtils.appreciationFromMark(Number(generalMean)),
-      status: isReRegistration ? 'Doublant' : 'Passant',
+      // status: isReRegistration ? 'Doublant' : 'Passant',
+      status: '',
       studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
       term: notes.term.toUpperCase(),
       schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),

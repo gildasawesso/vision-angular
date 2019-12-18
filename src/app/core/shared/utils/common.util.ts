@@ -86,6 +86,10 @@ export class Common {
     });
   }
 
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   compareFn(c1, c2): boolean {
     return c1 && c2 ? c1._id === c2._id : c1 === c2;
   }

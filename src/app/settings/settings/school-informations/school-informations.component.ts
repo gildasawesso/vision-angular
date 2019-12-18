@@ -23,6 +23,7 @@ export class SchoolInformationsComponent implements OnInit {
     address: ['', Validators.required],
     phone: [''],
     email: [''],
+    subName: ['']
   });
   isBusy = false;
   isEdited = false;

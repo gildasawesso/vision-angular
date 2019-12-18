@@ -1,5 +1,9 @@
 <div class="school" [formGroup]="schoolForm">
-  <div class="row"><app-input class="col-12" formControlName="name" [control]="schoolForm.get('name')">Nom de l'école</app-input></div>
+  <div class="row">
+    <app-input class="col-6" formControlName="name" [control]="schoolForm.get('name')">Nom de l'école</app-input>
+    <app-input class="col-6" formControlName="subName" [control]="schoolForm.get('subName')">Second nom</app-input>
+  </div>
+
   <div class="row">
     <app-input class="col-12 col-sm-6" formControlName="address" [control]="schoolForm.get('address')">Adresse</app-input>
     <app-input class="col-12 col-sm-6"formControlName="zipCode">Boîte Postale</app-input>

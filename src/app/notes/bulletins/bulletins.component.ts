@@ -225,8 +225,9 @@ export class BulletinsComponent implements OnInit {
     this.selected = index;
 
     if (this.canGenerateClassroomBulletin()) {
-      const bulletins = this.classroomStudents.map(student => this.setupBulletin(student));
       const loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
+      await this.utils.common.sleep(300);
+      const bulletins = this.classroomStudents.map(student => this.setupBulletin(student));
       try {
         await this.utils.print.classroomBulletin(bulletins);
         loading.close();

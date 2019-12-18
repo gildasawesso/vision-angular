@@ -3,6 +3,7 @@ import {Media} from './media';
 export class School {
   '_id': string;
   name: string;
+  subName: string;
   zipCode: string;
   phones: string;
   mobile: string;
