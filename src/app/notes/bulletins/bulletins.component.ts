@@ -190,6 +190,7 @@ export class BulletinsComponent implements OnInit {
       currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
       try {
         await this.utils.print.bulletin(currentStudentMarks);
+
         loading.close();
       } catch (e) {
         console.error(e);

@@ -9,6 +9,7 @@ import {PaymentsRepository} from '../../repositories/payments.repository';
 import {Student} from '../../models/student';
 import {RegistrationsRepository} from '../../repositories/registrations.repository';
 import {StudentUtil} from './student.util';
+import {Common} from './common.util';
 
 moment.locale('fr');
 
@@ -24,7 +25,8 @@ export class PrintUtil {
               private api: ApiService,
               private paymentsRepository: PaymentsRepository,
               private registrationsRepository: RegistrationsRepository,
-              private studentUtils: StudentUtil) {
+              private studentUtils: StudentUtil,
+              private commonUtils: Common) {
     this.loadRepositories();
   }
 
@@ -102,6 +104,7 @@ export class PrintUtil {
       generalAppreciation: this.studentUtils.appreciationFromMark(Number(generalMean)),
       // status: isReRegistration ? 'Doublant' : 'Passant',
       status: '',
+      generalMeanInLetter: this.commonUtils.decimalToLetter(Number(generalMean)),
       studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
       term: notes.term.toUpperCase(),
       schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
