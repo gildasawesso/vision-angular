@@ -162,7 +162,7 @@ export class EditPaymentComponent implements OnInit {
   }
 
   oldPayments(subPayment) {
-    return this.utils.student.feePaymentsForOneStudent(subPayment.fee, this.paymentForm.get('student').value);
+    return this.utils.student.feePaymentsForOneStudent(this.payments, subPayment.fee, this.paymentForm.get('student').value);
   }
 
   reductionFromFee(fee: FeeType) {

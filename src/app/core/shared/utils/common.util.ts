@@ -3,6 +3,7 @@ import {MatDialog, MatDialogRef, MatSnackBar} from '@angular/material';
 import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.component';
 import {CustomizableAlertDialogComponent} from '../components/customizable-alert-dialog/customizable-alert-dialog.component';
 import {LoadingComponent} from '../components/loading/loading.component';
+import * as moment from 'moment';
 
 @Injectable()
 export class Common {
@@ -191,5 +192,17 @@ export class Common {
     const numberBeforeDot = this.numToLetters(decimals[0]);
     const numberAfterDot = this.numToLetters(Number(decimals[1]));
     return decimals[1][0] === '0' ? `${numberBeforeDot} virgule zéro ${numberAfterDot}` : `${numberBeforeDot} virgule ${numberAfterDot}`;
+  }
+
+  decodeJwtToken(token) {
+    const payload = token.split('.')[1];
+    return atob(payload);
+  }
+
+  isJwtTokenExpired(tokenExpiresIn) {
+    const now = moment();
+    const tokenExpiration = moment().add(tokenExpiresIn, 'second');
+
+    return now.diff(tokenExpiration) > 0;
   }
 }

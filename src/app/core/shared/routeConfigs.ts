@@ -13,21 +13,14 @@ export const menuConfig = [
         ]
       },
       {
-        text: 'Dépenses',
-        url: '/finance/expenses',
+        text: 'Bilan Financier',
+        url: '/finance/balance',
         submenu: [
-          {text: 'liste des dépenses', url: '/finance/expenses/list'},
-          {text: 'types de dépenses', url: '/finance/expenses/expense-types'},
+          {text: 'Bilan', url: '/finance/balance'},
+          {text: 'Types de dépenses', url: '/finance/balance/expense-types'},
+          {text: 'Types de revenus', url: '/finance/balance/income-types'},
         ]
       },
-      {
-        text: 'Revenus',
-        url: '/finance/incomes',
-        submenu: [
-          {text: 'liste des revenus', url: '/finance/incomes/list'},
-          {text: 'types de revenus', url: '/finance/incomes/income-types'},
-        ]
-      }
     ]
   },
   {

@@ -10,9 +10,11 @@ import {IncomesListComponent} from './incomes/incomes-list/incomes-list.componen
 import {FinanceDashboardComponent} from './students/finance-dashboard/finance-dashboard.component';
 import {FeesComponent} from './students/fees/fees.component';
 import {FeeCategoriesComponent} from './students/fees/fee-categories/fee-categories.component';
-import {ExpenseTypesComponent} from './expenses/expense-types/expense-types.component';
-import {IncomeTypesComponent} from './incomes/income-types/income-types.component';
+import {ExpenseTypesComponent} from './balance/expense-types/expense-types.component';
+import {IncomeTypesComponent} from './balance/income-types/income-types.component';
 import {PaymentsStateComponent} from './students/payments-state/payments-state.component';
+import {BalanceComponent} from './balance/balance.component';
+import {BalanceSheetComponent} from './balance/balance-sheet/balance-sheet.component';
 
 const routes: Routes = [
   {
@@ -35,21 +37,13 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'expenses',
-        component: ExpensesComponent,
+        path: 'balance',
+        component: BalanceComponent,
         children: [
-          { path: 'list', component: ExpensesListComponent },
+          { path: '', component: BalanceSheetComponent },
           { path: 'expense-types', component: ExpenseTypesComponent },
-          { path: '', redirectTo: 'list', pathMatch: 'full' },
-        ]
-      },
-      {
-        path: 'incomes',
-        component: IncomesComponent,
-        children: [
-          { path: 'list', component: IncomesListComponent },
           { path: 'income-types', component: IncomeTypesComponent },
-          { path: '', redirectTo: 'list', pathMatch: 'full' },
+          { path: '', redirectTo: '', pathMatch: 'full' },
         ]
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

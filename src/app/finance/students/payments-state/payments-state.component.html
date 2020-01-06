@@ -1,63 +1,124 @@
-<div class="row">
-  <div class="col-2">
-    <div class="classrooms">
-      <h3>Classes</h3>
-      <div *ngFor="let classroom of classrooms; let i = index;"  class="classroom d-flex align-items-center"  [ngClass]="{'selected': selected == i}">
-        <span class="flex-fill align-self-stretch d-flex align-items-center" (click)="selectClassroom(classroom, i)">{{classroom.name}}</span>
-      </div>
+<div class="buttons d-flex align-items-baseline">
+  <div class="mr-auto">
+    <mat-form-field appearance="outline">
+      <mat-label>Classe sélectionnée</mat-label>
+      <mat-select [formControl]="classroomSelected" [compareWith]="utils.common.compareFn">
+        <mat-option [value]="null">Toutes les classes</mat-option>
+        <mat-option *ngFor="let classroom of classrooms; let i = index;" [value]="classroom">{{classroom.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="ml-auto d-flex align-items-center">
+    <div>Exporter :</div>
+    <button mat-stroked-button color="accent">Toutes les classes</button>
+    <button mat-stroked-button color="accent" (click)="exportCurrentClassroom()">Classe sélectionnée</button>
+  </div>
+</div>
+
+<div *ngIf="classroomSelected.value != null">
+  <div class="d-flex align-items-stretch payments-state-header">
+    <div>Nom</div>
+    <div class="registration">
+      <span>Inscription/</span>
+      <span>Réinscription</span>
     </div>
+    <div class="school-fee" *ngFor="let tranche of classroomSelected.value.schoolFee?.tranches">
+      <span>{{tranche.name}}</span>
+      <span class="amount">{{tranche.amount}}</span>
+    </div>
+    <div class="remaining">Scolarité restante</div>
+    <div class="remaining">Autres payements</div>
+    <div class="">Total Payé</div>
   </div>
 
-  <div class="col-10" *ngIf="selected != -1">
-    <div class="buttons d-flex align-items-center justify-content-end">
-      <div>Exporter : </div>
-      <button mat-stroked-button color="accent">Toutes les classes</button>
-      <button mat-stroked-button color="accent" (click)="exportCurrentClassroom()">Classe sélectionnée</button>
-    </div>
-    <div class="d-flex align-items-stretch payments-state-header">
-      <div>Nom</div>
-      <div class="registration">
-        <span>Inscription</span>
-        <span class="amount">{{classroomSelected.registrationFee.amount}}</span>
-      </div>
-      <div class="school-fee" *ngFor="let tranche of classroomSelected.schoolFee?.tranches">
-        <span>{{tranche.name}}</span>
-        <span class="amount">{{tranche.amount}}</span>
-      </div>
-      <div class="total">Total</div>
-      <div class="remaining">Total Restant</div>
-    </div>
+  <div class="d-flex payments-state-total">
+    <div>Total</div>
+    <div>{{allStudentPayments(classroomSelected.value.registrationFee) | spaced: 'FCFA'}}</div>
+    <div *ngFor="let tranche of totalPaymentsByTranche">{{tranche?.payed | spaced: 'FCFA'}}</div>
+    <div>{{(allPaymentsExpected(classroomSelected.value.schoolFee) - allStudentPayments(classroomSelected.value.schoolFee)) | spaced: 'FCFA'}}</div>
+    <div>{{ allOtherPayments() | spaced: 'FCFA'}}</div>
+    <div>{{(allPaymentsExpected(classroomSelected.value.schoolFee) - allStudentPayments(classroomSelected.value.schoolFee)) | spaced: 'FCFA'}}</div>
+  </div>
 
-    <div class="d-flex payments-state-total">
-      <div>Total</div>
-      <div>{{allStudentPayments(classroomSelected.registrationFee) | spaced: 'FCFA'}}</div>
-      <div *ngFor="let amount of totalPaymentsByTranche">{{amount}}</div>
-      <div>{{allStudentPayments(classroomSelected.schoolFee)  | spaced: 'FCFA'}}</div>
-      <div>{{(allPaymentsExpected(classroomSelected.schoolFee) - allStudentPayments(classroomSelected.schoolFee)) | spaced: 'FCFA'}}</div>
-    </div>
+  <div class="payments-state-body">
+    <mat-accordion>
+      <mat-expansion-panel class="expansion-panel" *ngFor="let student of classroomStudents" hideToggle="true">
+        <mat-expansion-panel-header>
+          <div class="student d-flex align-items-center">
+            <div>{{student?.lastname | uppercase}} {{student?.firstname}}</div>
+            <div class="registration-payments" *ngFor="let pay of currentStudentRegistrationFeePayedWithReste(student)" [ngClass]="{'all-registration-fee-payments-done': pay.allPaymentsDone}">{{pay.payed}}</div>
+            <div class="schoolfee-payments" *ngFor="let tranche of tranchesMappedWithPayments(student)" [ngClass]="{'all-school-fee-payments-done': tranche.amount - tranche.payed == 0}">{{tranche.payed}}</div>
+            <ng-container *ngFor="let pay of currentStudentPayments(student)">
+              <div *ngIf="pay.reste != 0" class="total-remaining">{{pay.reste}}</div>
+              <div *ngIf="pay.reste == 0" class="check-icon d-flex align-items-center">
+                <img src="assets/images/good.png"/>
+              </div>
+              <div>{{pay.otherPayments}}</div>
+              <div>{{pay.currentStudentAllPayments}}</div>
+            </ng-container>
+          </div>
+        </mat-expansion-panel-header>
 
-    <div class="d-flex flex-column payments-state-body">
-      <div class="my-1" *ngFor="let student of classroomStudents">
-        <div class="student d-flex">
-          <div>{{student?.lastname | uppercase}} {{student?.firstname}}</div>
-          <div class="registration-payments" *ngFor="let pay of currentStudentRegistrationFeePayedWithReste(student)" [ngClass]="{'all-registration-fee-payments-done': pay.allPaymentsDone}">
+        <div class="panel-body">
+          <div class="payment d-inline-block" *ngFor="let pay of currentStudentRegistrationFeePayedWithReste(student)" [ngClass]="{'all-registration-fee-payments-done': pay.allPaymentsDone}">
+            <h3>{{pay.fee.name | titlecase}}</h3>
             <div>Payée {{pay.payed}}</div>
             <div>Réduc {{pay.reduction}}</div>
             <div>Reste {{pay.reste}}</div>
           </div>
-          <div class="schoolfee-payments" *ngFor="let tranche of tranchesMappedWithPayments(student)" [ngClass]="{'all-school-fee-payments-done': tranche.amount - tranche.payed == 0}">
-            <div>Payée {{tranche.payed}}</div>
-            <div>Reste {{tranche.amount - tranche.payed}}</div>
-          </div>
-          <ng-container *ngFor="let pay of currentStudentPayments(student)">
-            <div class="total-payed">{{pay.payments}}</div>
-            <div *ngIf="pay.reste != 0" class="total-remaining">{{pay.reste}}</div>
-            <div *ngIf="pay.reste == 0" class="check-icon d-flex align-items-center">
-              <img src="assets/images/good.png"/>
+          <mat-divider class="mt-4"></mat-divider>
+          <div class="mt-4">
+            <div class="payment d-inline-block" *ngFor="let tranche of tranchesMappedWithPayments(student)" [ngClass]="{'all-school-fee-payments-done': tranche.amount - tranche.payed == 0}">
+              <h3>{{tranche?.name}}</h3>
+              <div>Payée {{tranche?.payed}}</div>
+              <div>Reste {{tranche?.amount - tranche?.payed}}</div>
             </div>
-          </ng-container>
+          </div>
+          <mat-divider class="mt-4"></mat-divider>
+          <div class="mt-4">
+            <div class="payment d-inline-block" *ngFor="let payment of otherPayments(student)">
+              <h3>{{payment?.fee?.name | titlecase}}</h3>
+              <div>Payée {{payment?.amount}}</div>
+              <div>Reste {{payment?.fee?.amount - payment?.amount}}</div>
+            </div>
+          </div>
         </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+<div *ngIf="classroomSelected.value == null">
+  <div class="d-flex align-items-stretch payments-state-header">
+    <div>Nom</div>
+    <div class="registration">
+      <span>Inscription/</span>
+      <span>Réinscription</span>
+    </div>
+    <ng-container *ngIf="defaultClassroom">
+      <div class="school-fee" *ngFor="let tranche of defaultClassroom?.schoolFee?.tranches">{{tranche.name}}</div>
+    </ng-container>
+    <div class="remaining">Scolarité restante</div>
+    <div class="remaining">Autres payements</div>
+    <div class="">Total Payé</div>
+  </div>
+
+  <div class="payments-state-body">
+    <div class="classroom d-flex align-items-center" *ngFor="let classroom of classrooms">
+      <div>{{classroom.name}}</div>
+      <div class="registration-payments" *ngFor="let pay of classroomRegistrationFeeAndReregistrationFee(classroom)">
+        <span class="check-icon d-flex align-items-center justify-content-center" *ngIf="pay.allPaymentsDone"><img src="assets/images/good.png"/></span>
+        <span *ngIf="!pay.allPaymentsDone"><span style="color: grey">{{pay.payments}}/</span>{{pay.paymentsExpected}}</span>
       </div>
+      <div class="schoolfee-payments" *ngFor="let tranche of classroomTranchesMappedWithPayments(classroom)">{{tranche.payed| spaced}}</div>
+      <ng-container *ngFor="let pay of ClassroomPayments(classroom)">
+        <div *ngIf="pay.reste != 0" class="total-remaining">{{pay.reste| spaced }}</div>
+        <div *ngIf="pay.reste == 0" class="check-icon d-flex align-items-center justify-content-center">
+          <img src="assets/images/good.png"/>
+        </div>
+        <div>{{pay.otherPayments | spaced }}</div>
+        <div>{{pay.currentClassroomAllPayments | spaced }}</div>
+      </ng-container>
     </div>
   </div>
 </div>

@@ -1,6 +1,12 @@
 @import 'app.colors';
 
 :host {
+  .check-icon {
+    img {
+      height: 20px;
+    }
+  }
+
   .classrooms {
     height: 70vh;
     overflow: auto;
@@ -9,7 +15,7 @@
     box-shadow: $shadow;
     padding: 10px;
     position: sticky;
-    top: 24px;
+    top: 0;
 
     .classroom {
       font-size: 1.3em;
@@ -39,6 +45,7 @@
     box-shadow: $shadow;
     border-radius: 2px;
     font-size: 1.3em;
+    padding: 0 24px;
 
     div {
       flex-basis: 0;
@@ -57,31 +64,28 @@
     overflow: auto;
     font-size: 1.3em;
 
-    //height: 65vh;
+    mat-expansion-panel {
+      box-shadow: none;
+      border-radius: 7px;
+    }
+
+    .expansion-panel {
+      margin: 10px 0;
+    }
+
+    .panel-body {
+      width: auto;
+
+      .payment {
+        border: 1px solid rgba(0,0,0,.16);
+        border-radius: 7px;
+        margin-right: 20px;
+        padding: 10px 20px;
+      }
+    }
 
     .student {
-      background-color: white;
-
-      .registration-payments {
-        background-color: #FAFAFA;
-      }
-
-      .schoolfee-payments {
-        background-color: #FAFAFA;
-      }
-
-      .all-registration-fee-payments-done {
-        background-color: #4DB6AC;
-        color: white;
-        border-radius: 2px;
-      }
-
-
-      .all-school-fee-payments-done {
-        background-color: #4DB6AC;
-        color: white;
-        border-radius: 2px;
-      }
+      width: 100%;
 
       .check-icon {
         img {
@@ -92,14 +96,33 @@
       div {
         flex-basis: 0;
         flex-grow: 1;
-        padding: 5px 5px;
+        //padding: 5px 5px;
+      }
+    }
+
+    .classroom {
+      width: 100%;
+      padding: 24px 24px;
+      background-color: white;
+      margin: 5px 0;
+
+      .check-icon {
+        img {
+          height: 20px;
+        }
+      }
+
+      div {
+        flex-basis: 0;
+        flex-grow: 1;
+        //padding: 5px 5px;
       }
     }
   }
 
   .payments-state-total {
     background-color: #2196F3;
-    padding: 5px 0;
+    padding: 0 24px;
     color: white;
     position: sticky;
     top: 58px;
@@ -107,7 +130,7 @@
     div {
       flex-basis: 0;
       flex-grow: 1;
-      padding: 5px 5px;
+      padding: 10px 0;
     }
   }
 

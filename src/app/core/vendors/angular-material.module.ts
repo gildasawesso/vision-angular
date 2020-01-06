@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import {
   MAT_DATE_LOCALE,
   MatButtonModule, MatButtonToggleModule, MatCardModule, MatDatepickerModule,
-  MatDialogModule, MatDividerModule, MatGridListModule,
+  MatDialogModule, MatDividerModule, MatExpansionModule, MatGridListModule,
   MatIconModule,
   MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatProgressSpinnerModule,
   MatRadioModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule,
@@ -35,7 +35,8 @@ const angularModules = [
   MatDatepickerModule,
   MatMomentDateModule,
   MatGridListModule,
-  MatCardModule
+  MatCardModule,
+  MatExpansionModule
 ];
 
 @NgModule({

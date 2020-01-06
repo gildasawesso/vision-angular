@@ -1,0 +1,13 @@
+@import 'app.colors';
+
+:host {
+  .global-balance {
+    font-size: 3em;
+    width: 100%;
+    background-color: $accent;
+    color: white;
+    padding: 20px 0;
+    border-radius: 7px;
+    text-align: center;
+  }
+}

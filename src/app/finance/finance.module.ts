@@ -15,11 +15,13 @@ import { FeesComponent } from './students/fees/fees.component';
 import { AddOrEditFeeTypeComponent } from './students/fees/add-or-edit-fee/add-or-edit-fee-type.component';
 import { AddOrEditTrancheComponent } from './students/fees/add-or-edit-tranche/add-or-edit-tranche.component';
 import { FeeCategoriesComponent } from './students/fees/fee-categories/fee-categories.component';
-import { ExpenseTypesComponent } from './expenses/expense-types/expense-types.component';
-import { IncomeTypesComponent } from './incomes/income-types/income-types.component';
+import { ExpenseTypesComponent } from './balance/expense-types/expense-types.component';
+import { IncomeTypesComponent } from './balance/income-types/income-types.component';
 import { EditPaymentComponent } from './students/fees/edit-payment/edit-payment.component';
 import { AddPaymentComponent } from './students/fees/add-payment/add-payment.component';
 import { PaymentsStateComponent } from './students/payments-state/payments-state.component';
+import { BalanceComponent } from './balance/balance.component';
+import { BalanceSheetComponent } from './balance/balance-sheet/balance-sheet.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { PaymentsStateComponent } from './students/payments-state/payments-state
     IncomeTypesComponent,
     EditPaymentComponent,
     AddPaymentComponent,
-    PaymentsStateComponent
+    PaymentsStateComponent,
+    BalanceComponent,
+    BalanceSheetComponent
   ],
   imports: [
     SharedModule,

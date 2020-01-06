@@ -21,12 +21,12 @@ import {PermissionsService} from './core/services/permissions.service';
     NgxPermissionsModule.forRoot()
   ],
   providers: [
-    PermissionsService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
+    PermissionsService,
     {
       provide: APP_INITIALIZER,
       useFactory: (permissionsService: PermissionsService, ps: NgxPermissionsService ) => async () => {

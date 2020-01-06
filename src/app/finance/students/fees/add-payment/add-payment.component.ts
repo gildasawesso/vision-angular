@@ -168,7 +168,7 @@ export class AddPaymentComponent implements OnInit {
   }
 
   oldPayments(subPayment) {
-    return this.utils.student.feePaymentsForOneStudent(subPayment.fee, this.paymentForm.get('student').value);
+    return this.utils.student.feePaymentsForOneStudent(this.payments, subPayment.fee, this.paymentForm.get('student').value);
   }
 
   studentSchoolFeesPaymentsAmount() {
@@ -291,15 +291,10 @@ export class AddPaymentComponent implements OnInit {
     this.onStudentChanged();
     this.onFeeTypeAdded();
 
-    this.studentsRepository.stream
-      .subscribe((students: Student[]) => {
-        this.students = students;
-      });
-
-    this.schoolyearsRepository.stream
-      .subscribe(schoolYears => {
-        this.schoolYears = schoolYears;
-      });
+    this.studentsRepository.stream.subscribe((students: Student[]) => this.students = students);
+    this.schoolyearsRepository.stream.subscribe(schoolYears => this.schoolYears = schoolYears);
+    this.feeTypesRepository.stream.subscribe(feeTypes => this.feeTypes = feeTypes);
+    this.paymentsRepository.stream.subscribe(payments => this.payments = payments);
 
     this.paymentForm.get('schoolFee').valueChanges
       .subscribe((fee: FeeType) => {
@@ -309,11 +304,6 @@ export class AddPaymentComponent implements OnInit {
         this.paymentForm.get('amount').setValidators([Validators.max(fee.amount)]);
       });
 
-    this.paymentsRepository.stream
-      .subscribe(payments => {
-        this.payments = payments;
-      });
-
     this.registrationsRepository.stream
       .subscribe(registrations => {
         this.registrations = registrations;
@@ -321,9 +311,5 @@ export class AddPaymentComponent implements OnInit {
         this.initializeReductions();
       });
 
-    this.feeTypesRepository.stream
-      .subscribe(feeTypes => {
-        this.feeTypes = feeTypes;
-      });
   }
 }

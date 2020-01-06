@@ -1,0 +1,23 @@
+<div class="global-balance">{{allPayments | spaced: 'FCFA'}}</div>
+
+<div class="actions">
+  <div class="filter d-flex justify-content-center align-items-center">
+    <app-date class="mx-3"></app-date>
+    <app-date class="mx-3"></app-date>
+    <button class="mx-3 mt-3" mat-button color="accent">Filtrer</button>
+  </div>
+</div>
+
+<div>
+  <button mat-raised-button [mat-menu-trigger-for]="menu">Ajouter une opération</button>
+  <mat-menu #menu=matMenu>
+    <button mat-menu-item>Approvisionner</button>
+    <button mat-menu-item>Dépenser</button>
+  </mat-menu>
+</div>
+
+<div class="balance-sheet">
+  <div class="history">
+    
+  </div>
+</div>

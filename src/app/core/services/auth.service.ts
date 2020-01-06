@@ -83,6 +83,12 @@ export class AuthService {
     }
   }
 
+  async renewToken(refreshToken) {
+    const credentials = await this.api.post(apiConstants.renewToken, {refreshToken}).toPromise();
+    this.credentials = credentials;
+    return credentials;
+  }
+
   async signin(username: string, password: string) {
     this.credentials = await this.api.post(apiConstants.signin, {username, password}).toPromise();
     return this.getCurrentUser();
