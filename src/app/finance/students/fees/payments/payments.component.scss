@@ -54,4 +54,9 @@ $max-data-height: 60vh;
       margin: 10px 0;
     }
   }
+
+  .ngx-datatable {
+    height: 70vh;
+    overflow: auto;
+  }
 }

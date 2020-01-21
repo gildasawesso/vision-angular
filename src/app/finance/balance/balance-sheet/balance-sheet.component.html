@@ -2,8 +2,8 @@
 
 <div class="actions">
   <div class="filter d-flex justify-content-center align-items-center">
-    <app-date class="mx-3"></app-date>
-    <app-date class="mx-3"></app-date>
+    <app-date [control]="filterStartDate" class="mx-3">Date de début</app-date>
+    <app-date [control]="filterEndDate" class="mx-3">Date de fin</app-date>
     <button class="mx-3 mt-3" mat-button color="accent">Filtrer</button>
   </div>
 </div>
@@ -11,13 +11,13 @@
 <div>
   <button mat-raised-button [mat-menu-trigger-for]="menu">Ajouter une opération</button>
   <mat-menu #menu=matMenu>
-    <button mat-menu-item>Approvisionner</button>
-    <button mat-menu-item>Dépenser</button>
+    <button mat-menu-item (click)="openIncomeDialog()">Revenu</button>
+    <button mat-menu-item (click)="openSpentDialog()">Dépense</button>
   </mat-menu>
 </div>
 
 <div class="balance-sheet">
   <div class="history">
-    
+
   </div>
 </div>

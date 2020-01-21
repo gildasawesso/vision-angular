@@ -19,7 +19,7 @@ export class AppbarComponent implements OnInit {
   isHomeMenu = false;
   moduleSelected: string;
 
-  schoolYears: SchoolYear[] = [];
+  schoolYears: SchoolYear[];
   currentSchoolYear: SchoolYear;
   currentTerm: SchoolSession;
 
@@ -58,6 +58,10 @@ export class AppbarComponent implements OnInit {
 
   compareFn(c1, c2): boolean {
     return c1 && c2 ? c1._id === c2._id : c1 === c2;
+  }
+
+  compareTermFn(c1, c2): boolean {
+    return c1 && c2 ? c1.name === c2.name : c1 === c2;
   }
 
   ngOnInit() {

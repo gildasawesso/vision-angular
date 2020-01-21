@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {PaymentsRepository} from '../../../../core/repositories/payments.repository';
 import {Payment} from '../../../../core/models/payment';
 import {Utils} from '../../../../core/shared/utils';
@@ -11,6 +11,7 @@ import {RegistrationsRepository} from '../../../../core/repositories/registratio
 import {Registration} from '../../../../core/models/registration';
 import {Student} from '../../../../core/models/student';
 import {AddPaymentComponent} from '../add-payment/add-payment.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-scholarships',
@@ -19,19 +20,34 @@ import {AddPaymentComponent} from '../add-payment/add-payment.component';
 })
 export class PaymentsComponent implements OnInit {
 
+  rows: any[];
+  columns: any[];
+
   get classroomStudents() {
     return this.registrations.filter(r => r.classroom._id === this.classroomSelected.value._id).map(r => r.student);
   }
 
   constructor(public paymentRepository: PaymentsRepository,
-              private utils: Utils,
+              public utils: Utils,
               private changeDetector: ChangeDetectorRef,
               private classroomsRepository: ClassroomsRepository,
               private registrationsRepository: RegistrationsRepository) {
   }
 
-  classroomSelected = new FormControl('');
-  studentSelected = new FormControl('');
+  @ViewChild('studentFullName', {static: true}) studentFullNameTemplate: TemplateRef<any>;
+  @ViewChild('classroom', {static: true}) classroomTemplate: TemplateRef<any>;
+  @ViewChild('fees', {static: true}) feesTemplate: TemplateRef<any>;
+  @ViewChild('actions', {static: true}) actionsTemplate: TemplateRef<any>;
+
+  classroomSelected = new FormControl(null);
+  studentSelected = new FormControl(null);
+  filterStartDate = new FormControl(null);
+  filterEndDate = new FormControl(null);
+  startOfTheWeek = null;
+  endOfTheWeek = null;
+
+  students: Student[] = [];
+
   classroomSelectedIndex = -1;
   studentSelectedIndex = -1;
   classrooms: Classroom[] = [];
@@ -47,39 +63,35 @@ export class PaymentsComponent implements OnInit {
   };
   optionsPermissions = { edit: constants.permissions.editPayment, delete: constants.permissions.deletePayment };
 
-  selectClassroom(classroom: Classroom, index) {
-    this.classroomSelected.patchValue(classroom);
-    this.classroomSelectedIndex = index;
-
-    if (index !== -1) {
-      this.studentSelectedIndex = -1;
-    }
-
-    this.refreshList();
-  }
-
-  selectStudent(student: Student, index) {
-    this.studentSelected.patchValue(student);
-    this.studentSelectedIndex = index;
-
-    console.log(student);
-
-    this.refreshList();
-  }
-
   refreshList() {
     let payments = [...this.payments];
     payments = payments.filter(p => p.student != null);
 
-    if (this.classroomSelectedIndex !== -1) {
+    if (this.classroomSelected.value != null) {
       payments = payments.filter(p => p.classroom._id === this.classroomSelected.value._id);
     }
 
-    if (this.studentSelectedIndex !== -1) {
+    if (this.studentSelected.value != null) {
       payments = payments.filter(p => p.student._id === this.studentSelected.value._id);
     }
 
-    this.paymentsFiltred = payments;
+    if (this.filterStartDate.value != null) {
+      payments = payments.filter(p => {
+        const paymentDate = moment(p.paymentDate);
+        const filterStartDate = moment(this.filterStartDate.value);
+        return paymentDate.isAfter(filterStartDate);
+      });
+    }
+
+    if (this.filterEndDate.value != null) {
+      payments = payments.filter(p => {
+        const paymentDate = moment(p.paymentDate);
+        const filterEndDate = moment(this.filterEndDate.value);
+        return paymentDate.isBefore(filterEndDate);
+      });
+    }
+    console.log(payments);
+    this.rows = [...payments];
   }
 
   async add() {
@@ -108,12 +120,39 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
+  async formatDate(payment: Payment) {
+    try {
+      await this.utils.print.registrationReceipt(payment);
+    } catch (e) {
+      console.log(e);
+      this.utils.common.alert(e, 'Une erreur est servenue');
+    }
+  }
+
+  reset() {
+    this.classroomSelected.patchValue(null, {emitEvent: false});
+    this.studentSelected.patchValue(null, {emitEvent: false});
+    this.filterStartDate.patchValue(this.startOfTheWeek, {emitEvent: false});
+    this.filterEndDate.patchValue(this.endOfTheWeek, {emitEvent: false});
+    this.refreshList();
+  }
+
   ngOnInit() {
     this.paymentRepository.stream
       .subscribe(payments => {
         this.payments = [...payments];
-        this.paymentsFiltred = [...payments];
-        this.refreshList();
+
+        this.utils.common.serverTime()
+          .then(serverTime => {
+            this.startOfTheWeek = moment(serverTime).startOf('week');
+            this.endOfTheWeek = moment(serverTime).endOf('week');
+            this.filterStartDate.patchValue(this.startOfTheWeek, {emitEvent: false});
+            this.filterEndDate.patchValue(this.endOfTheWeek, {emitEvent: false});
+            this.refreshList();
+          })
+          .catch(error => {
+            console.log(error);
+          });
       });
 
     this.classroomsRepository.stream
@@ -126,6 +165,29 @@ export class PaymentsComponent implements OnInit {
         this.registrations = registrations;
         this.registrationsFiltred = [...registrations];
       });
-  }
 
+    this.classroomSelected.valueChanges
+      .subscribe((classroom: Classroom) => {
+        this.students = this.utils.student.classroomStudents(classroom);
+        this.studentSelected.patchValue(null, {emitEvent: false});
+        this.refreshList();
+      });
+
+    this.studentSelected.valueChanges
+      .subscribe((student: Student) => {
+        this.refreshList();
+      });
+
+    this.filterStartDate.valueChanges.subscribe(_ => this.refreshList());
+    this.filterEndDate.valueChanges.subscribe(_ => this.refreshList());
+
+    this.columns = [
+      { prop: 'paymentDate', name: 'Date de payement', pipe: { transform: this.utils.common.formatDate} },
+      { name: 'Nom', cellTemplate: this.studentFullNameTemplate },
+      { name: 'Class', cellTemplate: this.classroomTemplate },
+      { name: 'Contributions', cellTemplate: this.feesTemplate },
+      { prop: 'amount', name: 'Montant', pipe: { transform: this.utils.common.spaced } },
+      { name: 'Options', cellTemplate: this.actionsTemplate }
+    ];
+  }
 }

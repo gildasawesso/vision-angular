@@ -4,17 +4,21 @@ import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.comp
 import {CustomizableAlertDialogComponent} from '../components/customizable-alert-dialog/customizable-alert-dialog.component';
 import {LoadingComponent} from '../components/loading/loading.component';
 import * as moment from 'moment';
+import {Payment} from '../../models/payment';
+import {ApiService} from '../../services/api.service';
+import {apiConstants} from '../../constants/api.constants';
 
 @Injectable()
 export class Common {
 
-  constructor(private dialog: MatDialog,
+  constructor(private matDialog: MatDialog,
               private snackBar: MatSnackBar,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              private componentFactoryResolver: ComponentFactoryResolver,
+              private api: ApiService) {
   }
 
   alert(body: string, title: string = 'Attention') {
-    this.dialog.open(AlertDialogComponent, {
+    this.matDialog.open(AlertDialogComponent, {
       data: {
         title,
         body
@@ -23,7 +27,7 @@ export class Common {
   }
 
   async customAlert(body: string, title: string = 'Attention', actions: any[] = ['OK']) {
-    const dialog = this.dialog.open(CustomizableAlertDialogComponent, {
+    const dialog = this.matDialog.open(CustomizableAlertDialogComponent, {
       data: {
         title,
         body,
@@ -35,7 +39,7 @@ export class Common {
   }
 
   modal(component, data, noPadding = false): Promise<MatDialogRef<any>> {
-    const dialog: MatDialogRef<any> = this.dialog.open(component, {
+    const dialog: MatDialogRef<any> = this.matDialog.open(component, {
       panelClass: noPadding ? 'dialog-without-padding' : '',
       minWidth: '60%',
       height: '85%',
@@ -46,8 +50,27 @@ export class Common {
     return dialog.afterClosed().toPromise();
   }
 
+
+  private dialog(component, data, config?: any, noPadding = false): Promise<MatDialogRef<any>> {
+    let defaultConfig: any = {};
+
+    if (config) {
+      defaultConfig = config;
+      defaultConfig.data = data;
+      defaultConfig.disableClose = config.disableClose;
+    }
+
+    const dialog: MatDialogRef<any> = this.matDialog.open(component, defaultConfig);
+    return dialog.afterClosed().toPromise();
+  }
+
+  dialogWithoutPadding(component, data, config?): Promise<MatDialogRef<any>> {
+
+    return this.dialog(component, data, config, true);
+  }
+
   async modalWithResult(component, data, noPadding = false) {
-    const dialog = this.dialog.open(component, {
+    const dialog = this.matDialog.open(component, {
       panelClass: noPadding ? 'dialog-without-padding' : '',
       minWidth: '60%',
       height: '85%',
@@ -80,8 +103,12 @@ export class Common {
     };
   }
 
+  formatDate(value: string, ...args: any[]) {
+    return moment(value).format('DD MMMM YYYY');
+  }
+
   loading(message) {
-    return this.dialog.open(LoadingComponent, {
+    return this.matDialog.open(LoadingComponent, {
       disableClose: true,
       data: { message }
     });
@@ -115,7 +142,7 @@ export class Common {
       const control = partForm.get(field);            // {2}
       control.markAsTouched({ onlySelf: true });       // {3}
     });
-    this.dialog.open(AlertDialogComponent, {
+    this.matDialog.open(AlertDialogComponent, {
       data: {
         title: 'Le formulaire comporte des erreurs',
         body: 'Veuillez corriger les erreurs du formulaire afin de continuer'
@@ -125,7 +152,7 @@ export class Common {
 
   spaced(value, suffix) {
     if (value === undefined || value == null ) { return value; }
-    return value.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ') + ' ' + suffix;
+    return value.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ') + ' ' + (suffix || '');
   }
 
   renderComponent(viewContainer: ViewContainerRef, component) {
@@ -192,6 +219,10 @@ export class Common {
     const numberBeforeDot = this.numToLetters(decimals[0]);
     const numberAfterDot = this.numToLetters(Number(decimals[1]));
     return decimals[1][0] === '0' ? `${numberBeforeDot} virgule zéro ${numberAfterDot}` : `${numberBeforeDot} virgule ${numberAfterDot}`;
+  }
+
+  async serverTime() {
+    return this.api.get('/').toPromise();
   }
 
   decodeJwtToken(token) {

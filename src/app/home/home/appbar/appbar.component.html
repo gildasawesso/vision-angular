@@ -15,7 +15,7 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="terms" color="accent" appearance="outline">
-    <mat-select [(ngModel)]="currentTerm" (ngModelChange)="onTermChanged($event)" [compareWith]="compareFn">
+    <mat-select [(ngModel)]="currentTerm" (ngModelChange)="onTermChanged($event)" [compareWith]="compareTermFn">
       <mat-option *ngFor="let session of currentSchoolYear?.sessions" [value]="session">{{ session?.name }}</mat-option>
     </mat-select>
   </mat-form-field>

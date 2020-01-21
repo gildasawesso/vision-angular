@@ -1,0 +1,9 @@
+<label>
+  <ng-content></ng-content>
+</label>
+<div class="app-input" [ngClass]="{'focused': focused}">
+  <input (focus)="focused = true" (focusout)="focused = false" type="{{type}}" [formControl]="formControl"/>
+</div>
+<span style="color: red;" *ngIf="formControl?.touched && formControl?.hasError('required')">Ce champ est requis</span>
+<span style="color: red;" *ngIf="formControl?.touched && formControl?.hasError('email')">L'email est requis</span>
+<span style="color: red;" *ngIf="formControl?.touched && formControl?.hasError('minlength')">Valeur trop courte, {{passwordMinimumLength}} caractères minimum</span>

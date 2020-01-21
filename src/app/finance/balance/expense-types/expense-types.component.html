@@ -1,1 +1,24 @@
-<app-under-construction></app-under-construction>
+<div class="row">
+  <div class="col-12 col-sm-4">
+    <h5>Ajouts et modifications des catégories de dépenses</h5>
+    <app-new-input placeholder="Nom de la catégorie" [formControl]="name" class="inputs"></app-new-input>
+    <button (click)="save()" class="mt-5" mat-flat-button color="primary">{{buttonText}}</button>
+  </div>
+
+  <div class="col-12 col-sm-8 mt-5 mt-sm-0">
+    <div class="d-flex flex-column justify-content-end align-content-between">
+      <h5>Catégories des contributions</h5>
+      <mat-list>
+        <mat-list-item class="item" *ngFor="let type of spendingTypesRepository.stream | async; let i = index">
+          <div class="d-flex align-items-center justify-content-between w-100 text-capitalize">
+            {{type.name}}
+            <div class="ml-4">
+              <button mat-icon-button (click)="edit(type)"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button color="warn" (click)="delete(type)"><mat-icon>delete</mat-icon></button>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>
+</div>

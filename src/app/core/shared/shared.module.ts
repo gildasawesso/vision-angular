@@ -31,6 +31,8 @@ import {ExaminationUtil} from './utils/examination.util';
 import { LoadingComponent } from './components/loading/loading.component';
 import { CloseButtonComponent } from './components/close-button/close-button.component';
 import { ListComponent } from './components/list/list.component';
+import { NewInputComponent } from './components/new-input/new-input.component';
+import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 
 const components = [
   AdmissionComponent,
@@ -49,7 +51,9 @@ const components = [
   BigButtonComponent,
   AdvancedSelectComponent,
   LoadingComponent,
-  CloseButtonComponent
+  CloseButtonComponent,
+  NewInputComponent,
+  ListComponent
 ];
 
 const directives = [
@@ -67,7 +71,8 @@ const modules = [
   ReactiveFormsModule,
   NgxPermissionsModule,
   ChartsModule,
-  RouterModule
+  RouterModule,
+  NgxDatatableModule
 ];
 
 @NgModule({
@@ -75,7 +80,6 @@ const modules = [
     ...components,
     ...pipes,
     ...directives,
-    ListComponent,
   ],
   imports: [
     ...modules,
@@ -85,7 +89,6 @@ const modules = [
     ...pipes,
     ...directives,
     ...modules,
-    ListComponent,
   ],
   entryComponents: [
     AlertDialogComponent,

@@ -22,6 +22,8 @@ import { AddPaymentComponent } from './students/fees/add-payment/add-payment.com
 import { PaymentsStateComponent } from './students/payments-state/payments-state.component';
 import { BalanceComponent } from './balance/balance.component';
 import { BalanceSheetComponent } from './balance/balance-sheet/balance-sheet.component';
+import { AddOrEditSpendComponent } from './balance/balance-sheet/add-or-edit-spend/add-or-edit-spend.component';
+import { AddOrEditIncomeComponent } from './balance/balance-sheet/add-or-edit-income/add-or-edit-income.component';
 
 @NgModule({
   declarations: [
@@ -45,17 +47,21 @@ import { BalanceSheetComponent } from './balance/balance-sheet/balance-sheet.com
     AddPaymentComponent,
     PaymentsStateComponent,
     BalanceComponent,
-    BalanceSheetComponent
+    BalanceSheetComponent,
+    AddOrEditSpendComponent,
+    AddOrEditIncomeComponent
   ],
-  imports: [
-    SharedModule,
-    FinanceRoutingModule,
-  ],
+    imports: [
+        SharedModule,
+        FinanceRoutingModule,
+    ],
   entryComponents: [
     AddOrEditFeeTypeComponent,
     AddOrEditTrancheComponent,
     EditPaymentComponent,
-    AddPaymentComponent
+    AddPaymentComponent,
+    AddOrEditSpendComponent,
+    AddOrEditIncomeComponent
   ]
 })
 export class FinanceModule { }
