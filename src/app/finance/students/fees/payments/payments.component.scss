@@ -2,59 +2,6 @@
 $max-data-height: 60vh;
 
 :host {
-  .classrooms {
-    padding: 0 12px;
-    height: $max-data-height;
-    overflow: auto;
-    background-color: white;
-
-    .classroom {
-      font-size: 1.3em;
-      margin: 10px 0;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 7px;
-
-      &.selected {
-        background-color: $accent;
-        color: white;
-      }
-    }
-  }
-
-  .students {
-    background-color: white;
-    padding: 0 10px;
-    height: $max-data-height;
-    overflow: auto;
-    border-radius: 7px;
-
-    .student {
-      font-size: 1.3em;
-      margin: 10px 0;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 7px;
-
-      &.selected {
-        background-color: $accent;
-        color: white;
-      }
-    }
-  }
-
-  .payments {
-    background-color: white;
-    padding: 0 10px;
-    height: $max-data-height;
-    overflow: auto;
-
-    .payment {
-      font-size: 1.3em;
-      margin: 10px 0;
-    }
-  }
-
   .ngx-datatable {
     height: 70vh;
     overflow: auto;

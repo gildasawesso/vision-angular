@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ExaminationType} from '../../../core/models/examination-type';
 import {AddOrEditExaminationComponent} from '../add-or-edit-examination/add-or-edit-examination.component';
 import {Examination} from '../../../core/models/examination';
 import {MarksComponent} from '../marks/marks.component';
-import {AddOrEditExaminationTypeComponent} from '../add-or-edit-examination-type/add-or-edit-examination-type.component';
 import {ExaminationsRepository} from '../../../core/repositories/examinations.repository';
 import {ExaminationTypesRepository} from '../../../core/repositories/examinationTypes.repository';
 import {Utils} from '../../../core/shared/utils';
@@ -11,6 +10,11 @@ import {constants} from '../../../core/constants';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {Classroom} from '../../../core/models/classroom';
 import {Subject} from '../../../core/models/subject';
+import {FormControl} from '@angular/forms';
+import {SchoolyearsRepository} from '../../../core/repositories/schoolyears.repository';
+import {SchoolSession} from '../../../core/models/school-session';
+import * as moment from 'moment';
+import { SortType } from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-examinations-list',
@@ -20,10 +24,13 @@ import {Subject} from '../../../core/models/subject';
 export class ExaminationsListComponent implements OnInit {
 
   constants = constants;
+  sortType = SortType;
   examinationTypes: ExaminationType[] = [];
   examinations: Examination[] = [];
   classrooms: Classroom[] = [];
-  data = [];
+  subjects: Subject[] = [];
+  rows = [];
+  columns = [];
   mapping = {
     'date createdAt': 'Date de l\'examen',
     'subject.code': 'Matière',
@@ -31,34 +38,20 @@ export class ExaminationsListComponent implements OnInit {
     notes: 'Notes',
     options: 'Options',
   };
-  optionsPermissions = { edit: constants.permissions.editExamination, delete: constants.permissions.deleteExamination };
 
-  classroomSelected: Classroom = null;
-  subjectSelected: Subject = null;
-  examinationTypeSelected: ExaminationType = null;
+  classroomSelected = new FormControl(null);
+  subjectSelected = new FormControl(null);
+  examinationTypeSelected = new FormControl(null);
 
-  set ClassroomSelected(classroom: Classroom) {
-    if (!this.isClassroomHasSubjects(classroom)) {
-      this.utils.common.toast('Cette classe ne contient aucune matière');
-      return;
-    }
-    this.classroomSelected = classroom;
-    this.loadExaminations();
-  }
-
-  set SubjectSelected(subject: Subject) {
-    this.subjectSelected = subject;
-    this.loadExaminations();
-  }
-
-  set ExaminationTypeSelected(examinationType: ExaminationType) {
-    this.examinationTypeSelected = examinationType;
-    this.loadExaminations();
-  }
+  @ViewChild('subjectTemplate', {static: true}) subjectTemplate: TemplateRef<any>;
+  @ViewChild('examinationTypeTemplate', {static: true}) examinationTypeTemplate: TemplateRef<any>;
+  @ViewChild('noteTemplate', {static: true}) noteTemplate: TemplateRef<any>;
+  @ViewChild('actionsTemplate', {static: true}) actionsTemplate: TemplateRef<any>;
 
   constructor(private examinationsRepository: ExaminationsRepository,
               private examinationTypesRepository: ExaminationTypesRepository,
               private classroomsRepository: ClassroomsRepository,
+              private schoolyearsRepository: SchoolyearsRepository,
               private utils: Utils) { }
 
   async add() {
@@ -88,38 +81,50 @@ export class ExaminationsListComponent implements OnInit {
   loadExaminations() {
     let examinations = [...this.examinations];
 
-    examinations = examinations.filter(e => {
-      if (this.classroomSelected == null) { return true; }
-      return this.classroomSelected._id === e.classroom._id;
-    });
+    if (this.classroomSelected.value != null) {
+      examinations = examinations.filter(e => this.classroomSelected.value._id === e.classroom._id);
+    }
 
-    examinations = examinations.filter(e => {
-      if (this.subjectSelected == null) { return true; }
+    if (this.subjectSelected.value != null) {
+      examinations = examinations.filter(e => this.subjectSelected.value._id === e.subject._id);
+    }
 
-      return e.subject._id === this.subjectSelected._id;
-    });
+    if (this.examinationTypeSelected.value != null) {
+      examinations = examinations.filter(e => this.examinationTypeSelected.value._id === e.type._id);
+    }
 
-    examinations = examinations.filter(e => {
-      if (this.examinationTypeSelected == null) { return true; }
-
-      return e.type._id === this.examinationTypeSelected._id;
-    });
-
-    this.data = examinations;
+    this.rows = examinations;
   }
 
   ngOnInit() {
-    this.examinationsRepository.stream
-      .subscribe((examinations: Examination[]) => {
-        this.examinations = examinations;
-        this.loadExaminations();
+    this.schoolyearsRepository.selectedSchoolYearTerm
+      .subscribe((session: SchoolSession) => {
+        if (session == null) { return; }
+        this.examinationsRepository.stream
+          .subscribe(async (examinations: Examination[]) => {
+            console.log(examinations);
+            this.examinations = examinations.filter(e => {
+              return moment(e.examinationDate).isBetween(moment(session.startDate), moment(session.endDate), null, '[]');
+            });
+            this.loadExaminations();
+          });
       });
 
-    this.examinationTypesRepository.stream
-      .subscribe((examinationTypes: ExaminationType[]) => {
-        this.examinationTypes = examinationTypes;
-      });
-
+    this.examinationTypesRepository.stream.subscribe(examinationTypes => this.examinationTypes = examinationTypes);
     this.classroomsRepository.stream.subscribe(classrooms => this.classrooms = classrooms);
+    this.classroomSelected.valueChanges.subscribe((classroom: Classroom) => {
+      if (classroom != null) { this.subjects = classroom.subjects; }
+      this.loadExaminations();
+    });
+    this.subjectSelected.valueChanges.subscribe(_ => this.loadExaminations());
+    this.examinationTypeSelected.valueChanges.subscribe(_ => this.loadExaminations());
+
+    this.columns = [
+      { prop: 'examinationDate', name: 'Date d\'examen', pipe: { transform: this.utils.common.formatDate} },
+      { name: 'Matière', cellTemplate: this.subjectTemplate },
+      { name: 'Type d\'examen', cellTemplate: this.examinationTypeTemplate },
+      { name: 'Note', cellTemplate: this.noteTemplate },
+      { name: 'Options', cellTemplate: this.actionsTemplate }
+    ];
   }
 }

@@ -67,7 +67,7 @@ export class EditStudentComponent implements OnInit {
       studentRegistration.classroom = student.classroom;
       await this.registrationsRepository.update(studentRegistration, studentRegistration._id);
       this.utils.common.toast(`L'élève ${student.lastname} a bien été modifié`);
-      this.registrationsRepository.refresh();
+      this.registrationsRepository.remoteRefresh();
       this.isBusy = false;
       this.dialogRef.close();
     } catch (e) {

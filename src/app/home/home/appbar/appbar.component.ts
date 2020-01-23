@@ -48,12 +48,12 @@ export class AppbarComponent implements OnInit {
     await this.auth.signout();
   }
 
-  onSchoolYearChange(e) {
-    console.log(e);
+  onSchoolYearChange(schoolyear) {
+    this.schoolyearsRepository.selectedSchoolYear = schoolyear;
   }
 
-  onTermChanged(e) {
-    console.log(e);
+  onTermChanged(session) {
+    this.schoolyearsRepository.selectedSchoolYearTerm = session;
   }
 
   compareFn(c1, c2): boolean {

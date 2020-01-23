@@ -136,6 +136,11 @@ export class PaymentsStateComponent implements OnInit {
     return fee.amount * this.utils.student.classroomStudents(this.classroomSelected.value).length;
   }
 
+  allSchoolFeePaymentsExpected(classroom: Classroom) {
+    if (classroom == null) { return 0; }
+    return classroom.schoolFee.amount * this.utils.student.classroomStudents(classroom).length;
+  }
+
   allRegistrationPaymentsExpected(classroom: Classroom) {
     if (classroom.registrationFee == null) { return 0; }
     return classroom.registrationFee.amount * this.utils.student.classroomRegisterStudents(classroom).length;
@@ -245,7 +250,7 @@ export class PaymentsStateComponent implements OnInit {
       }];
     }
     const payments = this.utils.student.classroomPayments(this.payments, classroom, classroom.schoolFee);
-    const reste = this.allPaymentsExpected(classroom.schoolFee) - payments;
+    const reste = this.allSchoolFeePaymentsExpected(classroom) - payments;
     const otherPayments = this.utils.student.classroomPayments(this.payments, classroom, null, true);
     const currentClassroomAllPayments = payments + otherPayments;
 

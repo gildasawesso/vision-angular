@@ -45,7 +45,7 @@ export class StudentsListComponent implements OnInit {
 
   async edit(student: Student) {
     await this.utils.common.modal(EditStudentComponent, { student }, true);
-    this.registrationsRepository.refresh();
+    this.registrationsRepository.remoteRefresh();
   }
 
   async delete(student: Student) {

@@ -23,8 +23,20 @@ export class PaymentsComponent implements OnInit {
   rows: any[];
   columns: any[];
 
-  get classroomStudents() {
-    return this.registrations.filter(r => r.classroom._id === this.classroomSelected.value._id).map(r => r.student);
+  get startDateFiltering() {
+    return localStorage.getItem('filteringStartDate');
+  }
+
+  set startDateFiltering(date) {
+     localStorage.setItem('filteringStartDate', date);
+  }
+
+  get endDateFiltering() {
+    return localStorage.getItem('filteringEndDate');
+  }
+
+  set endDateFiltering(date) {
+    localStorage.setItem('filteringEndDate', date);
   }
 
   constructor(public paymentRepository: PaymentsRepository,
@@ -41,20 +53,16 @@ export class PaymentsComponent implements OnInit {
 
   classroomSelected = new FormControl(null);
   studentSelected = new FormControl(null);
-  filterStartDate = new FormControl(null);
-  filterEndDate = new FormControl(null);
+  filterStartDate = new FormControl(this.startDateFiltering);
+  filterEndDate = new FormControl(this.endDateFiltering);
   startOfTheWeek = null;
   endOfTheWeek = null;
 
   students: Student[] = [];
-
-  classroomSelectedIndex = -1;
-  studentSelectedIndex = -1;
   classrooms: Classroom[] = [];
   registrations: Registration[] = [];
   registrationsFiltred: Registration[] = [];
   payments: Payment[] = [];
-  paymentsFiltred: Payment[] = [];
   mapping = {
     paymentDate: 'Date de payement',
     'array fees fee.name': 'Type de contribution',
@@ -142,17 +150,21 @@ export class PaymentsComponent implements OnInit {
       .subscribe(payments => {
         this.payments = [...payments];
 
-        this.utils.common.serverTime()
-          .then(serverTime => {
-            this.startOfTheWeek = moment(serverTime).startOf('week');
-            this.endOfTheWeek = moment(serverTime).endOf('week');
-            this.filterStartDate.patchValue(this.startOfTheWeek, {emitEvent: false});
-            this.filterEndDate.patchValue(this.endOfTheWeek, {emitEvent: false});
-            this.refreshList();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        if (this.startDateFiltering == null && this.endDateFiltering == null) {
+          this.utils.common.serverTime()
+            .then(serverTime => {
+              this.startOfTheWeek = moment(serverTime).startOf('week');
+              this.endOfTheWeek = moment(serverTime).endOf('week');
+              this.filterStartDate.patchValue(this.startOfTheWeek, {emitEvent: false});
+              this.filterEndDate.patchValue(this.endOfTheWeek, {emitEvent: false});
+              this.refreshList();
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        } else {
+          this.refreshList();
+        }
       });
 
     this.classroomsRepository.stream
@@ -178,8 +190,14 @@ export class PaymentsComponent implements OnInit {
         this.refreshList();
       });
 
-    this.filterStartDate.valueChanges.subscribe(_ => this.refreshList());
-    this.filterEndDate.valueChanges.subscribe(_ => this.refreshList());
+    this.filterStartDate.valueChanges.subscribe(date => {
+      this.startDateFiltering = date.format();
+      this.refreshList();
+    });
+    this.filterEndDate.valueChanges.subscribe(date =>  {
+      this.endDateFiltering = date.format();
+      this.refreshList();
+    });
 
     this.columns = [
       { prop: 'paymentDate', name: 'Date de payement', pipe: { transform: this.utils.common.formatDate} },

@@ -112,7 +112,7 @@
       </div>
       <div class="schoolfee-payments" *ngFor="let tranche of classroomTranchesMappedWithPayments(classroom)">{{tranche.payed| spaced}}</div>
       <ng-container *ngFor="let pay of ClassroomPayments(classroom)">
-        <div *ngIf="pay.reste != 0" class="total-remaining">{{pay.reste| spaced }}</div>
+        <div *ngIf="pay.reste != 0" class="total-remaining">{{pay.reste | spaced }}</div>
         <div *ngIf="pay.reste == 0" class="check-icon d-flex align-items-center justify-content-center">
           <img src="assets/images/good.png"/>
         </div>
