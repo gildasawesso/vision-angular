@@ -33,11 +33,13 @@
 
   <div class="d-flex payments-state-total">
     <div>Total</div>
-    <div>{{allStudentPayments(classroomSelected.value.registrationFee) | spaced: 'FCFA'}}</div>
-    <div *ngFor="let tranche of totalPaymentsByTranche">{{tranche?.payed | spaced: 'FCFA'}}</div>
-    <div>{{(allPaymentsExpected(classroomSelected.value.schoolFee) - allStudentPayments(classroomSelected.value.schoolFee)) | spaced: 'FCFA'}}</div>
-    <div>{{ allOtherPayments() | spaced: 'FCFA'}}</div>
-    <div>{{(allPaymentsExpected(classroomSelected.value.schoolFee) - allStudentPayments(classroomSelected.value.schoolFee)) | spaced: 'FCFA'}}</div>
+    <ng-container *ngFor="let headerTotal of headerTotal(classroomSelected.value)">
+      <div>{{headerTotal.registrationPayments | spaced: 'FCFA'}}</div>
+      <div *ngFor="let tranche of headerTotal.tranches">{{tranche?.payed | spaced: 'FCFA'}}</div>
+      <div>{{headerTotal.schoolFeeRemaining | spaced: 'FCFA'}}</div>
+      <div>{{ headerTotal.allOtherPayments | spaced: 'FCFA'}}</div>
+      <div>{{headerTotal.allPayments | spaced: 'FCFA'}}</div>
+    </ng-container>
   </div>
 
   <div class="payments-state-body">
@@ -107,10 +109,13 @@
     <div class="classroom d-flex align-items-center" *ngFor="let classroom of classrooms">
       <div>{{classroom.name}}</div>
       <div class="registration-payments" *ngFor="let pay of classroomRegistrationFeeAndReregistrationFee(classroom)">
-        <span class="check-icon d-flex align-items-center justify-content-center" *ngIf="pay.allPaymentsDone"><img src="assets/images/good.png"/></span>
-        <span *ngIf="!pay.allPaymentsDone"><span style="color: grey">{{pay.payments}}/</span>{{pay.paymentsExpected}}</span>
+        <span class="check-icon d-flex align-items-center justify-content-start" *ngIf="pay.allPaymentsDone">
+          <img class="mr-3" src="assets/images/good.png"/>
+          <span style="color: grey">{{pay.payments | spaced}}</span>
+        </span>
+        <span *ngIf="!pay.allPaymentsDone"><span style="color: grey">{{pay.payments | spaced}}/</span>{{pay.paymentsExpected | spaced}}</span>
       </div>
-      <div class="schoolfee-payments" *ngFor="let tranche of classroomTranchesMappedWithPayments(classroom)">{{tranche.payed| spaced}}</div>
+      <div class="schoolfee-payments" *ngFor="let tranche of classroomTranchesMappedWithPayments(classroom)">{{tranche.payed | spaced}}</div>
       <ng-container *ngFor="let pay of ClassroomPayments(classroom)">
         <div *ngIf="pay.reste != 0" class="total-remaining">{{pay.reste | spaced }}</div>
         <div *ngIf="pay.reste == 0" class="check-icon d-flex align-items-center justify-content-center">
