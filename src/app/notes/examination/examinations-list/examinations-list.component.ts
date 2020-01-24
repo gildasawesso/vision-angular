@@ -52,7 +52,7 @@ export class ExaminationsListComponent implements OnInit {
               private examinationTypesRepository: ExaminationTypesRepository,
               private classroomsRepository: ClassroomsRepository,
               private schoolyearsRepository: SchoolyearsRepository,
-              private utils: Utils) { }
+              public utils: Utils) { }
 
   async add() {
     await this.utils.common.modal(AddOrEditExaminationComponent, { examination: null });
