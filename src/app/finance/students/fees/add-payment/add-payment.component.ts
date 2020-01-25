@@ -116,7 +116,7 @@ export class AddPaymentComponent implements OnInit {
       return acc;
     }, 0);
     await this.paymentsRepository.update(payment, this.payment._id);
-    const currentRegistration = this.utils.student.studentsRegistration(this.payment.student);
+    const currentRegistration = this.utils.student.studentRegistration(this.payment.student);
     currentRegistration.reductions = this.subPayments.value;
     await this.registrationsRepository.update(currentRegistration, currentRegistration._id);
   }
@@ -168,7 +168,7 @@ export class AddPaymentComponent implements OnInit {
   }
 
   oldPayments(subPayment) {
-    return this.utils.student.feePaymentsForOneStudent(this.payments, subPayment.fee, this.paymentForm.get('student').value);
+    return this.utils.student.studentPaymentsForFee(subPayment.fee, this.paymentForm.get('student').value, this.payments);
   }
 
   studentSchoolFeesPaymentsAmount() {
@@ -184,7 +184,7 @@ export class AddPaymentComponent implements OnInit {
     if (student == null) {
       return {type: 'amount', reductionAmount: 0};
     }
-    const currentStudentRegistration = this.utils.student.studentsRegistration(student);
+    const currentStudentRegistration = this.utils.student.studentRegistration(student);
     const reductions = currentStudentRegistration.reductions;
     const feeReduction = reductions.find(r => r.fee._id === fee._id);
 
@@ -275,14 +275,14 @@ export class AddPaymentComponent implements OnInit {
   getBalance(subpayment) {
     const currentStudentSelected = this.paymentForm.get('student').value;
     const amountPaying = subpayment.amount;
-    const reduction = this.utils.student.feeReduction(currentStudentSelected, subpayment.fee);
+    const reduction = this.utils.student.studentReductionsForFee(subpayment.fee, currentStudentSelected);
     return subpayment.fee.amount - this.oldPayments(subpayment) - reduction - Number(amountPaying);
   }
 
   getBalanceOnUpdate(subpayment, index) {
     const currentStudentSelected = this.paymentForm.get('student').value;
     const amountPaying = subpayment.amount;
-    const reduction = this.utils.student.feeReduction(currentStudentSelected, subpayment.fee);
+    const reduction = this.utils.student.studentReductionsForFee(subpayment.fee, currentStudentSelected);
     return subpayment.fee.amount + this.currentOldSubPayment(index).amount - this.oldPayments(subpayment) - reduction - Number(amountPaying);
   }
 

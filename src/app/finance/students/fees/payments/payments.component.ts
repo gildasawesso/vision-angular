@@ -87,7 +87,7 @@ export class PaymentsComponent implements OnInit {
       payments = payments.filter(p => {
         const paymentDate = moment(p.paymentDate);
         const filterStartDate = moment(this.filterStartDate.value);
-        return paymentDate.isAfter(filterStartDate);
+        return paymentDate.isSameOrAfter(filterStartDate, 'day');
       });
     }
 
@@ -95,10 +95,9 @@ export class PaymentsComponent implements OnInit {
       payments = payments.filter(p => {
         const paymentDate = moment(p.paymentDate);
         const filterEndDate = moment(this.filterEndDate.value);
-        return paymentDate.isBefore(filterEndDate);
+        return paymentDate.isSameOrBefore(filterEndDate, 'day');
       });
     }
-    console.log(payments);
     this.rows = [...payments];
   }
 

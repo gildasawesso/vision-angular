@@ -13,7 +13,7 @@ export abstract class BaseRepository<T> {
   private objects: Observable<T[]> = this.genericBehavioSubject.asObservable();
 
   private api: ApiService;
-  private datasource: BaseDatasource<T>;
+  protected datasource: BaseDatasource<T>;
 
   protected constructor(datasource: BaseDatasource<T>) {
     this.api = inject(ApiService);
@@ -21,7 +21,7 @@ export abstract class BaseRepository<T> {
     this.init();
   }
 
-  private async init() {
+  protected async init() {
     const data = await this.datasource.list();
     this.genericBehavioSubject.next(data);
   }

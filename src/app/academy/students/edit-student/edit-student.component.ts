@@ -63,7 +63,7 @@ export class EditStudentComponent implements OnInit {
     const student: Student = this.studentForm.value;
     try {
       const studentUpdated = await this.studentsRepository.update(student, this.student._id);
-      const studentRegistration = this.utils.student.studentsRegistration(studentUpdated);
+      const studentRegistration = this.utils.student.studentRegistration(studentUpdated);
       studentRegistration.classroom = student.classroom;
       await this.registrationsRepository.update(studentRegistration, studentRegistration._id);
       this.utils.common.toast(`L'élève ${student.lastname} a bien été modifié`);
@@ -78,7 +78,7 @@ export class EditStudentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.studentsClassroom = this.utils.student.studentsRegistration(this.student).classroom;
+    this.studentsClassroom = this.utils.student.studentRegistration(this.student).classroom;
   }
 
 }

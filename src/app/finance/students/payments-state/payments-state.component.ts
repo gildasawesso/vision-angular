@@ -19,7 +19,7 @@ import {FormControl} from '@angular/forms';
 @Component({
   selector: 'app-payments-state',
   templateUrl: './payments-state.component.html',
-  styleUrls: ['./payments-state.component.scss']
+  styleUrls: ['./payments-state.component.scss'],
 })
 export class PaymentsStateComponent implements OnInit {
 
@@ -59,8 +59,54 @@ export class PaymentsStateComponent implements OnInit {
               private changeDetector: ChangeDetectorRef) {
   }
 
+  classroomPaymentState(students: Student[]) {
+    return students.map(student => this.studentPaymentsState(student));
+  }
+
+  studentPaymentsState(student: Student) {
+    const {
+      registrationFee,
+      registrationPayed,
+      registrationRemaining,
+      registrationIsSold } = this.studentRegistrationState(student);
+    const tranches = this.tranchesMappedWithPayments(student);
+    const schoolFeePayed = this.utils.student.studentPaymentsForFee(this.classroomSelected.value.schoolFee, student, this.payments);
+    const schoolFeeRemaining = this.classroomSelected.value.schoolFee.amount - schoolFeePayed;
+    const otherPayments = this.utils.student.studentPaymentsNotMapReduced(this.payments, student, null, true, true);
+    const totalPayed = registrationPayed + schoolFeePayed + otherPayments;
+    const schoolFeeIsRemaining = schoolFeeRemaining > 0;
+
+    return {
+      student,
+      registrationFee,
+      registrationPayed,
+      registrationRemaining,
+      registrationIsSold,
+      tranches,
+      schoolFeeRemaining,
+      otherPayments,
+      schoolFeeIsRemaining,
+      totalPayed
+    };
+  }
+
+  studentRegistrationState(student: Student) {
+    const isReRegistration = this.utils.student.studentRegistration(student).isReregistration;
+    const registrationFee = isReRegistration ? this.classroomSelected.value.reregistrationFee : this.classroomSelected.value.registrationFee;
+    const registrationPayed = this.utils.student.studentPaymentsForFee(registrationFee, student, this.payments);
+    const registrationRemaining = registrationFee.amount - registrationPayed;
+    const registrationIsSold = registrationRemaining <= 0;
+
+    return {
+      registrationFee,
+      registrationPayed,
+      registrationRemaining,
+      registrationIsSold
+    };
+  }
+
   headerTotal(classroom: Classroom) {
-    const registrationPayments = this.classroomRegistrationFeeAndReregistrationFee(classroom)[0].payments;
+    const registrationPayments = this.classroomRegistrationFeeAndReregistrationFee(classroom).payments;
     const tranches = this.totalPaymentsByTranche;
     const allSchoolFeePaymentsExpected = this.allPaymentsExpected(classroom.schoolFee);
     const allSchoolFeePaymentsDone = this.allStudentPayments(classroom.schoolFee);
@@ -79,10 +125,26 @@ export class PaymentsStateComponent implements OnInit {
     }];
   }
 
+  private classroomRegistrationFeeAndReregistrationFee(classroom: Classroom) {
+    const registrationPayments = this.utils.student.classroomPaymentsForFee(classroom.registrationFee, classroom, this.payments);
+    const reRegistrationPayments = this.utils.student.classroomPaymentsForFee(classroom.reregistrationFee, classroom, this.payments);
+    const registrationPaymentsExpected = this.classroomRegistrationPaymentsExpected(classroom);
+    const ReregistrationPaymentsExpected = this.classroomReRegistrationPaymentsExpected(classroom);
+    const payments = registrationPayments + reRegistrationPayments;
+    const paymentsExpected = registrationPaymentsExpected + ReregistrationPaymentsExpected;
+    const areRegistrationsSold = (paymentsExpected - payments) === 0;
+
+    return {
+      payments,
+      paymentsExpected,
+      areRegistrationsSold
+    };
+  }
+
   async exportCurrentClassroom() {
     const students = this.classroomStudents;
     const exportData = students.map(student => {
-      const registrationState = this.currentStudentRegistrationFeePayedWithReste(student);
+      const registrationState = this.studentRegistrationState(student);
       const schoolFeeState = this.tranchesMappedWithPayments(student, this.classroomSelected.value);
       const payments = this.currentStudentPayments(student);
       const schoolFeeStates: any = {};
@@ -112,29 +174,13 @@ export class PaymentsStateComponent implements OnInit {
     await this.utils.print.excel(data, header);
   }
 
-  currentStudentRegistrationFeePayedWithReste(student: Student) {
-    const isReRegistration = this.utils.student.studentsRegistration(student).isReregistration;
-    const fee = isReRegistration ? this.classroomSelected.value.reregistrationFee : this.classroomSelected.value.registrationFee;
-    const payed = this.utils.student.feePaymentsForOneStudent(this.payments, fee, student);
-    const reduction = this.utils.student.feeReduction(student, fee);
-    const reste = fee.amount - payed - reduction;
-    const allPaymentsDone = reste <= 0;
-    return [{
-      fee,
-      payed,
-      reste,
-      reduction,
-      allPaymentsDone
-    }];
-  }
-
   allOtherPayments() {
     const otherPayments = this.utils.student.paymentsNotMapReduced(this.payments, this.classroomSelected.value, null, true);
     return otherPayments.reduce((acc, cur) => acc + cur.amount, 0);
   }
 
   currentStudentPayments(student: Student) {
-    const payments = this.utils.student.feePaymentsForOneStudent(this.payments, this.classroomSelected.value.schoolFee, student);
+    const payments = this.utils.student.studentPaymentsForFee(this.classroomSelected.value.schoolFee, student, this.payments);
     const reste = this.classroomSelected.value.schoolFee.amount - payments;
     const otherPayments = this.utils.student.studentPaymentsNotMapReduced(this.payments, student, null, true, true);
     const currentStudentAllPayments = payments + otherPayments;
@@ -161,20 +207,20 @@ export class PaymentsStateComponent implements OnInit {
     return classroom.schoolFee.amount * this.utils.student.classroomStudents(classroom).length;
   }
 
-  allRegistrationPaymentsExpected(classroom: Classroom) {
+  classroomRegistrationPaymentsExpected(classroom: Classroom) {
     if (classroom.registrationFee == null) { return 0; }
-    return classroom.registrationFee.amount * this.utils.student.classroomRegisterStudents(classroom).length;
+    return classroom.registrationFee.amount * this.utils.student.classroomStudentsRegistered(classroom).length;
   }
 
-  allReregistrationPaymentsExpected(classroom: Classroom) {
+  classroomReRegistrationPaymentsExpected(classroom: Classroom) {
     if (classroom.reregistrationFee == null) { return 0; }
-    return classroom.reregistrationFee.amount * this.utils.student.classroomReRegisterStudents(classroom).length;
+    return classroom.reregistrationFee.amount * this.utils.student.classroomStudentsReRegistered(classroom).length;
   }
 
   tranchesMappedWithPayments(student: Student, classroom?: Classroom) {
     const currentClassroom = classroom ? classroom : this.classroomSelected.value;
-    if (currentClassroom.schoolFee == null) { return; }
-    let payments = this.utils.student.feePaymentsForOneStudent(this.payments, currentClassroom.schoolFee, student);
+    if (currentClassroom == null || currentClassroom.schoolFee == null) { return; }
+    let payments = this.utils.student.studentPaymentsForFee(currentClassroom.schoolFee, student, this.payments);
     const tranches = currentClassroom.schoolFee.tranches;
     return tranches.map(tranche => {
       if (payments >= tranche.amount) {
@@ -201,10 +247,6 @@ export class PaymentsStateComponent implements OnInit {
     });
   }
 
-  otherPayments(student: Student) {
-    return this.utils.student.studentPaymentsNotMapReduced(this.payments, student, null, false, true);
-  }
-
   totalPaymentsByTranches() {
     const students = this.utils.student.classroomStudents(this.classroomSelected.value);
     if (students == null) {
@@ -219,25 +261,37 @@ export class PaymentsStateComponent implements OnInit {
       }];
     }
     this.totalPaymentsByTranche = studentsByTranches.reduce((acc, cur) => {
+      if (acc === undefined) { console.log(this.classroomSelected.value); }
       acc.forEach((value, index) => value.payed += cur[index].payed);
       return acc;
     });
   }
 
-  classroomRegistrationFeeAndReregistrationFee(classroom: Classroom) {
-    const registrationPayments = this.utils.student.classroomPayments(this.payments, classroom, classroom.registrationFee);
-    const ReregistrationPayments = this.utils.student.classroomPayments(this.payments, classroom, classroom.reregistrationFee);
-    const registrationPaymentsExpected = this.allRegistrationPaymentsExpected(classroom);
-    const ReregistrationPaymentsExpected = this.allReregistrationPaymentsExpected(classroom);
-    const payments = registrationPayments + ReregistrationPayments;
-    const paymentsExpected = registrationPaymentsExpected + ReregistrationPaymentsExpected;
-    const allPaymentsDone = (paymentsExpected - payments) === 0;
+  classroomsPayments(classrooms: Classroom[]) {
+    return classrooms.map(classroom => {
+      const registrationsInfo = this.classroomRegistrationFeeAndReregistrationFee(classroom);
+      const registrationsPayed = registrationsInfo.payments;
+      const registrationsExpected = registrationsInfo.paymentsExpected;
+      const areRegistrationsSold = registrationsInfo.areRegistrationsSold;
+      const tranches = this.classroomTranchesMappedWithPayments(classroom);
+      const schoolFeePayed = this.utils.student.classroomPaymentsForFee(classroom.schoolFee, classroom, this.payments);
+      const schoolFeeRemaining = this.allSchoolFeePaymentsExpected(classroom) - schoolFeePayed;
+      const otherPayments = this.utils.student.classroomPaymentsForFee(null, classroom, this.payments, true);
+      const totalPayed = registrationsPayed + schoolFeePayed + otherPayments;
+      const areSchoolFeesSold = schoolFeeRemaining <= 0;
 
-    return [{
-      payments,
-      paymentsExpected,
-      allPaymentsDone
-    }];
+      return {
+        registrationsPayed,
+        registrationsExpected,
+        areRegistrationsSold,
+        classroom: classroom.name,
+        tranches,
+        schoolFeeRemaining,
+        otherPayments,
+        totalPayed,
+        areSchoolFeesSold
+      };
+    });
   }
 
   classroomTranchesMappedWithPayments(classroom: Classroom) {
@@ -260,42 +314,20 @@ export class PaymentsStateComponent implements OnInit {
     });
   }
 
-  ClassroomPayments(classroom: Classroom) {
-    if (classroom.schoolFee == null) {
-      return [{
-        payments: 0,
-        reste: 0,
-        otherPayments: 0,
-        currentClassroomAllPayments: 0,
-      }];
-    }
-    const payments = this.utils.student.classroomPayments(this.payments, classroom, classroom.schoolFee);
-    const reste = this.allSchoolFeePaymentsExpected(classroom) - payments;
-    const otherPayments = this.utils.student.classroomPayments(this.payments, classroom, null, true);
-    const currentClassroomAllPayments = payments + otherPayments;
-
-    return [{
-      payments,
-      reste,
-      otherPayments,
-      currentClassroomAllPayments
-    }];
-  }
-
   ngOnInit() {
     this.classroomsRepository.stream.subscribe(classrooms => {
       this.classrooms = classrooms;
       this.defaultClassroom = classrooms.find(c => c.schoolFee != null && c.schoolFee.tranches != null && c.schoolFee.tranches.length > 0);
     });
     this.registrationsRepository.stream.subscribe(registrations => this.registrations = registrations);
+    this.paymentsRepository.stream.subscribe(payments => this.payments = payments);
     this.examinationsRepository.stream.subscribe(examinations => this.examinations = examinations);
     this.schoolyearsRepository.stream.subscribe(schoolYears => this.schoolYear = schoolYears[0]);
     this.subjectsRepository.stream.subscribe(subjects => this.subjects = subjects);
-    this.paymentsRepository.stream.subscribe(payments => this.payments = payments);
     this.classroomSelected.valueChanges
       .subscribe((classroom: Classroom) => {
+        if (classroom == null) { return; }
         this.totalPaymentsByTranches();
       });
   }
-
 }

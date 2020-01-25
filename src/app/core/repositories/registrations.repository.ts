@@ -5,6 +5,7 @@ import {RegistrationsDatasource} from '../datasources/registrations.datasource';
 import {Classroom} from '../models/classroom';
 import {map} from 'rxjs/operators';
 import {Student} from '../models/student';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

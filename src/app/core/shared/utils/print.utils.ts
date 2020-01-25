@@ -40,7 +40,7 @@ export class PrintUtil {
   }
 
   private feeReduction(student: Student, fee: FeeType) {
-    const registration = this.studentUtils.studentsRegistration(student);
+    const registration = this.studentUtils.studentRegistration(student);
     if (registration === undefined) { return 0; }
 
     const reductionForFee = registration.reductions.find(r => r.fee._id === fee._id);
@@ -77,7 +77,7 @@ export class PrintUtil {
   processNotes(notes) {
     const currentSchool = this.schools.list[0];
     const examTypes = {};
-    const isReRegistration = this.studentUtils.studentsRegistration(notes.student).isReregistration;
+    const isReRegistration = this.studentUtils.studentRegistration(notes.student).isReregistration;
     const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
     const totalPoints = notes.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0).toFixed(2);
     const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
