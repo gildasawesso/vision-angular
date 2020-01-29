@@ -22,6 +22,7 @@ export class PaymentsComponent implements OnInit {
 
   rows: any[];
   columns: any[];
+  totalPayments: number;
 
   get startDateFiltering() {
     return localStorage.getItem('filteringStartDate');
@@ -98,6 +99,7 @@ export class PaymentsComponent implements OnInit {
         return paymentDate.isSameOrBefore(filterEndDate, 'day');
       });
     }
+    this.totalPayments = payments.reduce((acc, cur) => acc + cur.amount, 0);
     this.rows = [...payments];
   }
 

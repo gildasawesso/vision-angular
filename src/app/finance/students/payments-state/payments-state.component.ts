@@ -73,7 +73,7 @@ export class PaymentsStateComponent implements OnInit {
     const schoolFeePayed = this.utils.student.studentPaymentsForFee(this.classroomSelected.value.schoolFee, student, this.payments);
     const schoolFeeRemaining = this.classroomSelected.value.schoolFee.amount - schoolFeePayed;
     const otherPayments = this.utils.student.studentPaymentsNotMapReduced(this.payments, student, null, true, true);
-    const totalPayed = registrationPayed + schoolFeePayed + otherPayments;
+    const totalPayed = schoolFeePayed + otherPayments;
     const schoolFeeIsRemaining = schoolFeeRemaining > 0;
 
     return {
@@ -277,7 +277,7 @@ export class PaymentsStateComponent implements OnInit {
       const schoolFeePayed = this.utils.student.classroomPaymentsForFee(classroom.schoolFee, classroom, this.payments);
       const schoolFeeRemaining = this.allSchoolFeePaymentsExpected(classroom) - schoolFeePayed;
       const otherPayments = this.utils.student.classroomPaymentsForFee(null, classroom, this.payments, true);
-      const totalPayed = registrationsPayed + schoolFeePayed + otherPayments;
+      const totalPayed = schoolFeePayed + otherPayments;
       const areSchoolFeesSold = schoolFeeRemaining <= 0;
 
       return {
