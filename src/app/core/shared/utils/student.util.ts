@@ -71,17 +71,16 @@ export class StudentUtil {
         this.flatSubPayments(payments).filter(p => p.fee._id !== classroom.registrationFee._id && p.fee._id !== classroom.schoolFee._id && p.fee._id !== classroom.reregistrationFee._id)
         : this.flatSubPayments(payments).filter(p => p.fee._id === fee._id);
       const paymentsWithoutReductions = paymentsFlattened.reduce((acc, cur) => acc + cur.amount, 0);
-      const classroomReductions = this.classroomReductionsForFee(fee, classroom);
 
       if (allPayments.length > 0) {
         if (!this.classroomPayments[classroom._id]) { this.classroomPayments[classroom._id] = {}; }
         if (fee != null) {
-          this.classroomPayments[classroom._id][fee._id] = paymentsWithoutReductions + classroomReductions;
+          this.classroomPayments[classroom._id][fee._id] = paymentsWithoutReductions;
         } else {
-          this.classroomPayments[classroom._id].other = paymentsWithoutReductions + classroomReductions;
+          this.classroomPayments[classroom._id].other = paymentsWithoutReductions;
         }
       }
-      return paymentsWithoutReductions + classroomReductions;
+      return paymentsWithoutReductions;
     }
   }
 
@@ -218,9 +217,7 @@ export class StudentUtil {
       if (p.fee == null) { return false; }
       return p.fee._id === fee._id;
     });
-    const feePaymentsAmount = feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
-    const reductions = this.studentReductionsForFee(fee, student);
-    return feePaymentsAmount + reductions;
+    return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
   }
 
   allStudentsPaymentsWithOtherPayments(payments: Payment[], schoolYear?: SchoolYear) {
