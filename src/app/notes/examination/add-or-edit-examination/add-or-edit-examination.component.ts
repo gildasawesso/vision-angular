@@ -9,6 +9,8 @@ import {ExaminationTypesRepository} from '../../../core/repositories/examination
 import {Examination} from '../../../core/models/examination';
 import * as moment from 'moment';
 import {SchoolyearsRepository} from '../../../core/repositories/schoolyears.repository';
+import {Subject} from '../../../core/models/subject';
+import {ExaminationType} from '../../../core/models/examination-type';
 
 @Component({
   selector: 'app-add-or-edit-examination',
@@ -18,7 +20,7 @@ import {SchoolyearsRepository} from '../../../core/repositories/schoolyears.repo
 export class AddOrEditExaminationComponent implements OnInit {
 
   classroomFormControl = new FormControl('', Validators.required);
-  subjectFormControl = new FormControl('', Validators.required);
+  subjectsFormControl = new FormControl('', Validators.required);
   examinationTypeFormControl = new FormControl('', Validators.required);
   examinationDateFormControl = new FormControl(moment().format());
 
@@ -41,28 +43,34 @@ export class AddOrEditExaminationComponent implements OnInit {
 
   async add() {
     if (this.isFormValid()) {
-      const examination: Examination = {
-        classroom: this.classroomFormControl.value,
-        subject: this.subjectFormControl.value,
-        type: this.examinationTypeFormControl.value,
-        examinationDate: this.examinationDateFormControl.value,
-        schoolYear: this.schoolyearsRepository.list[0]
-      };
-
       try {
-        await this.examinationsRepository.add(examination);
+        const examinationTypes: ExaminationType[] = this.examinationTypeFormControl.value;
+        const subjects: Subject[] = this.subjectsFormControl.value;
+        examinationTypes.map(type => {
+          subjects.map(async subject => {
+            const examination: Examination = {
+              classroom: this.classroomFormControl.value,
+              subject,
+              type,
+              examinationDate: this.examinationDateFormControl.value,
+              schoolYear: this.schoolyearsRepository.list[0]
+            };
+            await this.examinationsRepository.add(examination);
+          });
+        });
+        this.utils.common.alert('Les axaminations ont été ajoutées avec succès', '');
         this.dialogRef.close();
       } catch (e) {
-        console.error(e.error);
-        this.utils.common.alert(e.error.message);
-      }
+          console.error(e.error);
+          this.utils.common.alert(e.error.message);
+        }
     } else {
       this.utils.common.toast('Formulaire non valide');
     }
   }
 
   isFormValid() {
-    return this.classroomFormControl.valid && this.subjectFormControl.valid && this.examinationTypeFormControl.valid;
+    return this.classroomFormControl.valid && this.subjectsFormControl.valid && this.examinationTypeFormControl.valid;
   }
 
   ngOnInit() {

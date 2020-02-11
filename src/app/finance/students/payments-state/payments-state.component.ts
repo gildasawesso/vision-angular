@@ -71,7 +71,7 @@ export class PaymentsStateComponent implements OnInit {
       registrationIsSold } = this.studentRegistrationState(student);
     const tranches = this.tranchesMappedWithPayments(student);
     const schoolFeePayed = this.utils.student.studentPaymentsForFee(this.classroomSelected.value.schoolFee, student, this.payments);
-    const schoolFeeReduction = this.utils.student.studentReductionsForFee(this.classroomSelected.value.shcoolFee, student);
+    const schoolFeeReduction = this.utils.student.studentReductionsForFee(this.classroomSelected.value.schoolFee, student);
     const schoolFeeRemaining = this.classroomSelected.value.schoolFee.amount - schoolFeePayed - schoolFeeReduction;
     const otherPayments = this.utils.student.studentPaymentsNotMapReduced(this.payments, student, null, true, true);
     const totalPayed = schoolFeePayed + otherPayments;

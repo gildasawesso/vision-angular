@@ -1,13 +1,19 @@
 <app-close-button [dialog]="dialogRef"></app-close-button>
-<div class="d-flex">
-  <h3>Notes de : <b>{{examination.subject.name}}</b></h3>
-  <mat-form-field>
-    <input matNativeControl [(ngModel)]="searchTerm" (ngModelChange)="search($event)"/>
-  </mat-form-field>
-</div>
+<h1>Notes</h1>
+<div class="d-flex mt-4">
+  <div class="flex-fill">
+    <p>Matière</p>
+    <p class="font-weight-bold">{{examination.subject.name}}</p>
+  </div>
 
-<div class="d-flex align-items-center mark" style="width: 100%;" *ngFor="let mark of marksSorted()">
-  <h4 class="flex-fill text-capitalize">{{mark.student.lastname + ' ' + mark.student.firstname | titlecase}}</h4>
+  <div class="flex-fill">
+    <p>Type d'examination</p>
+    <p class="font-weight-bold">{{examination.type.name}}</p>
+  </div>
+</div>
+<mat-divider></mat-divider>
+<div class="d-flex align-items-center note" style="width: 100%;" *ngFor="let mark of marksSorted()">
+  <p class="flex-fill text-capitalize font-weight-bold">{{mark.student.lastname + ' ' + mark.student.firstname | titlecase}}</p>
   <div class="d-flex align-items-center">
     <mat-form-field appearance="outline">
       <input matInput placeholder="note" [(ngModel)]="mark.mark" (ngModelChange)="onModelChange($event)"/>
