@@ -10,9 +10,9 @@ import { DelDataSource, DelItem } from './del-datasource';
   styleUrls: ['./del.component.scss']
 })
 export class DelComponent implements AfterViewInit, OnInit {
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
-  @ViewChild(MatTable, {static: false}) table: MatTable<DelItem>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatTable) table: MatTable<DelItem>;
   dataSource: DelDataSource;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

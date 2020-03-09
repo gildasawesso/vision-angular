@@ -24,6 +24,7 @@ import { SortType } from '@swimlane/ngx-datatable';
 export class ExaminationsListComponent implements OnInit {
 
   constants = constants;
+  tableIsLoading = true;
   sortType = SortType;
   examinationTypes: ExaminationType[] = [];
   examinations: Examination[] = [];
@@ -94,6 +95,7 @@ export class ExaminationsListComponent implements OnInit {
     }
 
     this.rows = examinations;
+    this.tableIsLoading = false;
   }
 
   ngOnInit() {

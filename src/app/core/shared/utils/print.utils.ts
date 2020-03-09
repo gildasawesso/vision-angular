@@ -69,7 +69,7 @@ export class PrintUtil {
       body: this.processNotes(notes),
       responseType: 'blob'
     };
-    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes`, options).toPromise();
+    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes${notes.isLastSession ? '-endyear' : ''}`, options).toPromise();
 
     this.download(file);
   }
@@ -94,6 +94,9 @@ export class PrintUtil {
       matricule: notes.student.matricule,
       schoolName: currentSchool.name,
       schoolSubName: currentSchool.subName,
+      isLastSession: notes.isLastSession,
+      schoolSessions: notes.schoolSessions,
+      annualMean: notes.annualMean,
       sex: notes.student.gender,
       examinationTypes: notes.examinationsTypes,
       classSize: notes.classSize,
@@ -115,6 +118,7 @@ export class PrintUtil {
       bestClassroomMean: notes.bestClassroomMean,
       lastClassroomMean: notes.lastClassroomMean,
       generalMean,
+      annualRank: notes.annualRank,
       congratulations: Number(generalMean) >= 14 ? 'X' : '',
       encouragement: parseInt(generalMean, 10) === 13 ? 'X' : '',
       honor: parseInt(generalMean, 10) === 12 ? 'X' : '',

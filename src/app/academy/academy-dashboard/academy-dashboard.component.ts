@@ -29,7 +29,7 @@ export class AcademyDashboardComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(ChartHostDirective) chartHosts: QueryList<any>;
   pkiTileHeigth = 130;
-  pkiCards = [];
+  pkiCards: any[] = [];
   registrations = [];
 
 

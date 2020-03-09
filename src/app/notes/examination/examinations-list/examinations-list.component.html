@@ -27,6 +27,7 @@
 </div>
 
 <ngx-datatable class="material ngx-datatable fixed-header scroll-vertical"
+               [loadingIndicator]="tableIsLoading"
                [rows]="rows"
                [columns]="columns"
                columnMode="force"

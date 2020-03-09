@@ -23,8 +23,8 @@ export class TableComponent implements AfterViewInit, OnInit, OnChanges {
   @Output() printPayment = new EventEmitter();
   @Output() viewNotes = new EventEmitter();
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   // @ViewChild(MatTable, {static: false}) table: MatTable<any>;
 
   humanReadable;
