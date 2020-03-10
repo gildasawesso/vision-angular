@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
 import {AuthService} from '../services/auth.service';
 import * as moment from 'moment';
+import {catchError, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +14,25 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const credentials = this.auth.credentials;
+    let httpRequest: any = req;
     if (credentials) {
-      const request = req.clone({
+      httpRequest = req.clone({
         setHeaders: { Authorization: `Bearer ${credentials.accessToken}`}
       });
-      return next.handle(request);
     }
-    return next.handle(req);
+
+    return next.handle(httpRequest).pipe(
+      map((event: HttpEvent<any>) => {
+        return event;
+      }),
+      catchError((error: HttpErrorResponse) => {
+       console.log(error?.error?.message);
+
+       return throwError(error);
+      }));
   }
+
+
 
   isJwtTokenExpired(expiration) {
     const now = moment().format('X');

@@ -104,7 +104,6 @@ export class ExaminationsListComponent implements OnInit {
         if (session == null) { return; }
         this.examinationsRepository.stream
           .subscribe(async (examinations: Examination[]) => {
-            console.log(examinations);
             this.examinations = examinations.filter(e => {
               return moment(e.examinationDate).isBetween(moment(session.startDate), moment(session.endDate), null, '[]');
             });

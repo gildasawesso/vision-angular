@@ -18,6 +18,7 @@ import {ChartHostDirective} from '../../core/shared/directives/chart-host.direct
 import {Utils} from '../../core/shared/utils';
 import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
 import {EffectifPerClassroomComponent} from './effectif-per-classroom/effectif-per-classroom.component';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-academy-dashboard',
@@ -29,7 +30,7 @@ export class AcademyDashboardComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(ChartHostDirective) chartHosts: QueryList<any>;
   pkiTileHeigth = 130;
-  pkiCards: any[] = [];
+  pkiCards: Array<{title: string, cols: number, rows: number, value: Observable<any[]>, color: any}> = [];
   registrations = [];
 
 
@@ -77,13 +78,7 @@ export class AcademyDashboardComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.pkiCards = [
       {title: 'Élèves', cols: 1, rows: 1, value: this.registrationsRepository.stream, color: 'linear-gradient(to right, #f953c6, #b91d73)'},
-      {
-        title: 'Classes',
-        cols: 1,
-        rows: 1,
-        value: this.classroomsRepository.stream,
-        color: 'linear-gradient(90deg, rgb(54, 181, 183) 0%,rgb(19, 126, 105) 100%)'
-      },
+      {title: 'Classes', cols: 1, rows: 1, value: this.classroomsRepository.stream, color: 'linear-gradient(90deg, rgb(54, 181, 183) 0%,rgb(19, 126, 105) 100%)'},
       {title: 'Cours', cols: 1, rows: 1, value: this.subjectsRepository.stream, color: 'linear-gradient(to right, #396afc, #2948ff)'},
       {title: 'Professeurs', cols: 1, rows: 1, value: this.teachersRepository.stream, color: 'linear-gradient(to right, #da22ff, #9733ee)'}
     ];

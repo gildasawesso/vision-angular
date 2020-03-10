@@ -187,13 +187,9 @@ export class BulletinsComponent implements OnInit {
     return studentsAnnualMean.sort((meanOne, meanTwo) => meanTwo.annualMean - meanOne.annualMean);
   }
 
-  // most important
   classroomStudentsExamainations(session: SchoolSession) {
     this.notesBySubject = {};
     return this.classroomStudents.map(student => {
-      const lastSession = this.schoolYear.sessions[this.schoolYear.sessions.length - 1];
-      const previousSessionsBulletinsInformations = this.schoolYear.sessions.map(s => this.studentOtherBulletinInformation(student, s));
-      const annualMean = previousSessionsBulletinsInformations.reduce((acc, cur) => acc + cur.generalMean, 0) / previousSessionsBulletinsInformations.length;
       return {
         student,
         classSize: this.utils.student.classroomStudents(this.classroomSelected).length,
@@ -201,10 +197,6 @@ export class BulletinsComponent implements OnInit {
         classroom: this.classroomSelected,
         schoolYear: this.schoolYear,
         term: session.name,
-        isLastSession: session._id == null ? lastSession.name === session.name : lastSession._id === session._id,
-        schoolSessions: previousSessionsBulletinsInformations.map(s => ({ sessionName: s.session.name, sessionMean: s.generalMean }) ),
-        annualMean: annualMean.toFixed(2),
-        annualRank: this.classroomAnnualMeans(this.classroomSelected).findIndex(mean => mean.student._id === student._id) + 1,
         subjects: this.classroomSelected.subjects.map(subject => {
           this.notesBySubject[subject._id] = {
             subject,
@@ -235,6 +227,55 @@ export class BulletinsComponent implements OnInit {
       };
     });
   }
+
+  // most important for v2
+  // classroomStudentsExamainations(session: SchoolSession) {
+  //   this.notesBySubject = {};
+  //   return this.classroomStudents.map(student => {
+  //     const lastSession = this.schoolYear.sessions[this.schoolYear.sessions.length - 1];
+  //     const previousSessionsBulletinsInformations = this.schoolYear.sessions.map(s => this.studentOtherBulletinInformation(student, s));
+  //     const annualMean = previousSessionsBulletinsInformations.reduce((acc, cur) => acc + cur.generalMean, 0) / previousSessionsBulletinsInformations.length;
+  //     return {
+  //       student,
+  //       classSize: this.utils.student.classroomStudents(this.classroomSelected).length,
+  //       examinationsTypes: this.classroomExaminationTypes.map(t => t.name),
+  //       classroom: this.classroomSelected,
+  //       schoolYear: this.schoolYear,
+  //       term: session.name,
+  //       isLastSession: session._id == null ? lastSession.name === session.name : lastSession._id === session._id,
+  //       schoolSessions: previousSessionsBulletinsInformations.map(s => ({ sessionName: s.session.name, sessionMean: s.generalMean }) ),
+  //       annualMean: annualMean.toFixed(2),
+  //       annualRank: this.classroomAnnualMeans(this.classroomSelected).findIndex(mean => mean.student._id === student._id) + 1,
+  //       subjects: this.classroomSelected.subjects.map(subject => {
+  //         this.notesBySubject[subject._id] = {
+  //           subject,
+  //         };
+  //         const marksByExaminationType = this.marksByExaminationType(student, subject, session);
+  //         const marksByExaminationTypeNotNull = marksByExaminationType.filter(m => m.marks != null);
+  //         const totalMarks = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0);
+  //         const meanByTwenty = marksByExaminationTypeNotNull.length <= -1 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
+  //         const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject(session).find(m => m.subject._id === subject._id).examinations;
+  //         const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
+  //         const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
+  //         const firstRankMean = studentMarksForCurrentSubjectSorted[0].meanByTwenty;
+  //         const appreciation = this.utils.student.appreciationFromMark(meanByTwenty);
+  //         const lastRankMean = studentMarksForCurrentSubjectSorted[studentMarksForCurrentSubjectSorted.length - 1].meanByTwenty;
+  //         return {
+  //           subject,
+  //           totalMarks,
+  //           meanByTwenty,
+  //           coef: meanByTwenty >= 0 ? subject.coefficient : 0,
+  //           rank,
+  //           firstRankMean,
+  //           lastRankMean,
+  //           appreciation,
+  //           meanByCoefficient: meanByTwenty >= 0 ? meanByTwenty * subject.coefficient : 0,
+  //           examinationsByType: marksByExaminationType
+  //         };
+  //       })
+  //     };
+  //   });
+  // }
 
   async printBulletin(student: Student, session: SchoolSession) {
     if (this.canGenerateClassroomBulletin()) {
