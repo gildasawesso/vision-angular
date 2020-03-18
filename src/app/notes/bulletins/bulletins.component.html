@@ -20,7 +20,7 @@
           <span class="flex-fill">{{student?.lastname | uppercase}} {{student?.firstname}}</span>
           <button [mat-menu-trigger-for]="printStudentBulletinMenu"  mat-flat-button>Imprimer le bulletin</button>
           <mat-menu #printStudentBulletinMenu>
-            <button (click)="printBulletin(student, session)" *ngFor="let session of schoolYear.sessions" mat-menu-item>{{session.name}}</button>
+            <button (click)="printStudentBulletin(classroomSelected, student, session)" *ngFor="let session of schoolYear.sessions" mat-menu-item>{{session.name}}</button>
           </mat-menu>
         </div>
       </div>

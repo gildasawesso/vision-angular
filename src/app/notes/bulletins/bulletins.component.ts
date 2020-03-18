@@ -15,6 +15,8 @@ import {ExaminationType} from '../../core/models/examination-type';
 import {SchoolSession} from '../../core/models/school-session';
 import * as moment from 'moment';
 import {last} from 'rxjs/operators';
+import {BulletinService} from '../../core/services/bulletin.service';
+import {SchoolsRepository} from '../../core/repositories/schools.repository';
 
 @Component({
   selector: 'app-bulletins',
@@ -27,10 +29,13 @@ export class BulletinsComponent implements OnInit {
   registrations: Registration[] = [];
   subjects: Subject[] = [];
   schoolYear: SchoolYear;
+  schoolYearSelected: SchoolYear;
   examinations: Examination[] = [];
   selected = -1;
   classroomSelected: Classroom;
   notesBySubject: any;
+  studentsMarksByExamination = null;
+  bulletins: any = null;
 
   studentsMarksGroupedBySubject(session: SchoolSession) {
     return this.subjectExaminationsByType.map(subjectByType => {
@@ -62,7 +67,7 @@ export class BulletinsComponent implements OnInit {
   }
 
   marksByExaminationType(student: Student, subject: Subject, session: SchoolSession) {
-    return this.classroomExaminationTypes.map(type => {
+    return this.classroomExaminationTypes(this.classroomSelected).map(type => {
       const currentSubjectAndTypeExaminations = this.classroomExaminations.filter(e => e.subject._id === subject._id && e.type._id === type._id && this.isSessionExamination(e, session));
 
       let subjectsToRemove = 0;
@@ -84,7 +89,6 @@ export class BulletinsComponent implements OnInit {
           marks: null
         };
       }
-
       return {
         examinationType: type,
         marks: currentSubjectAndTypeExaminations.length >= 1 ? marksSum / (currentSubjectAndTypeExaminations.length - subjectsToRemove) : null
@@ -109,7 +113,7 @@ export class BulletinsComponent implements OnInit {
     return this.subjectExaminations.map(subjectAndExaminations => {
       return {
         subject: subjectAndExaminations.subject,
-        examinationsByType: this.classroomExaminationTypes.map(type => {
+        examinationsByType: this.classroomExaminationTypes(this.classroomSelected).map(type => {
           return {
             examinationType: type,
             examinations: subjectAndExaminations.examinations.filter(e => e.type._id === type._id)
@@ -119,8 +123,8 @@ export class BulletinsComponent implements OnInit {
     });
   }
 
-  get classroomExaminationTypes() {
-    const examinations = this.utils.examination.classroomExaminationTypes(this.classroomSelected);
+  classroomExaminationTypes(classroom: Classroom) {
+    const examinations = this.utils.examination.classroomExaminationTypes(classroom);
     return examinations.sort((e1, e2) => e1.displayOrder - e2.displayOrder);
   }
 
@@ -129,6 +133,8 @@ export class BulletinsComponent implements OnInit {
               private examinationsRepository: ExaminationsRepository,
               private schoolyearsRepository: SchoolyearsRepository,
               private subjectsRepository: SubjectsRepository,
+              private bulletinService: BulletinService,
+              private schoolsRepository: SchoolsRepository,
               private utils: Utils) {
   }
 
@@ -137,196 +143,145 @@ export class BulletinsComponent implements OnInit {
     this.classroomSelected = classroom;
   }
 
-  studentOtherBulletinInformation(student, session) {
-    const bulletinInformations = this.utils.student.studentRegistration(student).classroom.subjects.map(subject => {
-      this.notesBySubject[subject._id] = {
-        subject,
-      };
-      const marksByExaminationType = this.marksByExaminationType(student, subject, session);
-      const marksByExaminationTypeNotNull = marksByExaminationType.filter(m => m.marks != null);
-      const totalMarks = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0);
-      const meanByTwenty = marksByExaminationTypeNotNull.length <= -1 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
-      const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject(session).find(m => m.subject._id === subject._id).examinations;
-      const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
-      const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
-      const firstRankMean = studentMarksForCurrentSubjectSorted[0].meanByTwenty;
-      const appreciation = this.utils.student.appreciationFromMark(meanByTwenty);
-      const lastRankMean = studentMarksForCurrentSubjectSorted[studentMarksForCurrentSubjectSorted.length - 1].meanByTwenty;
-      return {
-        subject,
-        totalMarks,
-        meanByTwenty,
-        coef: meanByTwenty >= 0 ? subject.coefficient : 0,
-        rank,
-        firstRankMean,
-        lastRankMean,
-        appreciation,
-        meanByCoefficient: meanByTwenty >= 0 ? meanByTwenty * subject.coefficient : 0,
-        examinationsByType: marksByExaminationType
-      };
-    });
+  classroomCommonBulletinInformations(classroom: Classroom, session: SchoolSession) {
+    const currentSchool = this.schoolsRepository.list[0];
+    const madeIn =  'ATROKPOCODJI';
+    const lastSession = this.schoolYear.sessions[this.schoolYear.sessions.length - 1];
+    const printingDate = moment().format('DD MMMM YYYY');
+    const classSize = this.utils.student.classroomStudents(classroom).length;
+    const schoolYear = moment(this.schoolYearSelected.startDate).format('YYYY') + ' - ' + moment(this.schoolYearSelected.endDate).format('YYYY');
+    const totalCoef = classroom.subjects.reduce((acc, cur) => acc + cur.coefficient, 0);
+    const examinationsTypes = this.classroomExaminationTypes(classroom);
+    const examinationsTypesNames = examinationsTypes.map(t => t.name);
+    const examinationTypesToDisplay = {};
+    examinationsTypesNames.forEach((e, index) => examinationTypesToDisplay[`examType${index + 1}`] = e);
+    const studentsNotes = this.bulletins[session.name][classroom._id].students;
+    const classroomStudentsMarksSorted = Object.keys(studentsNotes).sort((a, b) => studentsNotes[b].generalMean - studentsNotes[a].generalMean);
+    const firstRankId = classroomStudentsMarksSorted[0];
+    const lastRankId = classroomStudentsMarksSorted[classroomStudentsMarksSorted.length - 1];
 
-    const totalCoef = bulletinInformations.reduce((acc, cur) => acc + cur.coef, 0);
-    const totalPoints = bulletinInformations.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0).toFixed(2);
-    const generalMean = (Number(totalPoints) / Number(totalCoef)).toFixed(2);
     return {
-      session,
-      generalMean: generalMean === 'NaN' ? 0 : Number(generalMean),
+      madeIn,
+      printingDate,
+      classSize,
+      schoolYear,
+      examinationTypesToDisplay,
+      totalCoef,
+      examinationsTypes,
+      examinationsTypesNames,
+      schoolName: currentSchool.name,
+      schoolSubName: currentSchool.subName,
+      isLastSession: session._id == null ? lastSession.name === session.name : lastSession._id === session._id,
+      bestClassroomMean: studentsNotes[firstRankId]?.generalMean?.toFixed(2),
+      lastClassroomMean: studentsNotes[lastRankId].generalMean?.toFixed(2),
+      classroomStudentsMarksSorted
     };
   }
 
-  classroomAnnualMeans(classroom: Classroom) {
-    const studentsAnnualMean = this.utils.student.classroomStudents(classroom).map(student => {
-      const meanBySession = this.schoolYear.sessions.map(session => this.studentOtherBulletinInformation(student, session));
-      const annualMean = meanBySession.reduce((acc, cur) => acc + cur.generalMean, 0) / meanBySession.length;
-      return {
-        student,
-        annualMean
-      };
-    });
-    return studentsAnnualMean.sort((meanOne, meanTwo) => meanTwo.annualMean - meanOne.annualMean);
-  }
-
-  classroomStudentsExamainations(session: SchoolSession) {
-    this.notesBySubject = {};
-    return this.classroomStudents.map(student => {
-      return {
-        student,
-        classSize: this.utils.student.classroomStudents(this.classroomSelected).length,
-        examinationsTypes: this.classroomExaminationTypes.map(t => t.name),
-        classroom: this.classroomSelected,
-        schoolYear: this.schoolYear,
-        term: session.name,
-        subjects: this.classroomSelected.subjects.map(subject => {
-          this.notesBySubject[subject._id] = {
-            subject,
-          };
-          const marksByExaminationType = this.marksByExaminationType(student, subject, session);
-          const marksByExaminationTypeNotNull = marksByExaminationType.filter(m => m.marks != null);
-          const totalMarks = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0);
-          const meanByTwenty = marksByExaminationTypeNotNull.length <= -1 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
-          const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject(session).find(m => m.subject._id === subject._id).examinations;
-          const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
-          const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
-          const firstRankMean = studentMarksForCurrentSubjectSorted[0].meanByTwenty;
-          const appreciation = this.utils.student.appreciationFromMark(meanByTwenty);
-          const lastRankMean = studentMarksForCurrentSubjectSorted[studentMarksForCurrentSubjectSorted.length - 1].meanByTwenty;
-          return {
-            subject,
-            totalMarks,
-            meanByTwenty,
-            coef: meanByTwenty >= 0 ? subject.coefficient : 0,
-            rank,
-            firstRankMean,
-            lastRankMean,
-            appreciation,
-            meanByCoefficient: meanByTwenty >= 0 ? meanByTwenty * subject.coefficient : 0,
-            examinationsByType: marksByExaminationType
-          };
-        })
-      };
-    });
-  }
-
-  // most important for v2
-  // classroomStudentsExamainations(session: SchoolSession) {
-  //   this.notesBySubject = {};
-  //   return this.classroomStudents.map(student => {
-  //     const lastSession = this.schoolYear.sessions[this.schoolYear.sessions.length - 1];
-  //     const previousSessionsBulletinsInformations = this.schoolYear.sessions.map(s => this.studentOtherBulletinInformation(student, s));
-  //     const annualMean = previousSessionsBulletinsInformations.reduce((acc, cur) => acc + cur.generalMean, 0) / previousSessionsBulletinsInformations.length;
-  //     return {
-  //       student,
-  //       classSize: this.utils.student.classroomStudents(this.classroomSelected).length,
-  //       examinationsTypes: this.classroomExaminationTypes.map(t => t.name),
-  //       classroom: this.classroomSelected,
-  //       schoolYear: this.schoolYear,
-  //       term: session.name,
-  //       isLastSession: session._id == null ? lastSession.name === session.name : lastSession._id === session._id,
-  //       schoolSessions: previousSessionsBulletinsInformations.map(s => ({ sessionName: s.session.name, sessionMean: s.generalMean }) ),
-  //       annualMean: annualMean.toFixed(2),
-  //       annualRank: this.classroomAnnualMeans(this.classroomSelected).findIndex(mean => mean.student._id === student._id) + 1,
-  //       subjects: this.classroomSelected.subjects.map(subject => {
-  //         this.notesBySubject[subject._id] = {
-  //           subject,
-  //         };
-  //         const marksByExaminationType = this.marksByExaminationType(student, subject, session);
-  //         const marksByExaminationTypeNotNull = marksByExaminationType.filter(m => m.marks != null);
-  //         const totalMarks = marksByExaminationTypeNotNull.length <= 0 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0);
-  //         const meanByTwenty = marksByExaminationTypeNotNull.length <= -1 ? 0 : marksByExaminationTypeNotNull.reduce((acc, cur) => acc + cur.marks, 0) / marksByExaminationTypeNotNull.length;
-  //         const studentMarksForCurrentSubject = this.studentsMarksGroupedBySubject(session).find(m => m.subject._id === subject._id).examinations;
-  //         const studentMarksForCurrentSubjectSorted = studentMarksForCurrentSubject.sort((m1, m2) => m2.meanByTwenty - m1.meanByTwenty);
-  //         const rank = studentMarksForCurrentSubjectSorted.findIndex(m => m.student._id === student._id) + 1;
-  //         const firstRankMean = studentMarksForCurrentSubjectSorted[0].meanByTwenty;
-  //         const appreciation = this.utils.student.appreciationFromMark(meanByTwenty);
-  //         const lastRankMean = studentMarksForCurrentSubjectSorted[studentMarksForCurrentSubjectSorted.length - 1].meanByTwenty;
-  //         return {
-  //           subject,
-  //           totalMarks,
-  //           meanByTwenty,
-  //           coef: meanByTwenty >= 0 ? subject.coefficient : 0,
-  //           rank,
-  //           firstRankMean,
-  //           lastRankMean,
-  //           appreciation,
-  //           meanByCoefficient: meanByTwenty >= 0 ? meanByTwenty * subject.coefficient : 0,
-  //           examinationsByType: marksByExaminationType
-  //         };
-  //       })
-  //     };
-  //   });
-  // }
-
-  async printBulletin(student: Student, session: SchoolSession) {
+  async printStudentBulletin(classroom: Classroom, student: Student, session: SchoolSession) {
     if (this.canGenerateClassroomBulletin()) {
       let loading;
-      try {
       loading = this.utils.common.loading(`Le Bulletin de ${student.firstname} ${student.lastname} est en cours de génération`);
-      const marks = this.classroomStudentsExamainations(session);
-      const studentAndGeneralMean = marks.map(m => {
-        const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
-        const totalPoints = m.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
-        const genralMean = totalPoints / totalCoef;
-        return {
-          student: m.student,
-          mean: genralMean
-        };
-      });
-      const studentAndMeanSorted = studentAndGeneralMean.sort((s1, s2) => s2.mean - s1.mean);
-      const currentStudentRank = studentAndMeanSorted.findIndex(m => m.student._id === student._id);
-      const currentStudentMarks: any = marks.find(m => m.student._id === student._id);
-      currentStudentMarks.mainRank = currentStudentRank + 1;
-      currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
-      currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
-      await this.utils.print.bulletin(currentStudentMarks);
-      loading.close();
+      try {
+        const commonInfo = this.classroomCommonBulletinInformations(classroom, session);
+        const notes = await this.processNotes(student, classroom, session, commonInfo);
+        await this.utils.print.bulletin(notes);
+        loading.close();
       } catch (e) {
         console.error(e);
         loading.close();
-        this.utils.common.alert(JSON.stringify(e.error));
+        this.utils.common.alert('les données sont insuffisantes pour générer les bulletins');
       }
     }
   }
 
-  setupBulletin(student: Student, session: SchoolSession) {
-    const marks = this.classroomStudentsExamainations(session);
-    const studentAndGeneralMean = marks.map(m => {
-      const totalCoef = m.subjects.reduce((acc, cur) => acc + cur.coef, 0);
-      const totalPoints = m.subjects.reduce((acc, cur) => acc + Number(cur.meanByCoefficient), 0);
-      const genralMean = totalPoints / totalCoef;
-      return {
-        student: m.student,
-        mean: genralMean
-      };
-    });
-    const studentAndMeanSorted = studentAndGeneralMean.sort((s1, s2) => s2.mean - s1.mean);
-    const currentStudentRank = studentAndMeanSorted.findIndex(m => m.student._id === student._id);
-    const currentStudentMarks: any = marks.find(m => m.student._id === student._id);
-    currentStudentMarks.mainRank = currentStudentRank + 1;
-    currentStudentMarks.bestClassroomMean = studentAndMeanSorted[0].mean.toFixed(2);
-    currentStudentMarks.lastClassroomMean = studentAndMeanSorted[studentAndMeanSorted.length - 1].mean.toFixed(2);
+  processNotes(student: Student, classroom: Classroom, session: SchoolSession, commonBulletinInformations: any) {
+    const generalMean = this.bulletins[session.name][classroom._id].students[student._id]?.generalMean;
+    let blame = '';
+    return {
+      printingDate: commonBulletinInformations.printingDate,
+      madeIn: commonBulletinInformations.madeIn,
+      schoolYear: commonBulletinInformations.schoolYear,
+      classSize: commonBulletinInformations.classSize,
+      ...commonBulletinInformations.examinationTypesToDisplay,
+      schoolName: commonBulletinInformations.schoolName,
+      schoolSubName: commonBulletinInformations.schoolSubName,
+      totalCoef: commonBulletinInformations.totalCoef,
+      student,
+      matricule: student.matricule,
+      studentFullName: student.firstname + ' ' + student.lastname,
+      sex: student.gender,
+      status: '',
+      classroom: classroom.name,
+      sessionsReport: null,
+      term: session.name.toUpperCase(),
+      examinationsTypes: this.classroomExaminationTypes(classroom).map(t => t.name),
+      totalPoints: this.bulletins[session.name][classroom._id].students[student._id]?.grandTotal?.toFixed(2),
+      generalMean: generalMean.toFixed(2),
+      generalMeanInLetter: this.utils.common.decimalToLetter(generalMean.toFixed(2)),
+      bestClassroomMean: commonBulletinInformations.bestClassroomMean,
+      lastClassroomMean: commonBulletinInformations.lastClassroomMean,
+      mainRank: commonBulletinInformations.classroomStudentsMarksSorted.findIndex(studentId => studentId === student._id) + 1,
+      generalAppreciation: this.utils.student.appreciationFromMark(generalMean),
+      congratulations: generalMean >= 14 ? 'X' : '',
+      encouragement: parseInt(generalMean, 10) === 13 ? 'X' : '',
+      honor: parseInt(generalMean, 10) === 12 ? 'X' : '',
+      warning: generalMean < 7 ? 'X' : '',
+      subjects: this.classroomSelected.subjects.map(subject => {
+        const classroomMarksForCurrentSubject = this.bulletins[session.name][classroom._id].subjects[subject._id]?.students;
+        const studentMarksForCurrentSubject = this.bulletins[session.name][classroom._id].subjects[subject._id]?.students[student._id];
 
-    return currentStudentMarks;
+        if (studentMarksForCurrentSubject === undefined || studentMarksForCurrentSubject == null) {
+          const subjectMarks = {};
+          commonBulletinInformations.examinationsTypes.forEach((examinationType, index) => {
+            subjectMarks[`mark${index + 1}`] = '-';
+          });
+          return {
+            name: subject.code,
+            coef: subject.coefficient,
+            ...subjectMarks,
+            meanByTwenty: '-',
+            meanByCoefficient: '-',
+            firstRankMean: '-',
+            lastRankMean: '-',
+            rank: '-',
+            appreciation: ''
+          };
+        }
+        const studentsMarksSorted = Object.keys(classroomMarksForCurrentSubject).sort((a, b) => classroomMarksForCurrentSubject[b].mean - classroomMarksForCurrentSubject[a].mean);
+        const currentSubjectFirstRankStudentId = studentsMarksSorted[0];
+        const currentSubjectLastRankStudentId = studentsMarksSorted[studentsMarksSorted.length - 1];
+        const meanByTwenty = classroomMarksForCurrentSubject[student._id]?.mean;
+        const marks = {};
+        commonBulletinInformations.examinationsTypes.forEach((examinationType, index) => {
+          try {
+            marks[`mark${index + 1}`] = this.bulletins[session.name][classroom._id].subjects[subject._id].examinationTypes[examinationType._id].students[student._id].mean;
+            if (marks[`mark${index + 1}`] === undefined) {
+              marks[`mark${index + 1}`] = '-';
+            }
+          } catch (e) {
+            return marks[`mark${index + 1}`] = '-';
+          }
+        });
+        const currentSubjectIsConduite = subject.name.toLowerCase().startsWith('conduite');
+        if (currentSubjectIsConduite) {
+          blame = meanByTwenty < 10 ? 'X' : '';
+        }
+
+        return {
+          name: subject.code,
+          coef: subject.coefficient,
+          ...marks,
+          meanByTwenty: meanByTwenty.toFixed(2),
+          meanByCoefficient: (meanByTwenty * subject.coefficient).toFixed(2),
+          firstRankMean: classroomMarksForCurrentSubject[currentSubjectFirstRankStudentId]?.mean?.toFixed(2),
+          lastRankMean: classroomMarksForCurrentSubject[currentSubjectLastRankStudentId]?.mean?.toFixed(2),
+          rank: studentsMarksSorted.findIndex(studentsId => studentsId === student._id) + 1,
+          appreciation: this.utils.student.appreciationFromMark(meanByTwenty)
+        };
+      }),
+      blame,
+    };
   }
 
   async printClassroomBulletins(classroom: Classroom, index: number, session: SchoolSession) {
@@ -338,8 +293,8 @@ export class BulletinsComponent implements OnInit {
       try {
       loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
       await this.utils.common.sleep(300);
-      const bulletins = this.classroomStudents.map(student => this.setupBulletin(student, session));
-
+      const commonBulletinInfo = this.classroomCommonBulletinInformations(this.classroomSelected, session);
+      const bulletins = this.classroomStudents.map(student => this.processNotes(student, this.classroomSelected, session, commonBulletinInfo));
       await this.utils.print.classroomBulletin(bulletins);
       loading.close();
       } catch (e) {
@@ -377,11 +332,17 @@ export class BulletinsComponent implements OnInit {
     this.examinationsRepository.stream
       .subscribe(examinations => this.examinations = examinations);
 
-    this.schoolyearsRepository.stream
-      .subscribe(schoolYears => this.schoolYear = schoolYears[0]);
+    this.schoolyearsRepository.stream.subscribe(schoolYears => this.schoolYear = schoolYears[0]);
+    this.schoolyearsRepository.selectedSchoolYear.subscribe(schoolYear => this.schoolYearSelected = schoolYear);
 
     this.subjectsRepository.stream
       .subscribe(subjects => this.subjects = subjects);
+
+    this.bulletinService.getBulletins()
+      .subscribe(bulletins => {
+        this.bulletins = bulletins;
+        console.log(bulletins);
+      });
   }
 
 }

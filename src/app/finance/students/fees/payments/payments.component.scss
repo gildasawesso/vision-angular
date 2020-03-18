@@ -5,6 +5,10 @@ $max-data-height: 60vh;
   .ngx-datatable {
     height: 65vh;
     overflow: auto;
+
+    datatable-body {
+      height: 100%;
+    }
   }
 
   .total-payment {

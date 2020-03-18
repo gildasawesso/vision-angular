@@ -75,6 +75,7 @@ export class PrintUtil {
   }
 
   processNotes(notes) {
+    return notes;
     const currentSchool = this.schools.list[0];
     const examTypes = {};
     const isReRegistration = this.studentUtils.studentRegistration(notes.student).isReregistration;
@@ -91,13 +92,7 @@ export class PrintUtil {
       examTypes[`examType${index + 1}`] = e;
     });
     return {
-      matricule: notes.student.matricule,
-      schoolName: currentSchool.name,
-      schoolSubName: currentSchool.subName,
-      isLastSession: notes.isLastSession,
-      schoolSessions: notes.schoolSessions,
       annualMean: notes.annualMean,
-      sex: notes.student.gender,
       examinationTypes: notes.examinationsTypes,
       classSize: notes.classSize,
       director: 'ATROKPOCODJI',
@@ -107,7 +102,6 @@ export class PrintUtil {
       // status: isReRegistration ? 'Doublant' : 'Passant',
       status: '',
       generalMeanInLetter: this.commonUtils.decimalToLetter(generalMean),
-      studentFullName: notes.student.firstname + ' ' + notes.student.lastname,
       term: notes.term.toUpperCase(),
       schoolYear: moment(notes.schoolYear.startDate).format('YYYY') + ' - ' + moment(notes.schoolYear.endDate).format('YYYY'),
       classroom: notes.classroom.name,

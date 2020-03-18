@@ -41,14 +41,15 @@
 
 <div class="total-payment text-center">{{totalPayments | spaced: 'FCFA'}}</div>
 
-<ngx-datatable class="material ngx-datatable fixed-header scroll-vertical mt-1"
+<ngx-datatable class="material ngx-datatable fixed-header mt-1"
                [rows]="rows"
                [columns]="columns"
                columnMode="force"
                [headerHeight]="50"
                [footerHeight]="50"
-               [limit]="5"
-              rowHeight="auto">
+               [scrollbarV]="true"
+              [rowHeight]="75">
+<!--              rowHeight="auto">-->
   <ng-template #studentFullName let-row="row">{{row.student.lastname}} {{row.student.firstname}}</ng-template>
   <ng-template #classroom let-row="row">{{row.classroom.name}}</ng-template>
   <ng-template #fees let-row="row">

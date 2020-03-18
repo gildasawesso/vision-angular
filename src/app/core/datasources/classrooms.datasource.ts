@@ -8,6 +8,6 @@ import {BaseDatasource} from './base.datasource';
 export class ClassroomsDatasource extends BaseDatasource<Classroom> {
 
   constructor() {
-    super('/classrooms', 'populate=registrationFee&populate=reregistrationFee&populate=schoolFee&populate=teacher&populate=subjects');
+    super('/r/classrooms', 'populate=registrationFee&populate=reregistrationFee&populate=schoolFee&populate=teacher&populate=subjects');
   }
 }
