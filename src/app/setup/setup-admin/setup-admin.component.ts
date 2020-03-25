@@ -30,7 +30,6 @@ export class SetupAdminComponent implements OnInit {
 
   async signup() {
     this.isBusy = true;
-    console.log(this.signupForm);
     if (this.utils.form.isValid(this.signupForm)) {
       if (this.arePasswordsSame()) {
         const signupInfo: Signup = this.signupForm.value;

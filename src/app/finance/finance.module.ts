@@ -17,8 +17,8 @@ import { AddOrEditTrancheComponent } from './students/fees/add-or-edit-tranche/a
 import { FeeCategoriesComponent } from './students/fees/fee-categories/fee-categories.component';
 import { ExpenseTypesComponent } from './balance/expense-types/expense-types.component';
 import { IncomeTypesComponent } from './balance/income-types/income-types.component';
-import { EditPaymentComponent } from './students/fees/edit-payment/edit-payment.component';
-import { AddPaymentComponent } from './students/fees/add-payment/add-payment.component';
+import { EditPaymentComponent } from './students/fees/payments/edit-payment/edit-payment.component';
+import { AddPaymentComponent } from './students/fees/payments/add-payment/add-payment.component';
 import { PaymentsStateComponent } from './students/payments-state/payments-state.component';
 import { BalanceComponent } from './balance/balance.component';
 import { BalanceSheetComponent } from './balance/balance-sheet/balance-sheet.component';

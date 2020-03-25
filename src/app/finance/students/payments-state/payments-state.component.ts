@@ -96,7 +96,7 @@ export class PaymentsStateComponent implements OnInit {
     const isReRegistration = this.utils.student.studentRegistration(student).isReregistration;
     const registrationFee = isReRegistration ? this.classroomSelected.value.reregistrationFee : this.classroomSelected.value.registrationFee;
     const registrationPayed = this.utils.student.studentPaymentsForFee(registrationFee, student, this.payments);
-    const registrationRemaining = registrationFee.amount - registrationPayed;
+    const registrationRemaining = registrationFee?.amount - registrationPayed;
     const registrationIsSold = registrationRemaining <= 0;
 
     return {
@@ -154,24 +154,24 @@ export class PaymentsStateComponent implements OnInit {
       const schoolFeeStates: any = {};
       schoolFeeState.forEach(s => {
         schoolFeeStates[s.name] = s.amount;
-        schoolFeeStates[`${s.name}Payed`] = s.payed;
-        schoolFeeStates[`${s.name}Reduction`] = 0;
-        schoolFeeStates[`${s.name}remaining`] = s.amount - s.payed;
+        schoolFeeStates[`${s.name} Payée`] = s.payed;
+        schoolFeeStates[`Réduction ${s.name}`] = 0;
+        schoolFeeStates[`${s.name} restant`] = s.amount - s.payed;
       });
 
       return {
-        firstname: student.firstname,
-        lastname: student.lastname,
-        registrationFee: this.classroomSelected.value.registrationFee.amount,
-        registrationFeePayed: registrationState[0].payed,
-        registrationFeeReduction: registrationState[0].reduction,
-        registrationFeeRemaining: registrationState[0].reste,
-        TotalSchoolFeePayments: payments[0].payments,
+        Prénom: student.firstname,
+        Nom: student.lastname,
+        'Frais d\'inscription': this.classroomSelected.value.registrationFee.amount,
+        'Inscription payé': registrationState.registrationPayed,
+        'Réduction frais d\'inscription': 0,
+        'Frais d\'inscription restant': registrationState.registrationRemaining,
+        'Frais de scolarité': payments[0].payments,
         ...schoolFeeStates,
-        TotalPaymentsRemaining: payments[0].reste
+        'Scolarité totale restante': payments[0].reste
       };
     });
-    await this.exportExcel(exportData, this.exportExcelHeader);
+    await this.exportExcel(exportData);
   }
 
   async exportExcel(data: any, header?: any) {

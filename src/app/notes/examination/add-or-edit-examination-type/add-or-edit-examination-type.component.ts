@@ -21,7 +21,6 @@ export class AddOrEditExaminationTypeComponent implements OnInit {
       this.type.patchValue(this.data.type.name);
       this.group.patchValue(this.data.type.group ? this.data.type.group : 1, { emitEvent: true });
       this.displayOrder.patchValue(this.data.type.displayOrder ? this.data.type.displayOrder : 1, { emitEvent: true });
-      console.log(this.data.type);
       this.btnMessage = 'Modifier le type d\'examination';
     }
   }

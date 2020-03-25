@@ -23,7 +23,6 @@ export class MarksComponent implements OnInit {
   }
 
   search(term) {
-    console.log(term);
   }
 
   async onModelChange(note: number) {
@@ -32,7 +31,6 @@ export class MarksComponent implements OnInit {
       return;
     }
     const x = await this.examinationsRepository.update(this.examination, this.examination._id);
-    console.log(x);
   }
 
   marksSorted() {

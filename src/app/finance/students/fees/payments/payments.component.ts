@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from '@ang
 import {PaymentsRepository} from '../../../../core/repositories/payments.repository';
 import {Payment} from '../../../../core/models/payment';
 import {Utils} from '../../../../core/shared/utils';
-import {EditPaymentComponent} from '../edit-payment/edit-payment.component';
+import {EditPaymentComponent} from './edit-payment/edit-payment.component';
 import {constants} from '../../../../core/constants';
 import {Classroom} from '../../../../core/models/classroom';
 import {ClassroomsRepository} from '../../../../core/repositories/classrooms.repository';
@@ -10,7 +10,7 @@ import {FormControl} from '@angular/forms';
 import {RegistrationsRepository} from '../../../../core/repositories/registrations.repository';
 import {Registration} from '../../../../core/models/registration';
 import {Student} from '../../../../core/models/student';
-import {AddPaymentComponent} from '../add-payment/add-payment.component';
+import {AddPaymentComponent} from './add-payment/add-payment.component';
 import * as moment from 'moment';
 
 @Component({

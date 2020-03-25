@@ -1,21 +1,21 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, Validators} from '@angular/forms';
-import {Student} from '../../../../core/models/student';
-import {SchoolYear} from '../../../../core/models/school-year';
-import {FeeType} from '../../../../core/models/fee-type';
-import {Classroom} from '../../../../core/models/classroom';
-import {ClassroomsRepository} from '../../../../core/repositories/classrooms.repository';
-import {StudentsRepository} from '../../../../core/repositories/students.repository';
-import {FeeTypesRepository} from '../../../../core/repositories/fee-types.repository';
+import {Student} from '../../../../../core/models/student';
+import {SchoolYear} from '../../../../../core/models/school-year';
+import {FeeType} from '../../../../../core/models/fee-type';
+import {Classroom} from '../../../../../core/models/classroom';
+import {ClassroomsRepository} from '../../../../../core/repositories/classrooms.repository';
+import {StudentsRepository} from '../../../../../core/repositories/students.repository';
+import {FeeTypesRepository} from '../../../../../core/repositories/fee-types.repository';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Payment} from '../../../../core/models/payment';
-import {Utils} from '../../../../core/shared/utils';
-import {PaymentsRepository} from '../../../../core/repositories/payments.repository';
-import {SchoolyearsRepository} from '../../../../core/repositories/schoolyears.repository';
-import {RegistrationsRepository} from '../../../../core/repositories/registrations.repository';
-import {Registration} from '../../../../core/models/registration';
+import {Payment} from '../../../../../core/models/payment';
+import {Utils} from '../../../../../core/shared/utils';
+import {PaymentsRepository} from '../../../../../core/repositories/payments.repository';
+import {SchoolyearsRepository} from '../../../../../core/repositories/schoolyears.repository';
+import {RegistrationsRepository} from '../../../../../core/repositories/registrations.repository';
+import {Registration} from '../../../../../core/models/registration';
 import * as moment from 'moment';
-import {Reduction} from '../../../../core/models/reduction';
+import {Reduction} from '../../../../../core/models/reduction';
 
 @Component({
   selector: 'app-edit-payment',
@@ -72,7 +72,6 @@ export class EditPaymentComponent implements OnInit {
   initializeUpdatedPayment() {
     this.studentsFiltred = this.registrations.filter(r => r.classroom._id === this.payment.classroom._id).map(r => r.student);
     this.paymentForm.patchValue(this.payment);
-    console.log(this.payment.fees);
     this.payment.fees.forEach(f => this.subPayments.push(this.formBuilder.group(f)));
   }
 
@@ -100,13 +99,11 @@ export class EditPaymentComponent implements OnInit {
       this.utils.common.toast(`Opération réalisée avec succès`);
       this.dialogRef.close();
     } else {
-      console.log(this.paymentForm);
       this.utils.common.alert('Il existe des erreurs dans le formulaire');
     }
   }
 
   async create() {
-    console.log(this.subFeesForm);
     const payment: Payment | any = this.paymentForm.value;
     payment.classroom = this.classroomSelected.value;
     payment.schoolYear = this.schoolYears[0];
@@ -185,7 +182,6 @@ export class EditPaymentComponent implements OnInit {
       reduction: reductionObject.reductionAmount,
       reductionType: reductionObject.type
     }));
-    console.log(this.subPayments);
   }
 
   onClassroomChanged() {

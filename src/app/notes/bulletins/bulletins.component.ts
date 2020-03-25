@@ -197,6 +197,7 @@ export class BulletinsComponent implements OnInit {
 
   processNotes(student: Student, classroom: Classroom, session: SchoolSession, commonBulletinInformations: any) {
     const generalMean = this.bulletins[session.name][classroom._id].students[student._id]?.generalMean;
+    const currentStudentRealCoef = this.bulletins[session.name][classroom._id].students[student._id]?.realCoef;
     let blame = '';
     return {
       printingDate: commonBulletinInformations.printingDate,
@@ -206,7 +207,7 @@ export class BulletinsComponent implements OnInit {
       ...commonBulletinInformations.examinationTypesToDisplay,
       schoolName: commonBulletinInformations.schoolName,
       schoolSubName: commonBulletinInformations.schoolSubName,
-      totalCoef: commonBulletinInformations.totalCoef,
+      totalCoef: currentStudentRealCoef,
       student,
       matricule: student.matricule,
       studentFullName: student.firstname + ' ' + student.lastname,
@@ -238,7 +239,7 @@ export class BulletinsComponent implements OnInit {
           });
           return {
             name: subject.code,
-            coef: subject.coefficient,
+            coef: '-',
             ...subjectMarks,
             meanByTwenty: '-',
             meanByCoefficient: '-',
@@ -341,7 +342,6 @@ export class BulletinsComponent implements OnInit {
     this.bulletinService.getBulletins()
       .subscribe(bulletins => {
         this.bulletins = bulletins;
-        console.log(bulletins);
       });
   }
 

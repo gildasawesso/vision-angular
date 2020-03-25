@@ -37,7 +37,6 @@ export class AddOrEditSubjectComponent implements OnInit {
       this.subjectForm.patchValue(this.subject);
       this.submitText = 'Modifier le cours';
       this.title = 'Modification du cours de' + this.subject.name;
-      console.log(this.subjectForm.value);
     }
   }
 

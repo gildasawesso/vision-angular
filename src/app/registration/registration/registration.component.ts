@@ -324,7 +324,6 @@ export class RegistrationComponent implements OnInit {
     this.siblingClassroom.valueChanges
       .subscribe((classroom: Classroom) => {
         this.siblingClassroomStudents = this.registrationRepository.studentsForClassroom(this.registrations, classroom);
-        console.log(this.siblingClassroomStudents);
       });
 
     this.sibling.valueChanges

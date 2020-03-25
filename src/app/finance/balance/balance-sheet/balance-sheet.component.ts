@@ -23,12 +23,10 @@ export class BalanceSheetComponent implements OnInit {
 
   async openSpentDialog() {
     const spent = await this.utils.common.dialogWithoutPadding(AddOrEditSpendComponent, null);
-    console.log(spent);
   }
 
   async openIncomeDialog() {
     const spent = await this.utils.common.dialogWithoutPadding(AddOrEditIncomeComponent, null);
-    console.log(spent);
   }
 
   ngOnInit() {
