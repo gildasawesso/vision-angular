@@ -23,7 +23,7 @@ export class AuthService {
     return this.user$;
   }
 
-  get userRemote() {
+  get userRemote(): Promise<User> {
     return this.api.get(`/users/me`).toPromise();
   }
 

@@ -30,7 +30,6 @@ export class BulletinsComponent implements OnInit {
   subjects: Subject[] = [];
   schoolYear: SchoolYear;
   schoolYearSelected: SchoolYear;
-  examinations: Examination[] = [];
   selected = -1;
   classroomSelected: Classroom;
   notesBySubject: any;
@@ -330,9 +329,6 @@ export class BulletinsComponent implements OnInit {
     this.registrationsRepository.stream
       .subscribe(registrations => this.registrations = registrations);
 
-    this.examinationsRepository.stream
-      .subscribe(examinations => this.examinations = examinations);
-
     this.schoolyearsRepository.stream.subscribe(schoolYears => this.schoolYear = schoolYears[0]);
     this.schoolyearsRepository.selectedSchoolYear.subscribe(schoolYear => this.schoolYearSelected = schoolYear);
 
@@ -340,7 +336,7 @@ export class BulletinsComponent implements OnInit {
       .subscribe(subjects => this.subjects = subjects);
 
     this.bulletinService.getBulletins()
-      .subscribe(bulletins => {
+      .then(bulletins => {
         this.bulletins = bulletins;
       });
   }
