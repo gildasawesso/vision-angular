@@ -69,7 +69,7 @@ export class PrintUtil {
       body: this.processNotes(notes),
       responseType: 'blob'
     };
-    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes${notes.isLastSession ? '-endyear' : ''}`, options).toPromise();
+    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes`, options).toPromise();
 
     this.download(file);
   }
@@ -92,10 +92,11 @@ export class PrintUtil {
       examTypes[`examType${index + 1}`] = e;
     });
     return {
-      annualMean: notes.annualMean,
+
       examinationTypes: notes.examinationsTypes,
       classSize: notes.classSize,
       director: 'ATROKPOCODJI',
+      isLastSession: notes.isLastSession,
       // todo get date from server
       printingDate: moment().format('DD MMMM YYYY'),
       generalAppreciation: this.studentUtils.appreciationFromMark(Number(generalMean)),
@@ -112,6 +113,7 @@ export class PrintUtil {
       bestClassroomMean: notes.bestClassroomMean,
       lastClassroomMean: notes.lastClassroomMean,
       generalMean,
+      annualMean: notes.annualMean,
       annualRank: notes.annualRank,
       congratulations: Number(generalMean) >= 14 ? 'X' : '',
       encouragement: parseInt(generalMean, 10) === 13 ? 'X' : '',

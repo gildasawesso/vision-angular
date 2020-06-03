@@ -78,7 +78,9 @@ export class BulletinsComponent implements OnInit {
         }
 
         const mark = markObject.mark;
-        if (mark == null) { subjectsToRemove += 1; }
+        if (mark == null) {
+          subjectsToRemove += 1;
+        }
         return acc + mark;
       }, 0);
 
@@ -144,7 +146,7 @@ export class BulletinsComponent implements OnInit {
 
   classroomCommonBulletinInformations(classroom: Classroom, session: SchoolSession) {
     const currentSchool = this.schoolsRepository.list[0];
-    const madeIn =  'ATROKPOCODJI';
+    const madeIn = 'ATROKPOCODJI';
     const lastSession = this.schoolYear.sessions[this.schoolYear.sessions.length - 1];
     const printingDate = moment().format('DD MMMM YYYY');
     const classSize = this.utils.student.classroomStudents(classroom).length;
@@ -158,6 +160,20 @@ export class BulletinsComponent implements OnInit {
     const classroomStudentsMarksSorted = Object.keys(studentsNotes).sort((a, b) => studentsNotes[b].generalMean - studentsNotes[a].generalMean);
     const firstRankId = classroomStudentsMarksSorted[0];
     const lastRankId = classroomStudentsMarksSorted[classroomStudentsMarksSorted.length - 1];
+    const studentsAllSessionsGeneralMean = this.utils.student.classroomStudents(classroom)
+      .map(student => {
+        try {
+          const studentAnnualNote =  this.schoolYearSelected.sessions
+            .map(currentSession => ({[student._id]: this.bulletins[currentSession.name][classroom._id].students[student._id]?.generalMean}))
+            .reduce((acc, cur) => acc + cur[student._id], 0);
+          return {
+            [student._id]: studentAnnualNote / this.schoolYearSelected.sessions.length
+          };
+        } catch (e) {
+          return {[student._id]: 0};
+        }
+      })
+      .sort((aStudentNote, bStudentNote) => Object.values(bStudentNote)[0] - Object.values(aStudentNote)[0]);
 
     return {
       madeIn,
@@ -173,7 +189,8 @@ export class BulletinsComponent implements OnInit {
       isLastSession: session._id == null ? lastSession.name === session.name : lastSession._id === session._id,
       bestClassroomMean: studentsNotes[firstRankId]?.generalMean?.toFixed(2),
       lastClassroomMean: studentsNotes[lastRankId].generalMean?.toFixed(2),
-      classroomStudentsMarksSorted
+      classroomStudentsMarksSorted,
+      studentsAllSessionsGeneralMean
     };
   }
 
@@ -197,6 +214,24 @@ export class BulletinsComponent implements OnInit {
   processNotes(student: Student, classroom: Classroom, session: SchoolSession, commonBulletinInformations: any) {
     const generalMean = this.bulletins[session.name][classroom._id].students[student._id]?.generalMean;
     const currentStudentRealCoef = this.bulletins[session.name][classroom._id].students[student._id]?.realCoef;
+    const annualStats = commonBulletinInformations.studentsAllSessionsGeneralMean;
+    const annualRankIndex = annualStats.findIndex(mean => Object.keys(mean)[0] === student._id);
+    let schoolSessions = null;
+    if (commonBulletinInformations.isLastSession) {
+      schoolSessions = this.schoolYearSelected.sessions.map(currentSession => {
+        try {
+          return {
+            sessionName: currentSession.name,
+            sessionMean: this.bulletins[currentSession.name][classroom._id].students[student._id]?.generalMean?.toFixed(2)
+          };
+        } catch (e) {
+          return {
+            sessionName: currentSession.name,
+            sessionMean: 0
+          };
+        }
+      });
+    }
     let blame = '';
     return {
       printingDate: commonBulletinInformations.printingDate,
@@ -206,6 +241,7 @@ export class BulletinsComponent implements OnInit {
       ...commonBulletinInformations.examinationTypesToDisplay,
       schoolName: commonBulletinInformations.schoolName,
       schoolSubName: commonBulletinInformations.schoolSubName,
+      isLastSession: commonBulletinInformations.isLastSession,
       totalCoef: currentStudentRealCoef,
       student,
       matricule: student.matricule,
@@ -227,6 +263,9 @@ export class BulletinsComponent implements OnInit {
       encouragement: parseInt(generalMean, 10) === 13 ? 'X' : '',
       honor: parseInt(generalMean, 10) === 12 ? 'X' : '',
       warning: generalMean < 7 ? 'X' : '',
+      schoolSessions,
+      annualMean: annualStats[annualRankIndex][student._id]?.toFixed(2),
+      annualRank: annualRankIndex + 1,
       subjects: this.classroomSelected.subjects.map(subject => {
         const classroomMarksForCurrentSubject = this.bulletins[session.name][classroom._id].subjects[subject._id]?.students;
         const studentMarksForCurrentSubject = this.bulletins[session.name][classroom._id].subjects[subject._id]?.students[student._id];
@@ -291,12 +330,12 @@ export class BulletinsComponent implements OnInit {
 
     if (this.canGenerateClassroomBulletin()) {
       try {
-      loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
-      await this.utils.common.sleep(300);
-      const commonBulletinInfo = this.classroomCommonBulletinInformations(this.classroomSelected, session);
-      const bulletins = this.classroomStudents.map(student => this.processNotes(student, this.classroomSelected, session, commonBulletinInfo));
-      await this.utils.print.classroomBulletin(bulletins);
-      loading.close();
+        loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
+        await this.utils.common.sleep(300);
+        const commonBulletinInfo = this.classroomCommonBulletinInformations(this.classroomSelected, session);
+        const bulletins = this.classroomStudents.map(student => this.processNotes(student, this.classroomSelected, session, commonBulletinInfo));
+        await this.utils.print.classroomBulletin(bulletins);
+        loading.close();
       } catch (e) {
         this.utils.common.alert(JSON.stringify(e.error));
         loading.close();
