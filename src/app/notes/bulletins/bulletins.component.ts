@@ -217,6 +217,7 @@ export class BulletinsComponent implements OnInit {
     const annualStats = commonBulletinInformations.studentsAllSessionsGeneralMean;
     const annualRankIndex = annualStats.findIndex(mean => Object.keys(mean)[0] === student._id);
     let schoolSessions = null;
+    let finalStatement = '';
     if (commonBulletinInformations.isLastSession) {
       schoolSessions = this.schoolYearSelected.sessions.map(currentSession => {
         try {
@@ -231,8 +232,12 @@ export class BulletinsComponent implements OnInit {
           };
         }
       });
+
+      const annualMean = annualStats[annualRankIndex][student._id]?.toFixed(2);
+      finalStatement = annualMean < 10 ? 'Redouble la classe' : 'Passe en classe supérieure';
     }
     let blame = '';
+    let excluded = '';
     return {
       printingDate: commonBulletinInformations.printingDate,
       madeIn: commonBulletinInformations.madeIn,
@@ -305,6 +310,7 @@ export class BulletinsComponent implements OnInit {
         const currentSubjectIsConduite = subject.name.toLowerCase().startsWith('conduite');
         if (currentSubjectIsConduite) {
           blame = meanByTwenty < 10 ? 'X' : '';
+          excluded = meanByTwenty < 9 ? 'X' : '';
         }
 
         return {
@@ -320,6 +326,8 @@ export class BulletinsComponent implements OnInit {
         };
       }),
       blame,
+      excluded,
+      finalStatement
     };
   }
 

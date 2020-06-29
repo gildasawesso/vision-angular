@@ -120,6 +120,8 @@ export class PrintUtil {
       honor: parseInt(generalMean, 10) === 12 ? 'X' : '',
       warning: Number(generalMean) < 7 ? 'X' : '',
       blame,
+      finalStatement: notes.finalStatement,
+      excluded: blameSubjectMark.meanByTwenty < 9 ? 'X' : '',
       subjects: notes.subjects.map(subjectAndExaminationType => {
         const marks = {};
         subjectAndExaminationType.examinationsByType.forEach((s, index) => {
@@ -142,6 +144,7 @@ export class PrintUtil {
 
   async classroomBulletin(notesArray) {
     const notesArrayProccessed = notesArray.map(notes => {
+      console.log(notes);
       return this.processNotes(notes);
     });
 
