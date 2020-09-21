@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FeeCategoriesRepository} from '../../../../core/repositories/fee-categories.repository';
 import {FormArray, FormBuilder} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {FeeTypesRepository} from '../../../../core/repositories/fee-types.repository';
 import {Utils} from '../../../../core/shared/utils';
 import {AddOrEditTrancheComponent} from '../add-or-edit-tranche/add-or-edit-tranche.component';

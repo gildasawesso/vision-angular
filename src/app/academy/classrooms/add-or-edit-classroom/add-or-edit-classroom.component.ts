@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {SubjectsRepository} from '../../../core/repositories/subjects.repository';
 import {FeeTypesRepository} from '../../../core/repositories/fee-types.repository';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {Utils} from '../../../core/shared/utils';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {Classroom} from '../../../core/models/classroom';

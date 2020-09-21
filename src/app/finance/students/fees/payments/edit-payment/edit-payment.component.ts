@@ -7,7 +7,7 @@ import {Classroom} from '../../../../../core/models/classroom';
 import {ClassroomsRepository} from '../../../../../core/repositories/classrooms.repository';
 import {StudentsRepository} from '../../../../../core/repositories/students.repository';
 import {FeeTypesRepository} from '../../../../../core/repositories/fee-types.repository';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {Payment} from '../../../../../core/models/payment';
 import {Utils} from '../../../../../core/shared/utils';
 import {PaymentsRepository} from '../../../../../core/repositories/payments.repository';

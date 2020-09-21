@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {Examination} from '../../../core/models/examination';
 import {ExaminationsRepository} from '../../../core/repositories/examinations.repository';
 import {Mark} from '../../../core/models/mark';

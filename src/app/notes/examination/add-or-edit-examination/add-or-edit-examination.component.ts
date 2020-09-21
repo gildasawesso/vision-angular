@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ExaminationsRepository} from '../../../core/repositories/examinations.repository';
-import {MatDialogRef} from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import {Utils} from '../../../core/shared/utils';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {FormControl, Validators} from '@angular/forms';

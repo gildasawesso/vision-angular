@@ -7,7 +7,7 @@ import {ApiService} from '../services/api.service';
 import {inject, Injectable} from '@angular/core';
 import {BaseDatasource} from '../datasources/base.datasource';
 import {Common} from '../shared/utils/common.util';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {CustomizableAlertDialogComponent} from '../shared/components/customizable-alert-dialog/customizable-alert-dialog.component';
 
 export abstract class BaseRepository<T> {

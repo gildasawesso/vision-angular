@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {Utils} from '../../../core/shared/utils';
 import {Registration} from '../../../core/models/registration';
 import {FeeType} from '../../../core/models/fee-type';

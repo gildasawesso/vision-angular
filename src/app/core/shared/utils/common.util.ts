@@ -1,5 +1,6 @@
 import {Component, ComponentFactoryResolver, Injectable, Type, ViewContainerRef} from '@angular/core';
-import {MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar, MatSnackBarConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.component';
 import {CustomizableAlertDialogComponent} from '../components/customizable-alert-dialog/customizable-alert-dialog.component';
 import {LoadingComponent} from '../components/loading/loading.component';

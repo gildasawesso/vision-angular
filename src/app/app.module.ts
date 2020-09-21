@@ -9,7 +9,7 @@ import {AuthInterceptor} from './core/interceptors/auth.interceptor';
 import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
 import {PermissionsService} from './core/services/permissions.service';
 import {Common} from './core/shared/utils/common.util';
-import {MatDialogModule} from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [

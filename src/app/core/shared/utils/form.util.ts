@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
 import {Payment} from '../../models/payment';
 import {FeeType} from '../../models/fee-type';

@@ -8,7 +8,7 @@ import {SchoolyearsRepository} from '../../../../core/repositories/schoolyears.r
 import {Router} from '@angular/router';
 import {AuthService} from '../../../../core/services/auth.service';
 import {PermissionsService} from '../../../../core/services/permissions.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-or-edit-school-year',
