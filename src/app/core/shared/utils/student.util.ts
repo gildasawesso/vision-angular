@@ -12,6 +12,7 @@ import {RegistrationsRepository} from '../../repositories/registrations.reposito
 import {PaymentsRepository} from '../../repositories/payments.repository';
 import {SchoolyearsRepository} from '../../repositories/schoolyears.repository';
 import {ClassroomsRepository} from '../../repositories/classrooms.repository';
+import {Reduction} from '../../models/reduction';
 
 @Injectable()
 export class StudentUtil {
@@ -30,6 +31,18 @@ export class StudentUtil {
               private classroomsRepository: ClassroomsRepository,
               private commonUtil: Common) {
     this.init();
+  }
+
+  parseReduction(reduction: Reduction, fee: FeeType) {
+    if (reduction) {
+      if (reduction.reductionType === 'percentage') {
+        return reduction.reduction / 100 * fee.amount;
+      } else {
+        return reduction.reduction;
+      }
+    } else {
+      return 0;
+    }
   }
 
   init() {

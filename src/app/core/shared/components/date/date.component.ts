@@ -4,8 +4,7 @@ import {AbstractControl} from '@angular/forms';
 @Component({
   selector: 'app-date',
   templateUrl: './date.component.html',
-  styleUrls: ['./date.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./date.component.scss']
 })
 export class DateComponent implements OnInit {
 

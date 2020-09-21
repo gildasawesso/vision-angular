@@ -1,0 +1,26 @@
+<ngx-datatable class="material ngx-datatable fixed-header"
+               [loadingIndicator]="loading"
+               [rows]="rows"
+               [columns]="columns"
+               [columnMode]=columnMode.force
+               [headerHeight]="50"
+               [footerHeight]="50"
+               [sortType]="sortType.single"
+               [rowHeight]="100">
+  <ng-content></ng-content>
+  <!--  <ng-template #subjectTemplate let-row="row">{{row.subject.name | titlecase}}</ng-template>-->
+  <!--  <ng-template #examinationTypeTemplate let-row="row">{{row.type.name}}</ng-template>-->
+  <!--  <ng-template #noteTemplate let-row="row">-->
+  <!--    <button mat-raised-button (click)="openNotesPage(row)">Notes</button>-->
+  <!--  </ng-template>-->
+  <!--               [scrollbarV]="true"-->
+  <!--  [rowHeight]="'auto'"-->
+  <ng-template #actionsTemplate let-row="row">
+    <button (click)="onEdit(row)" color="accent" mat-icon-button>
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button (click)="onRemove(row)" color="warn" mat-icon-button>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </ng-template>
+</ngx-datatable>

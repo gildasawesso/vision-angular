@@ -1,0 +1,42 @@
+<div class="d-flex flex-column h-100">
+  <div>
+    <h4 class="display-4">Réductions</h4>
+    <div class="d-flex">
+      <p class="lead text-capitalize">{{registration?.student?.firstname | titlecase}}</p>
+      <p class="lead ml-2">{{registration?.student?.lastname.toUpperCase()}}</p>
+    </div>
+  </div>
+
+  <div class="mt-4 flex-fill d-flex align-items-center justify-content-center" *ngIf="registration?.reductions.length <= 0">
+    <button mat-raised-button color="primary" (click)="addReduction()">Ajouter une réduction</button>
+  </div>
+
+  <div *ngIf="registration?.reductions.length > 0">
+
+    <button class="mt-4 mb-3" (click)="addReduction()" mat-raised-button color="primary">Ajouter</button>
+
+    <div class="row">
+      <div class="col-10 d-flex align-items-center justify-content-between">
+        <p>Contribution</p>
+        <p>Réduction</p>
+      </div>
+    </div>
+    <mat-divider class="col-10"></mat-divider>
+
+    <div *ngFor="let reduction of registration.reductions; let i = index;" class="py-3 row align-items-center">
+      <div class="col-10 d-flex align-items-center justify-content-between">
+        <div class="text-secondary">{{reduction.fee.name}}</div>
+        <div class="text-secondary">-{{reduction.reduction}} {{reduction.reductionType == "percentage" ? "%" : "FCFA"}}</div>
+      </div>
+      <div class="col-2 d-flex align-items-center">
+        <button (click)="editReduction(reduction, i)" mat-icon-button color="accent"><mat-icon>edit</mat-icon></button>
+        <button (click)="deleteReduction(reduction, i)" mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="d-flex mx-auto mt-4">
+    <button mat-raised-button color="primary" (click)="dialogRef.close()">Fermer</button>
+  </div>
+</div>

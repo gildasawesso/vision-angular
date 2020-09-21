@@ -1,7 +1,11 @@
 :host {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  margin: 15px 0;
+
+  label {
+    color: #8c8c8c;
+  }
 
   mat-form-field {
     .mat-form-field-wrapper {

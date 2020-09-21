@@ -1,0 +1,46 @@
+<h4 class="display-4 text-center">{{schoolYear ? 'Modification de l\'année scolaire' : 'Ajout d\'une année scolaire' }}</h4>
+<div class="col-8 mx-auto" [formGroup]="schoolYearForm">
+
+  <app-date class="col-12 col-sm-6" [control]="schoolYearForm.get('startDate')">Date début</app-date>
+  <app-date class="col-12 col-sm-6" [control]="schoolYearForm.get('endDate')">Date fin</app-date>
+
+  <mat-divider></mat-divider>
+
+  <h3 class="h3 py-4 font-weight-light">Sessions / Trimèstres</h3>
+
+  <div [formGroup]="schoolYearSessionForm">
+    <app-input formControlName="name">Nom de la session</app-input>
+    <app-date class="col-12" [control]="schoolYearSessionForm.get('startDate')">Date début</app-date>
+    <app-date class="col-12" [control]="schoolYearSessionForm.get('endDate')">Date de fin</app-date>
+  </div>
+
+  <button [disabled]="sessions.length >= 3" mat-stroked-button color="primary" class="mb-5" (click)="addSession()">
+    Ajouter une session
+  </button>
+
+  <div formArrayName="sessions" class="mb-5">
+    <div class="d-flex align-items-center mt-3 justify-content-between sessions-header">
+      <div style="flex-basis: 120px" class="text-muted">Session</div>
+      <div style="flex-basis: 120px" class="text-muted">Début</div>
+      <div style="flex-basis: 120px" class="text-muted">Fin</div>
+    </div>
+    <div *ngFor="let session of sessions.controls; let i = index;" [formGroup]="session" style="margin-top: 30px;">
+      <div class="d-flex align-items-center justify-content-between">
+        <div style="flex-basis: 120px">{{session?.value?.name}}</div>
+        <div style="flex-basis: 120px">{{session?.value?.startDate | date: 'dd MMM yyyy'}}</div>
+        <div class="d-flex align-items-center">
+          <div style="flex-basis: 120px">{{session?.value?.endDate | date: 'dd MMM yyyy'}}</div>
+          <button class="ml-3" (click)="removeSession(i)" color="accent" mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <button mat-flat-button (click)="dialogRef.close()">Annuler</button>
+    <button mat-raised-button style="width: 100px;" (click)="save()" color="primary" class="ml-4">{{ schoolYear ? 'Modifier' : 'Ajouter' }}</button>
+  </div>
+</div>
+

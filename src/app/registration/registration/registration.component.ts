@@ -135,20 +135,20 @@ export class RegistrationComponent implements OnInit {
     if (!this.canSave()) { return; }
 
     this.isBusy = true;
-    const newStudents = this.registrationForm.value;
+    const form = this.registrationForm.value;
     const newPayment: Payment = this.paymentForm.value;
 
-    delete newStudents.payment;
-    const student: Student = await this.studentsRepository.add(newStudents);
+    delete form.payment;
+    const student: Student = await this.studentsRepository.add(form);
 
     const newRegistration: Registration = {
       student,
-      classroom: student.classroom,
+      classroom: form.classroom,
       schoolYear: this.schoolYears[0],
-      registrationDate: newStudents.registrationDate,
+      registrationDate: form.registrationDate,
       isReregistration: this.isReregistration,
-      feesReduction: newStudents.feesReduction,
-      registrationFeeReduction: newStudents.registrationFeeReduction,
+      feesReduction: form.feesReduction,
+      registrationFeeReduction: form.registrationFeeReduction,
       reductions: newPayment.fees.map(f => {
         return {
           fee: f.fee,
@@ -161,10 +161,11 @@ export class RegistrationComponent implements OnInit {
 
     newPayment.amount = newPayment.fees.reduce((acc, cur) => acc + cur.amount, 0);
     newPayment.student = student;
-    newPayment.paymentDate = newStudents.registrationDate;
+    newPayment.paymentDate = form.registrationDate;
     const payment = await this.paymentsRepository.add(newPayment);
 
-    const message = `L'élève ${student.firstname} ${student.lastname} est inscrit avec succès à la classe de ${student.classroom.name}`;
+    console.log(newRegistration);
+    const message = `L'élève ${student.firstname} ${student.lastname} est inscrit avec succès à la classe de ${newRegistration.classroom.name}`;
     await this.utils.common.customAlert(message, '', ['Imprimer le reçu']);
 
     await this.utils.print.registrationReceipt(payment);

@@ -1,7 +1,7 @@
 <div class="home d-flex flex-column" [ngClass]="{'home-menu': (appBarService.appbarMenus | async) == null}">
   <app-appbar></app-appbar>
   <app-subbar></app-subbar>
-  <div class="container-fluid" style="overflow: auto;">
+  <div class="container" style="overflow: auto;">
     <div class="app-content row justify-content-center">
       <div class="col-12">
         <router-outlet></router-outlet>

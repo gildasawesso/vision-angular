@@ -24,6 +24,8 @@ import { BalanceComponent } from './balance/balance.component';
 import { BalanceSheetComponent } from './balance/balance-sheet/balance-sheet.component';
 import { AddOrEditSpendComponent } from './balance/balance-sheet/add-or-edit-spend/add-or-edit-spend.component';
 import { AddOrEditIncomeComponent } from './balance/balance-sheet/add-or-edit-income/add-or-edit-income.component';
+import {ReductionsComponent} from './reductions/reductions.component';
+import {AddOrEditReductionComponent} from './reductions/add-or-edit-reduction/add-or-edit-reduction.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { AddOrEditIncomeComponent } from './balance/balance-sheet/add-or-edit-in
     BalanceComponent,
     BalanceSheetComponent,
     AddOrEditSpendComponent,
-    AddOrEditIncomeComponent
+    AddOrEditIncomeComponent,
+    ReductionsComponent,
+    AddOrEditReductionComponent,
   ],
     imports: [
         SharedModule,
@@ -62,6 +66,9 @@ import { AddOrEditIncomeComponent } from './balance/balance-sheet/add-or-edit-in
     AddPaymentComponent,
     AddOrEditSpendComponent,
     AddOrEditIncomeComponent
+  ],
+  exports: [
+    AddOrEditReductionComponent
   ]
 })
 export class FinanceModule { }

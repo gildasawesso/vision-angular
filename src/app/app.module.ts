@@ -8,6 +8,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthInterceptor} from './core/interceptors/auth.interceptor';
 import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
 import {PermissionsService} from './core/services/permissions.service';
+import {Common} from './core/shared/utils/common.util';
+import {MatDialogModule} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import {PermissionsService} from './core/services/permissions.service';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    MatDialogModule,
     NgxPermissionsModule.forRoot()
   ],
   providers: [

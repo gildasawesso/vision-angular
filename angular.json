@@ -33,9 +33,9 @@
               ]
             },
             "styles": [
-              "src/styles.scss",
               "src/theme/variables.scss",
-              "src/theme/app.colors.scss"
+              "src/theme/app.colors.scss",
+              "src/styles.scss"
             ],
             "scripts": []
           },

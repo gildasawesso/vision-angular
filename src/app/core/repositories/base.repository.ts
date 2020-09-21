@@ -4,8 +4,11 @@
 
 import {BehaviorSubject, Observable} from 'rxjs';
 import {ApiService} from '../services/api.service';
-import {inject} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {BaseDatasource} from '../datasources/base.datasource';
+import {Common} from '../shared/utils/common.util';
+import {MatDialog} from '@angular/material';
+import {CustomizableAlertDialogComponent} from '../shared/components/customizable-alert-dialog/customizable-alert-dialog.component';
 
 export abstract class BaseRepository<T> {
 
@@ -13,10 +16,12 @@ export abstract class BaseRepository<T> {
   private objects: Observable<T[]> = this.genericBehavioSubject.asObservable();
 
   private api: ApiService;
+  private dialog: MatDialog;
   protected datasource: BaseDatasource<T>;
 
   protected constructor(datasource: BaseDatasource<T>) {
     this.api = inject(ApiService);
+    this.dialog = inject(MatDialog);
     this.datasource = datasource;
     this.init();
   }
@@ -62,10 +67,21 @@ export abstract class BaseRepository<T> {
   }
 
   async remove(id: any, key: any = '_id') {
-    await this.datasource.remove(id);
-    const objects = this.genericBehavioSubject.value;
-    const index = objects.findIndex(o => o[key] === id);
-    objects.splice(index, 1);
-    this.genericBehavioSubject.next(objects);
+    const dialog = this.dialog.open(CustomizableAlertDialogComponent, {
+      data: {
+        title: `Attention`,
+        body: `Veuillez confirmer afin de procéder à la suppression`,
+        actions: [`ANNULER`, `SUPPRIMER`]
+      }
+    });
+    const res = await dialog.afterClosed().toPromise();
+
+    if (res === 1) {
+      await this.datasource.remove(id);
+      const objects = this.genericBehavioSubject.value;
+      const index = objects.findIndex(o => o[key] === id);
+      objects.splice(index, 1);
+      this.genericBehavioSubject.next(objects);
+    }
   }
 }

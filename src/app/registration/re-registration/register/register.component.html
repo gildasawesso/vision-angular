@@ -1,0 +1,18 @@
+<h4 class="display-4">Inscription</h4>
+<div class="d-flex align-items-center">
+  <p class="lead text-capitalize">{{oldRegistration?.student?.firstname | titlecase}}</p>
+  <p class="lead ml-2">{{oldRegistration?.student?.lastname.toUpperCase()}}</p>
+  <p class="text-success lead font-weight-bold ml-3">{{oldRegistration?.classroom?.name}}</p>
+</div>
+<mat-divider class="mb-4"></mat-divider>
+
+<div class="my-5">
+  <app-advanced-select displayKey="name" [control]="newClassroom" [options]="classrooms">Nouvelle classe</app-advanced-select>
+  <app-date [control]="registrationDate">Date d'inscription</app-date>
+</div>
+
+<div class="d-flex justify-content-end">
+  <button mat-flat-button (click)="dialogRef.close()">Annuler</button>
+  <button class="px-5 ml-3" mat-raised-button color="primary" (click)="register()">Inscrire</button>
+</div>
+

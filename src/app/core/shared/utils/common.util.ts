@@ -1,5 +1,5 @@
 import {Component, ComponentFactoryResolver, Injectable, Type, ViewContainerRef} from '@angular/core';
-import {MatDialog, MatDialogRef, MatSnackBar} from '@angular/material';
+import {MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar, MatSnackBarConfig} from '@angular/material';
 import {AlertDialogComponent} from '../components/alert-dialog/alert-dialog.component';
 import {CustomizableAlertDialogComponent} from '../components/customizable-alert-dialog/customizable-alert-dialog.component';
 import {LoadingComponent} from '../components/loading/loading.component';
@@ -38,18 +38,18 @@ export class Common {
     return dialog.afterClosed().toPromise();
   }
 
-  modal(component, data, noPadding = false): Promise<MatDialogRef<any>> {
+  modal(component, data, noPadding = false, config?: MatDialogConfig): Promise<MatDialogRef<any>> {
     const dialog: MatDialogRef<any> = this.matDialog.open(component, {
-      panelClass: noPadding ? 'dialog-without-padding' : '',
+      panelClass: noPadding ? 'dialog-without-padding' : 'relative',
       minWidth: '60%',
-      height: '85%',
+      maxHeight: '90vh',
       data,
       disableClose: true,
+      ...config
     });
 
     return dialog.afterClosed().toPromise();
   }
-
 
   private dialog(component, data, config?: any, noPadding = false): Promise<MatDialogRef<any>> {
     let defaultConfig: any = {};
@@ -80,9 +80,10 @@ export class Common {
     return dialog.afterClosed().toPromise();
   }
 
-  toast(body: string) {
+  toast(body: string, config?: MatSnackBarConfig) {
     this.snackBar.open(body, null, {
-      duration: 5000
+      duration: 5000,
+      ...config,
     });
   }
 

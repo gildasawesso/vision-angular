@@ -67,7 +67,7 @@ export const menuConfig = [
   {
     registration: [
       { text: 'inscription', url: '/registration/register', submenu: null },
-      // { text: 'réinscription', url: '/registration/re-register', submenu: null },
+      { text: 'réinscription', url: '/registration/re-register', submenu: null },
     ]
   },
   {

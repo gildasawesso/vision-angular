@@ -2,10 +2,43 @@
 
 :host {
   display: block;
-  width: 55%;
-  margin: 25px auto;
-  background-color: white;
-  padding: 48px;
-  border-radius: 7px;
-  box-shadow: $app-box-shadow;
+
+  //width: 55%;
+  //margin: 25px auto;
+  //background-color: white;
+  //padding: 48px;
+  //border-radius: 7px;
+  //box-shadow: $app-box-shadow;
+
+  .result {
+    overflow: auto;
+    max-height: 50vh;
+    padding: 1px;
+  }
+
+  .searchbar {
+    border: 1px solid $app-input-color;
+    border-radius: 7px;
+    overflow: hidden;
+    height: 60px;
+    margin: 24px 0;
+
+    &.focused {
+      border: 2px solid mat-color($primary, 700);
+    }
+
+    &:hover {
+      border: 2px solid #212529;
+    }
+
+    input {
+      height: 36px;
+      border: 0;
+      padding: 10px;
+      color: #111111;
+      width: 100%;
+      font-size: 1.2em;
+      background-color: transparent;
+    }
+  }
 }

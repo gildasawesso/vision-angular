@@ -4,12 +4,35 @@
 @import '~@swimlane/ngx-datatable/index.css';
 @import '~@swimlane/ngx-datatable/themes/material.scss';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
+//@import "./assets/fonts/SF-Pro-Text-Regular.otf";
 
 $small-icon-size: 16px;
 
+//@font-face {
+//  font-family: 'SF Pro Text', sans-serif;
+//  src: url('/assets/fonts/SF-Pro-Text-Regular.otf') format('opentype'),
+//  url('assets/fonts/SF-Pro-Text-Regular.otf') format('woff2'),
+//  url('assets/fonts/sf-pro-text-regular-webfont.woff') format('woff');
+//}
+
 @font-face {
-  font-family: 'SF Pro Text', sans-serif;
-  src: url('assets/fonts/SF-Pro-Text-Regular.otf') format('opentype');
+  font-family: 'SF Pro Text';
+  src: url('assets/fonts/sfprotext-regular-webfont.woff2') format('woff2'),
+  url('assets/fonts/sfprotext-regular-webfont.woff') format('woff');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('assets/fonts/sfprotext-thin-webfont.woff2') format('woff2'),
+  url('assets/fonts/sfprotext-thin-webfont.woff') format('woff');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('assets/fonts/SF-Pro-Text-Bold.otf') format('opentype');
+  font-weight: bold;
 }
 
 html, body {
@@ -17,7 +40,7 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: 16px;
   font-family: "SF Pro Text", sans-serif !important;
   background-color: white;
 }
@@ -37,6 +60,11 @@ html, body {
 
 .dialog-without-padding mat-dialog-container {
   padding: 0 !important;
+  position: relative;
+}
+
+.relative mat-dialog-container {
+  position: relative;
 }
 
 .actions {
@@ -50,9 +78,24 @@ mat-icon.small {
 }
 
 .app-card {
-  box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
   border-radius: 7px;
   padding: 16px;
 }
+
+mat-dialog-container {
+  position: relative;
+}
+
+::-webkit-scrollbar {
+  width: .5em;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+//
 
 

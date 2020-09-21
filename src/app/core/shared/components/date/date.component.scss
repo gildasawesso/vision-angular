@@ -1,10 +1,33 @@
-mat-form-field .mat-form-field-wrapper {
-  padding-bottom: 0 !important;
-  margin: 0 !important;
-  height: 38px !important;
+@import 'variables';
 
+::ng-deep {
+  mat-form-field {
+    .mat-form-field-wrapper {
+      margin: 0 !important;
+
+      .mat-form-field-flex {
+        align-items: center;
+
+        .mat-form-field-outline {
+          height: $input-height;
+        }
+
+        .mat-form-field-infix {
+          border: 0;
+        }
+      }
+    }
+  }
 }
 
-mat-form-field .mat-form-field-flex {
-  height: 41px !important;
+.date-control {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 0;
+  font-size: 1em;
+
+  label {
+    font-size: 1em;
+    color: #8c8c8c;
+  }
 }

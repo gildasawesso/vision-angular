@@ -1,4 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {fromEvent} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {StudentsRepository} from '../../core/repositories/students.repository';
+import {Student} from '../../core/models/student';
+import {Utils} from '../../core/shared/utils';
+import {RegisterComponent} from './register/register.component';
+import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
+import {Registration} from '../../core/models/registration';
 
 @Component({
   selector: 'app-other-registration',
@@ -7,9 +15,60 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReRegistrationComponent implements OnInit {
 
-  constructor() { }
+  focused = false;
+  registrationsFiltered: Registration[];
+  lastYearRegistrations: Registration[];
+  currentYearRegistrations: any;
 
-  ngOnInit() {
+  @ViewChild('searchStudent', {static: true}) registrationSearch: ElementRef;
+
+  constructor(private studentsRepository: StudentsRepository,
+              private registrationsRepository: RegistrationsRepository,
+              private utils: Utils) {
   }
 
+  async register(registration: Registration) {
+    await this.utils.common.modal(RegisterComponent, registration);
+  }
+
+  trackBy(index, item) {
+    if (item == null) {
+      console.log(index);
+    }
+    return item._id;
+  }
+
+  ngOnInit() {
+    this.registrationsRepository.lastYearRegisrations.subscribe(r => this.lastYearRegistrations = r);
+    this.registrationsRepository.currentYearRegistrations
+      .pipe(
+        map(registrations => {
+          registrations.map(r => {
+            return [r.student._id, r.classroom];
+          });
+        }),
+      )
+      .subscribe(r => this.currentYearRegistrations = r);
+
+    fromEvent(this.registrationSearch.nativeElement, 'keyup')
+      .pipe(
+        map((event: any) => event.target.value),
+        debounceTime(500),
+        distinctUntilChanged(),
+      )
+      .subscribe(value => {
+        if (!this.lastYearRegistrations) {
+          return;
+        }
+
+        if (value === '') {
+          this.registrationsFiltered = [];
+          return;
+        }
+        this.registrationsFiltered = this.lastYearRegistrations.filter(regisration => {
+          const fields = `${regisration.student.firstname}${regisration.student.lastname}${regisration.student.lastname}${regisration.student.firstname}`;
+          return fields.trim().toLowerCase().indexOf(value.trim().toLowerCase()) >= 0;
+        });
+      });
+  }
 }

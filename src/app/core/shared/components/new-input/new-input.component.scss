@@ -4,13 +4,18 @@
 :host {
   display: flex;
   flex-direction: column;
-  margin-top: 15px;
+  margin: 15px 0;
+
+  label {
+    color: #8c8c8c;
+  }
 }
 
 .app-input {
   border: 1px solid $app-input-color;
   border-radius: 7px;
   overflow: hidden;
+  height: $input-height;
 
   &.focused {
     border: 2px solid mat-color($primary, 700);

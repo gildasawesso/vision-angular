@@ -1,0 +1,33 @@
+<div class="mb-4">
+  <h4 class="display-4">{{registration ? "Modification d'une réduction" : "Ajout d'une réduction"}}</h4>
+  <div class="d-flex">
+    <p class="lead text-capitalize">{{registration?.student?.firstname | titlecase}}</p>
+    <p class="lead ml-2">{{registration?.student?.lastname.toUpperCase()}}</p>
+  </div>
+</div>
+
+<div>
+  <div class="d-flex align-items-center">
+    <div class="col-3 text-right">Type de réduction</div>
+    <mat-radio-group class="col-7" [formControl]="reductionType" aria-label="Selectionnez">
+      <mat-radio-button class="mr-4" value="percentage">Pourcentage</mat-radio-button>
+      <mat-radio-button value="amount">Montant</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div class="d-flex align-items-center">
+    <div class="col-3 text-right">Type de réduction</div>
+    <app-advanced-select class="col-7" [control]="fee" [displayKey]="'name'" [options]="fees"></app-advanced-select>
+  </div>
+
+  <div class="d-flex align-items-center">
+    <div class="col-3 text-right">Montant</div>
+    <app-new-input class="col-7" [formControl]="amount" type="number"></app-new-input>
+  </div>
+
+</div>
+
+<div class="controls d-flex align-items-center justify-content-end">
+  <button mat-flat-button (click)="dialogRef.close()">Annuler</button>
+  <button class="ml-3" mat-raised-button color="primary" (click)="save()">{{reduction ? "Modifier" : "Ajouter"}}</button>
+</div>

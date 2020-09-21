@@ -3,14 +3,37 @@ import {BaseRepository} from './base.repository';
 import {Registration} from '../models/registration';
 import {RegistrationsDatasource} from '../datasources/registrations.datasource';
 import {Classroom} from '../models/classroom';
-import {map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import {Student} from '../models/student';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistrationsRepository extends BaseRepository<Registration> {
+
+  private lastYearStudents$ = new BehaviorSubject<Registration[]>(null);
+  private currentYearRegistrations$ = new BehaviorSubject<Registration[]>(null);
+
+  get lastYearRegisrations(): Observable<Registration[]> {
+    if (this.lastYearStudents$.value) {
+      return this.lastYearStudents$.pipe(
+        map(registrations => registrations.filter(r => r.student != null))
+      );
+    } else {
+      return this.datasource.api.get('/registrations/lastyear').pipe(map(registrations => registrations.filter(r => r.student != null)));
+    }
+  }
+
+  get currentYearRegistrations(): Observable<Registration[]> {
+    if (this.lastYearStudents$.value) {
+      return this.lastYearStudents$.pipe(
+        map(registrations => registrations.filter(r => r.student != null))
+      );
+    } else {
+      return this.datasource.api.get('/registrations/lastyear').pipe(map(registrations => registrations.filter(r => r.student != null)));
+    }
+  }
 
   constructor(private registrationsDatasource: RegistrationsDatasource) {
     super(registrationsDatasource);

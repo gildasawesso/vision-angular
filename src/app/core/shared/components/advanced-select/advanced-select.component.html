@@ -1,4 +1,4 @@
-<ng-content></ng-content>
+<label><ng-content></ng-content></label>
 <mat-form-field *ngIf="!multiple" appearance="outline" color="primary">
   <select matNativeControl required [formControl]="control" [compareWith]="utils.common.compareFn">
     <option *ngIf="addEmptyOption" [value]="null">{{ emptyLabel }}</option>

@@ -33,6 +33,11 @@ import { CloseButtonComponent } from './components/close-button/close-button.com
 import { ListComponent } from './components/list/list.component';
 import { NewInputComponent } from './components/new-input/new-input.component';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
+import { DatatableComponent } from './components/datatable/datatable.component';
+import { ReductionsComponent } from '../../finance/reductions/reductions.component';
+import { AddOrEditReductionComponent } from '../../finance/reductions/add-or-edit-reduction/add-or-edit-reduction.component';
+import { ReductionLabelPipe } from './pipes/reductionLabel.pipe';
+import { ReductionPipe } from './pipes/reduction.pipe';
 
 const components = [
   AdmissionComponent,
@@ -53,7 +58,8 @@ const components = [
   LoadingComponent,
   CloseButtonComponent,
   NewInputComponent,
-  ListComponent
+  ListComponent,
+  DatatableComponent
 ];
 
 const directives = [
@@ -80,6 +86,8 @@ const modules = [
     ...components,
     ...pipes,
     ...directives,
+    ReductionLabelPipe,
+    ReductionPipe,
   ],
   imports: [
     ...modules,
@@ -89,6 +97,8 @@ const modules = [
     ...pipes,
     ...directives,
     ...modules,
+    ReductionLabelPipe,
+    ReductionPipe,
   ],
   entryComponents: [
     AlertDialogComponent,

@@ -1,0 +1,10 @@
+:host {
+  ::ng-deep .ngx-datatable {
+    .datatable-body-row {
+      .datatable-body-cell {
+          display: flex !important;
+          align-items: center !important;
+      }
+    }
+  }
+}

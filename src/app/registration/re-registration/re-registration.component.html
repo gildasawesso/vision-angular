@@ -1,3 +1,27 @@
-<div>
+<div class="row col-8 mx-auto">
+  <h1 class="h1 w-100">Inscription ancien élève</h1>
 
+  <div [style.visibility]="lastYearRegistrations != null ? 'visible' : 'hidden'" class="searchbar d-flex align-items-center w-100" [ngClass]="{'focused': focused}">
+    <input #searchStudent placeholder="Nom de l'ancien élève à inscrire" (focus)="focused = true" (focusout)="focused = false"/>
+  </div>
+
+  <div *ngIf="lastYearRegistrations" class="result w-100">
+    <ng-container *ngFor="let registration of registrationsFiltered; trackBy: trackBy">
+      <div class="d-flex justify-content-between align-items-center app-card mx-auto my-4">
+        <div>
+          <h4 class="h4 font-weight-normal">{{registration.student.firstname}} {{registration.student.lastname.toUpperCase()}}</h4>
+          <div class="text-black-50 py-2 text-capitalize">{{registration.classroom.name}}</div>
+          <div class="text-black-50 py-2">{{registration.student.birthday | date: 'dd MMMM yyyy'}}</div>
+        </div>
+        <button mat-raised-button color="primary" class="px-4 py-2 rounded" (click)="register(registration)">Inscrire</button>
+      </div>
+    </ng-container>
+  </div>
+
+  <div *ngIf="lastYearRegistrations == null">
+    <div class="d-flex flex-column align-items-center p-5">
+      <mat-spinner></mat-spinner>
+      <h4 class="h4 p-4">Récupération de la liste des élève en cours...</h4>
+    </div>
+  </div>
 </div>
