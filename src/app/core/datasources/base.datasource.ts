@@ -6,13 +6,18 @@ import {SchoolYear} from '../models/school-year';
 export abstract class BaseDatasource<T> {
 
   api: ApiService;
+  schoolYearService: SchoolYearService;
+
+  schoolYear: SchoolYear;
 
   protected constructor(protected url: string, protected toPopulate: string = '') {
     this.api = inject(ApiService);
+    this.schoolYearService = inject(SchoolYearService);
+    this.schoolYearService.schoolYearSelected.subscribe(sy => this.schoolYear = sy);
   }
 
-  async list(schoolYearId: string) {
-    return this.api.get(`${this.url}?schoolyear=${schoolYearId}`).toPromise<T[]>();
+  async list(schoolYearId?: string) {
+    return this.api.get(`${this.url}?schoolyear=${this.schoolYear._id}`).toPromise<T[]>();
   }
 
   async one(id) {
@@ -20,7 +25,7 @@ export abstract class BaseDatasource<T> {
   }
 
  async create(object: T) {
-    return this.api.post(`${this.url}/?${this.toPopulate}`, object).toPromise();
+    return this.api.post(`${this.url}/?${this.toPopulate}x=0&schoolyear=${this.schoolYear._id}`, object).toPromise();
   }
 
   async update(object: T, id: any) {

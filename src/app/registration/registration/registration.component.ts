@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { FormArray, FormBuilder, FormControl, Validators} from '@angular/forms';
+import { FormBuilder, FormControl, Validators} from '@angular/forms';
 import {ClassroomsRepository} from '../../core/repositories/classrooms.repository';
 import {Router} from '@angular/router';
 import {Classroom} from '../../core/models/classroom';
@@ -11,17 +11,12 @@ import {Student} from '../../core/models/student';
 import {SchoolyearsRepository} from '../../core/repositories/schoolyears.repository';
 import {SchoolYear} from '../../core/models/school-year';
 import {PaymentsRepository} from '../../core/repositories/payments.repository';
-import {Payment} from '../../core/models/payment';
 import {SchoolsRepository} from '../../core/repositories/schools.repository';
-import {FeeType} from '../../core/models/fee-type';
 import {FeeTypesRepository} from '../../core/repositories/fee-types.repository';
 import * as moment from 'moment';
 import {AuthService} from '../../core/services/auth.service';
 import {SchoolYearService} from '../../core/services/school-year.service';
-import {PaymentsComponent} from '../../finance/students/fees/payments/payments.component';
 import {PayComponent} from '../pay/pay.component';
-
-const MAX_PAGE = 3;
 
 @Component({
   selector: 'app-registration',
@@ -53,22 +48,16 @@ export class RegistrationComponent implements OnInit {
   feeTypeToAdd = new FormControl();
   siblingClassroom = new FormControl();
   sibling = new FormControl();
+  schoolYear: SchoolYear;
 
-
-  headers = ['Informations personnelles', 'Informations sur les parents', 'École', 'Contribution'];
-  currentPage = 0;
   registrationFee: number;
-  firstTermSchoolFee: number;
   classrooms: Classroom[];
-  schoolYears: SchoolYear[];
-  feeTypes: FeeType[] = [];
   registrations: Registration[] = [];
   isBusy = false;
-  registationDateIsDifferent = false;
+  registrationDateIsDifferent = false;
   isReregistration = false;
   studentHasSibling = false;
   siblingClassroomStudents = [];
-  isReady = this.currentPage !== MAX_PAGE ? true : this.registrationForm.valid;
 
   constructor(private formBuilder: FormBuilder,
               public classroomsRepository: ClassroomsRepository,
@@ -89,7 +78,6 @@ export class RegistrationComponent implements OnInit {
 
     this.isBusy = true;
     const user = await this.authService.getCurrentUser();
-    const currentSchoolYear = await this.schoolYearService.schoolYearSelected.toPromise();
     const form = this.registrationForm.value;
     const student: Student = await this.studentsRepository.add(this.createStudent());
     const classroom = form.classroom as Classroom;
@@ -98,7 +86,7 @@ export class RegistrationComponent implements OnInit {
       student,
       classroom,
       school: user.schools[0],
-      schoolYear: currentSchoolYear,
+      schoolYear: this.schoolYear,
       registrationDate: form.registrationDate,
       isReregistration: this.isReregistration,
       isNewStudent: !this.isReregistration,
@@ -121,7 +109,6 @@ export class RegistrationComponent implements OnInit {
   onClassroomSelected() {
     this.registrationForm.controls.classroom.valueChanges
       .subscribe((obj: Classroom) => {
-        console.log(obj);
         if (obj == null) {
           return;
         }
@@ -186,6 +173,9 @@ export class RegistrationComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.schoolYearService.schoolYearSelected.subscribe(sy => this.schoolYear = sy);
+
     this.classroomsRepository.stream
       .subscribe((classrooms: Classroom[]) => {
         this.classrooms = classrooms;

@@ -3,7 +3,7 @@ import {BaseRepository} from './base.repository';
 import {Registration} from '../models/registration';
 import {RegistrationsDatasource} from '../datasources/registrations.datasource';
 import {Classroom} from '../models/classroom';
-import {filter, map} from 'rxjs/operators';
+import {filter, first, map} from 'rxjs/operators';
 import {Student} from '../models/student';
 import {BehaviorSubject, Observable} from 'rxjs';
 
@@ -15,13 +15,7 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
   private lastYearStudents$ = new BehaviorSubject<Registration[]>(null);
 
   get lastYearRegisrations(): Observable<Registration[]> {
-    if (this.lastYearStudents$.value) {
-      return this.lastYearStudents$.pipe(
-        map(registrations => registrations.filter(r => r.student != null))
-      );
-    } else {
-      return this.datasource.api.get('/registrations/lastyear').pipe(map(registrations => registrations.filter(r => r.student != null)));
-    }
+    return this.lastYearStudents$;
   }
 
   constructor(private registrationsDatasource: RegistrationsDatasource) {
@@ -29,25 +23,17 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
   }
 
   async init(): Promise<void> {
-    super.init();
+    await super.init();
+    this.schoolYearService.schoolYearSelected.subscribe(async schoolYear => {
+      const registrations: Registration[] = await this.datasource.api.get(`/registrations/lastyear?schoolyear=${schoolYear._id}`).pipe(
+        map(rs => rs.filter(r => r.student != null))
+      ).toPromise();
+      this.lastYearStudents$.next(registrations);
+    });
   }
 
   genders(classroom: Classroom) {
-    return this.stream.pipe(
-      map((registrations: Registration[]) => registrations.map(r => r.student)),
-      map((students: Student[]) => {
-        return students.reduce((acc, cur) => {
-          if (classroom) {
-            cur.classroom._id === classroom._id ? cur.gender === 'M' ? acc.male += 1 : acc.female += 1 : acc;
-          } else {
-            if (cur != null) {
-              cur.gender === 'M' ? acc.male += 1 : acc.female += 1;
-            }
-          }
-          return acc;
-        }, {male: 0, female: 0});
-      })
-    );
+    return [];
   }
 
   studentsForClassroom(registrations: Registration[], classroom: Classroom) {

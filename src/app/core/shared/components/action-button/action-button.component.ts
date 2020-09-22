@@ -8,7 +8,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class ActionButtonComponent implements OnInit {
 
   @Input() isBusy: boolean;
-  @Input() isReady: boolean;
   @Input() text: string;
   @Input() color: string;
   @Input() type: string;

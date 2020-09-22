@@ -58,17 +58,17 @@
 
     <div class="mb-4">
       <label class="genre d-block">La date d'inscription est il différente ?</label>
-      <mat-radio-group [(ngModel)]="registationDateIsDifferent" [ngModelOptions]="{ standalone: true }">
+      <mat-radio-group [(ngModel)]="registrationDateIsDifferent" [ngModelOptions]="{ standalone: true }">
         <mat-radio-button style="margin-right:40px;" [value]="true">Oui</mat-radio-button>
         <mat-radio-button [value]="false">Non</mat-radio-button>
       </mat-radio-group>
     </div>
 
-    <app-date *ngIf="registationDateIsDifferent" view="multi-year" [control]="registrationForm.get('registrationDate')" class="">Date d'inscription</app-date>
+    <app-date *ngIf="registrationDateIsDifferent" view="multi-year" [control]="registrationForm.get('registrationDate')" class="">Date d'inscription</app-date>
 
-    <app-advanced-select class="mb-4" [control]="registrationForm.get('classroom')" [options]="classrooms" displayKey="name" formControlName="classroom">Classe</app-advanced-select>
+    <app-advanced-select class="mb-4" [control]="registrationForm.get('classroom')" [options]="classrooms" displayKey="name">Classe</app-advanced-select>
 
-    <h5 class="">Parcours</h5>
+    <h5>Parcours</h5>
     <div class="row">
       <app-input name="lastSchool" formControlName="lastSchool" class="inputs col-12 col-sm-6">Ancien établissement</app-input>
       <app-input name="lastClass" formControlName="lastClass" class="inputs col-12 col-sm-6">Dernière classe suivie</app-input>
@@ -77,8 +77,7 @@
 
   <div class="actions d-flex justify-content-end align-items-center">
     <app-action-button (appClick)="save()" color="primary"
-                       [isBusy]="isBusy"
-                       [isReady]="isReady">
+                       [isBusy]="isBusy">
       {{'Procéder au payement'}}
     </app-action-button>
   </div>
