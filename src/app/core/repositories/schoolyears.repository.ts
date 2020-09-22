@@ -33,11 +33,5 @@ export class SchoolyearsRepository extends BaseRepository<SchoolYear> {
 
   constructor(private schoolyearsDatasource: SchoolyearsDatasource) {
     super(schoolyearsDatasource);
-    this.getCurrentSchoolYear();
-  }
-
-  private async getCurrentSchoolYear() {
-    this.selectedSchoolYear = await this.schoolyearsDatasource.currentSchoolYear();
-    this.selectedSchoolYearTerm = await this.schoolyearsDatasource.currentSession();
   }
 }

@@ -13,7 +13,6 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export class RegistrationsRepository extends BaseRepository<Registration> {
 
   private lastYearStudents$ = new BehaviorSubject<Registration[]>(null);
-  private currentYearRegistrations$ = new BehaviorSubject<Registration[]>(null);
 
   get lastYearRegisrations(): Observable<Registration[]> {
     if (this.lastYearStudents$.value) {
@@ -25,18 +24,12 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
     }
   }
 
-  get currentYearRegistrations(): Observable<Registration[]> {
-    if (this.lastYearStudents$.value) {
-      return this.lastYearStudents$.pipe(
-        map(registrations => registrations.filter(r => r.student != null))
-      );
-    } else {
-      return this.datasource.api.get('/registrations/lastyear').pipe(map(registrations => registrations.filter(r => r.student != null)));
-    }
-  }
-
   constructor(private registrationsDatasource: RegistrationsDatasource) {
     super(registrationsDatasource);
+  }
+
+  async init(): Promise<void> {
+    super.init();
   }
 
   genders(classroom: Classroom) {

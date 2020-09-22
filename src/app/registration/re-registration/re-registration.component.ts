@@ -40,15 +40,18 @@ export class ReRegistrationComponent implements OnInit {
 
   ngOnInit() {
     this.registrationsRepository.lastYearRegisrations.subscribe(r => this.lastYearRegistrations = r);
-    this.registrationsRepository.currentYearRegistrations
-      .pipe(
-        map(registrations => {
-          registrations.map(r => {
-            return [r.student._id, r.classroom];
-          });
-        }),
-      )
-      .subscribe(r => this.currentYearRegistrations = r);
+    this.registrationsRepository.stream
+      // .pipe(
+      //   map(registrations => {
+      //     console.log(registrations);
+      //     return registrations.map(r => [r.student._id, r]);
+      //   }),
+      //   map((entries: any) => Object.fromEntries(entries))
+      // )
+      .subscribe(r => {
+        console.log(r);
+        this.currentYearRegistrations = r;
+      });
 
     fromEvent(this.registrationSearch.nativeElement, 'keyup')
       .pipe(

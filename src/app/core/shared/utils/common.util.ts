@@ -20,6 +20,7 @@ export class Common {
 
   alert(body: string, title: string = 'Attention') {
     this.matDialog.open(AlertDialogComponent, {
+      maxWidth: '40vw',
       data: {
         title,
         body

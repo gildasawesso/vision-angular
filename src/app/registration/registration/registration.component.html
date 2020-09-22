@@ -1,5 +1,5 @@
 <div class="registration d-flex flex-column col-12 col-md-10" [formGroup]="registrationForm">
-
+<h1 class="h1">Inscription nouvel élève</h1>
   <h4 class="h4 pl-1 pt-3">Informations personnelles</h4>
   <div class="mb-4 app-card bg-white registration-item">
     <label class="genre">Sexe</label>
@@ -28,7 +28,7 @@
       <app-select class="col-6" [control]="siblingClassroom" [options]="classrooms" displayKey="name" [formControl]="siblingClassroom">Veuillez sélectionner la classe du frère/soeur</app-select>
       <app-select class="col-6" [control]="sibling" [options]="siblingClassroomStudents" displayKey="lastname" [formControl]="sibling">Veuilez sélectionner le nom du frère/soeur</app-select>
     </div>
-    <h5>Père</h5>
+    <h5 class="mt-3">Père</h5>
     <div class="row">
       <app-input name="fathersFirstname" formControlName="fathersFirstname" class="inputs col-12 col-sm-6">Nom</app-input>
       <app-input name="fathersLastnme" formControlName="fathersLastname" class="inputs col-12 col-sm-6">Prénom</app-input>
@@ -36,7 +36,7 @@
       <app-input name="fathersPhone" formControlName="fathersPhone" class="inputs col-12 col-sm-6" type="tel">Téléphone</app-input>
     </div>
 
-    <h5 style="margin-top: 20px;">Mère</h5>
+    <h5 class="mt-3">Mère</h5>
     <div class="row">
       <app-input name="mothersFirstname" formControlName="mothersFirstname" class="inputs col-12 col-sm-6">Nom</app-input>
       <app-input name="mothersLastnme" formControlName="mothersLastname" class="inputs col-12 col-sm-6">Prénom</app-input>
@@ -47,106 +47,39 @@
 
   <h4 class="h4 pl-1 pt-3">École</h4>
   <div class="mb-4 app-card bg-white registration-item">
-    <div class="mt-3">
-      <label class="genre">L'élève réalise t'il une réinscription ?</label>
+    <div class="mb-4">
+      <label class="genre d-block">L'élève réalise t'il une réinscription ?</label>
       <mat-radio-group [(ngModel)]="isReregistration" [ngModelOptions]="{ standalone: true }">
         <mat-radio-button style="margin-right:40px;" [value]="true">Oui</mat-radio-button>
         <mat-radio-button [value]="false">Non</mat-radio-button>
       </mat-radio-group>
+      <div class="small text-danger">Si c'est une réinscription et que l'élève existe en base alors veuillez utiliser le module <button class="btn btn-light small">Réinscription</button></div>
     </div>
 
-    <div class="mt-3">
-      <label class="genre">La date d'inscription est il différente ?</label>
+    <div class="mb-4">
+      <label class="genre d-block">La date d'inscription est il différente ?</label>
       <mat-radio-group [(ngModel)]="registationDateIsDifferent" [ngModelOptions]="{ standalone: true }">
         <mat-radio-button style="margin-right:40px;" [value]="true">Oui</mat-radio-button>
         <mat-radio-button [value]="false">Non</mat-radio-button>
       </mat-radio-group>
     </div>
-    <app-date *ngIf="registationDateIsDifferent" view="multi-year" [control]="registrationForm.get('registrationDate')" class="col-12 col-sm-6">Date d'inscription</app-date>
 
-    <app-select *ngIf="isReregistration != null" [control]="registrationForm.get('classroom')" [options]="classrooms" displayKey="name" formControlName="classroom">Classe</app-select>
+    <app-date *ngIf="registationDateIsDifferent" view="multi-year" [control]="registrationForm.get('registrationDate')" class="">Date d'inscription</app-date>
 
+    <app-advanced-select class="mb-4" [control]="registrationForm.get('classroom')" [options]="classrooms" displayKey="name" formControlName="classroom">Classe</app-advanced-select>
 
-    <h5 style="margin-top: 20px;">Parcours</h5>
+    <h5 class="">Parcours</h5>
     <div class="row">
       <app-input name="lastSchool" formControlName="lastSchool" class="inputs col-12 col-sm-6">Ancien établissement</app-input>
       <app-input name="lastClass" formControlName="lastClass" class="inputs col-12 col-sm-6">Dernière classe suivie</app-input>
     </div>
   </div>
 
-  <h4 class="h4 pl-1 pt-3">Contribution</h4>
-  <div class="mb-4 app-card bg-white registration-item d-flex flex-column justify-content-between">
-    <div formGroupName="payment" class="col-12 p-0">
-      <div formArrayName="fees">
-        <div *ngFor="let subPayment of subPayments.controls; let i = index" [formGroup]="subPayment" class="d-flex align-items-center">
-          <button *ngIf="i != 0" (click)="removeSubpayment(i)" mat-icon-button color="warn" style="margin-left: -40px;"><mat-icon>delete</mat-icon></button>
-          <div class="sub-payment d-flex align-items-center flex-grow-1">
-            <div style="flex-basis: 0" class="d-flex flex-column flex-grow-1">
-              <div class="d-flex flex-column">
-                <label>{{ subPayment?.value?.fee.name }}</label>
-                <mat-form-field appearance="outline">
-                  <input type="number" matInput formControlName="amount" />
-                </mat-form-field>
-              </div>
-
-              <div class="mt-3">
-                <label>Réduction sur {{subPayment?.value?.fee.name}}</label>
-                <mat-form-field appearance="outline" style="width: 100%;">
-                  <input matInput placeholder="Input" type="number" formControlName="reduction">
-                  <button mat-icon-button matSuffix (click)="onReductionTypeChanged(subPayment)">
-                    <span *ngIf="subPayment.get('reductionType').value === 'percentage'">%</span>
-                    <span *ngIf="subPayment.get('reductionType').value === 'amount'">FCFA</span>
-                  </button>
-                </mat-form-field>
-              </div>
-
-              <mat-error *ngIf="subPayment?.get('reduction')?.hasError('min')">Minimum 0%</mat-error>
-              <mat-error *ngIf="subPayment?.get('reduction')?.hasError('max')">Minimum 100%</mat-error>
-              <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('invalid')">{{subPayment.get('amount')?.errors?.invalid}}</span>
-              <span style="color: red;" *ngIf="subPayment?.get('amount')?.hasError('min')">La valeur est invalide</span>
-              <span style="color: red;" *ngIf="checkReduction(subPayment)">La payement et la réduction sont supérieurs au montant de la contribution</span>
-            </div>
-
-            <div style="flex-basis: 0" class="stats d-flex flex-grow-1 mx-5">
-              <div class="d-flex align-items-center flex-grow-1">
-                <div class="font-weight-bold">
-                  <div class="title">Montant</div>
-                  <div class="value">{{subPayment?.value?.fee?.amount | spaced: 'FCFA' }}</div>
-                </div>
-              </div>
-
-              <div style="flex-basis: 0" class="balance flex-grow-1">
-                <div class="title">Reste après réduction</div>
-                <div class="value">{{getBalance(subPayment.value)  | spaced: 'FCFA'}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 my-2 mx-0">
-      <span *ngIf="filterFees().length <= 0">Il n'y a plus de contributions à ajouter</span>
-      <app-select *ngIf="filterFees().length > 0" class="inputs"
-                  [options]="filterFees()"
-                  displayKey="name" valueKey="_id"
-                  addEmptyOption="true"
-                  [formControl]="feeTypeToAdd">
-        Ajouter une contribution à payer
-      </app-select>
-    </div>
-
-<!--    <mat-divider class="mt-4"></mat-divider>-->
-<!--    <app-input formControlName="feesReduction" class="inputs col-12" type="number">Réduction sur l'écolage</app-input>-->
-<!--    <app-input formControlName="registrationFeeReduction" class="inputs col-12" type="number">Réduction sur l'inscription ou réinscription</app-input>-->
-  </div>
-
   <div class="actions d-flex justify-content-end align-items-center">
-    <button (click)="back()" *ngIf="currentPage != 0" mat-flat-button>Précédent</button>
     <app-action-button (appClick)="save()" color="primary"
                        [isBusy]="isBusy"
                        [isReady]="isReady">
-      {{'Finaliser l\'inscription'}}
+      {{'Procéder au payement'}}
     </app-action-button>
   </div>
 </div>

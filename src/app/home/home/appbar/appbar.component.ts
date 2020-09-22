@@ -5,8 +5,8 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {AuthService} from '../../../core/services/auth.service';
 import {SchoolyearsRepository} from '../../../core/repositories/schoolyears.repository';
 import {SchoolYear} from '../../../core/models/school-year';
-import {Utils} from '../../../core/shared/utils';
 import {SchoolSession} from '../../../core/models/school-session';
+import {SchoolYearService} from '../../../core/services/school-year.service';
 
 @Component({
   selector: 'app-appbar',
@@ -21,7 +21,6 @@ export class AppbarComponent implements OnInit {
 
   schoolYears: SchoolYear[];
   currentSchoolYear: SchoolYear;
-  currentTerm: SchoolSession;
 
   usingPhone: boolean;
   usingTablet: boolean;
@@ -41,6 +40,7 @@ export class AppbarComponent implements OnInit {
 
   constructor(private appbarService: AppbarService,
               private breakpointObserver: BreakpointObserver,
+              private schoolYearService: SchoolYearService,
               private schoolyearsRepository: SchoolyearsRepository,
               public auth: AuthService) { }
 
@@ -49,11 +49,7 @@ export class AppbarComponent implements OnInit {
   }
 
   onSchoolYearChange(schoolyear) {
-    this.schoolyearsRepository.selectedSchoolYear = schoolyear;
-  }
-
-  onTermChanged(session) {
-    this.schoolyearsRepository.selectedSchoolYearTerm = session;
+    this.schoolYearService.schoolYearSelected$.next(schoolyear);
   }
 
   compareFn(c1, c2): boolean {
@@ -78,8 +74,7 @@ export class AppbarComponent implements OnInit {
       });
 
     this.schoolyearsRepository.stream.subscribe(schoolYears => this.schoolYears = schoolYears);
-    this.schoolyearsRepository.selectedSchoolYear.subscribe(s => this.currentSchoolYear = s);
-    this.schoolyearsRepository.selectedSchoolYearTerm.subscribe(t => this.currentTerm = t);
+    this.schoolYearService.schoolYearSelected.subscribe(s => this.currentSchoolYear = s);
 
     this.phone.subscribe(result => {
       if (this.routes == null) { return; }

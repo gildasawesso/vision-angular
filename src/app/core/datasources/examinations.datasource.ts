@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
 import {BaseDatasource} from './base.datasource';
 import {Examination} from '../models/examination';
+import {SchoolYearService} from '../services/school-year.service';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExaminationsDatasource extends BaseDatasource<Examination> {
 
-  constructor() {
+  constructor(private schoolYearService: SchoolYearService) {
     super('/examinations');
   }
 
   async list(): Promise<Examination[]> {
-    return super.list();
+    return this.schoolYearService.schoolYearSelected.pipe(
+      map(schoolYear => super.list(schoolYear._id))
+    ).toPromise();
   }
 
   updateStudents(examination: Examination) {

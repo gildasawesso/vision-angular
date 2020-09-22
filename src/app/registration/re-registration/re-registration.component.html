@@ -13,7 +13,8 @@
           <div class="text-black-50 py-2 text-capitalize">{{registration.classroom.name}}</div>
           <div class="text-black-50 py-2">{{registration.student.birthday | date: 'dd MMMM yyyy'}}</div>
         </div>
-        <button mat-raised-button color="primary" class="px-4 py-2 rounded" (click)="register(registration)">Inscrire</button>
+        <button *ngIf="currentYearRegistrations[registration.student._id] === undefined"  mat-raised-button color="primary" class="px-4 py-2 rounded" (click)="register(registration)">Inscrire</button>
+        <div *ngIf="currentYearRegistrations[registration.student._id] !== undefined" class="px-4 py-2 rounded">Élève déjà inscrit</div>
       </div>
     </ng-container>
   </div>

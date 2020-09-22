@@ -2,6 +2,7 @@ import {Student} from './student';
 import {Classroom} from './classroom';
 import {SchoolYear} from './school-year';
 import {Reduction} from './reduction';
+import {School} from './school';
 
 export class Registration {
   '_id'?: string;
@@ -11,7 +12,7 @@ export class Registration {
   registrationDate: Date;
   isReregistration: boolean;
   isNewStudent?: boolean;
-  feesReduction: number;
   registrationFeeReduction: number;
   reductions: Array<Reduction>;
+  school: School;
 }

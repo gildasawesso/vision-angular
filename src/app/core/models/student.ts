@@ -1,7 +1,7 @@
 import {Classroom} from './classroom';
 
 export class Student {
-  '_id': string;
+  '_id'?: string;
   firstname: string;
   lastname: string;
   birthday: string;
@@ -20,5 +20,5 @@ export class Student {
   address: string;
   lastClass: string;
   lastSchool: string;
-  classroom: Classroom;
+  createdAt?: Date;
 }

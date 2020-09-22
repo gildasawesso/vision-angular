@@ -9,26 +9,33 @@ import {BaseDatasource} from '../datasources/base.datasource';
 import {Common} from '../shared/utils/common.util';
 import { MatDialog } from '@angular/material/dialog';
 import {CustomizableAlertDialogComponent} from '../shared/components/customizable-alert-dialog/customizable-alert-dialog.component';
+import {filter} from 'rxjs/operators';
+import {SchoolyearsRepository} from './schoolyears.repository';
+import {SchoolYearService} from '../services/school-year.service';
 
 export abstract class BaseRepository<T> {
 
-  protected genericBehavioSubject: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
+  protected genericBehavioSubject: BehaviorSubject<T[]> = new BehaviorSubject<T[]>(null);
   private objects: Observable<T[]> = this.genericBehavioSubject.asObservable();
 
   private api: ApiService;
   private dialog: MatDialog;
   protected datasource: BaseDatasource<T>;
+  protected schoolYearService: SchoolYearService;
 
   protected constructor(datasource: BaseDatasource<T>) {
     this.api = inject(ApiService);
     this.dialog = inject(MatDialog);
     this.datasource = datasource;
+    this.schoolYearService = inject(SchoolYearService);
     this.init();
   }
 
   protected async init() {
-    const data = await this.datasource.list();
-    this.genericBehavioSubject.next(data);
+    this.schoolYearService.schoolYearSelected.subscribe(async schoolYear => {
+      const data = await this.datasource.list(schoolYear._id);
+      this.genericBehavioSubject.next(data);
+    });
   }
 
   get list() {
@@ -36,7 +43,9 @@ export abstract class BaseRepository<T> {
   }
 
   get stream(): Observable<T[]> {
-    return this.objects;
+    return this.objects.pipe(
+      filter(objects => objects != null)
+    );
   }
 
   remoteRefresh() {

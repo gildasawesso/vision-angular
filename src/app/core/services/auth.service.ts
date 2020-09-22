@@ -16,7 +16,8 @@ export class AuthService {
   private userBehaviorSubject = new BehaviorSubject<User>(null);
   private user$ = this.userBehaviorSubject.asObservable();
 
-  constructor(private api: ApiService, private router: Router) {
+  constructor(private api: ApiService,
+              private router: Router) {
   }
 
   get user() {

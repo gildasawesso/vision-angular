@@ -9,6 +9,8 @@ import {ApiService} from '../services/api.service';
 import {apiConstants} from '../constants/api.constants';
 import {AuthService} from '../services/auth.service';
 import {ConfigurationService} from '../services/configuration.service';
+import {SchoolYearService} from '../services/school-year.service';
+import {first} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,8 @@ export class IsConfiguredGuard implements CanActivate, CanActivateChild {
               private auth: AuthService,
               private api: ApiService,
               private router: Router,
-              private configuration: ConfigurationService) {
+              private configuration: ConfigurationService,
+              private schoolYearService: SchoolYearService) {
 
   }
   canActivate(
@@ -57,7 +60,8 @@ export class IsConfiguredGuard implements CanActivate, CanActivateChild {
     this.configuration.isSchoolConfigured = true;
 
     if (!this.configuration.isSchoolSessionsConfigured) {
-      const schoolYears: SchoolYear[] = await this.schoolyearsDatasource.list();
+      const schoolYear = await this.schoolYearService.schoolYearSelected.pipe(first()).toPromise();
+      const schoolYears: SchoolYear[] = await this.schoolyearsDatasource.list(schoolYear._id);
       if (schoolYears.length <= 0) {
         await this.router.navigateByUrl('/setup/schoolyears');
         return false;
