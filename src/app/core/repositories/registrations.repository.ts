@@ -22,10 +22,16 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
     super(registrationsDatasource);
   }
 
+  studentReductions(student: string) {
+    console.log(student);
+    return this.datasource.query.get(`/student/${student}/reductions`);
+  }
+
   async init(): Promise<void> {
     await super.init();
-    this.schoolYearService.schoolYearSelected.subscribe(async schoolYear => {
-      const registrations: Registration[] = await this.datasource.api.get(`/registrations/lastyear?schoolyear=${schoolYear._id}`).pipe(
+    this.schoolYearService.schoolYear.subscribe(async schoolYear => {
+      if (schoolYear == null) { return; }
+      const registrations: Registration[] = await this.datasource.api.get(`/registrations/lastyear?schoolyear=${schoolYear?._id}`).pipe(
         map(rs => rs.filter(r => r.student != null))
       ).toPromise();
       this.lastYearStudents$.next(registrations);

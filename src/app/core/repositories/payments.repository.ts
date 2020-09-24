@@ -15,10 +15,15 @@ export class PaymentsRepository extends BaseRepository<Payment> {
     super(contributionDatasource);
   }
 
+  async studentPayments(studentId: string) {
+    return this.datasource.query.get(`/student/${studentId}`);
+  }
+
   async init() {
     await super.init();
-    this.schoolYearService.schoolYearSelected.subscribe(async schoolYear => {
-      const payments = await this.datasource.api.get(`/payments/classrooms?schoolyear=${schoolYear._id}`).toPromise();
+    this.schoolYearService.schoolYear.subscribe(async schoolYear => {
+      if (schoolYear == null) { return; }
+      const payments = await this.datasource.api.get(`/payments/classrooms?schoolyear=${schoolYear?._id}`).toPromise();
       this.classroomsPayments.next(payments);
     });
   }

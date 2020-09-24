@@ -12,6 +12,7 @@ import {CustomizableAlertDialogComponent} from '../shared/components/customizabl
 import {filter} from 'rxjs/operators';
 import {SchoolyearsRepository} from './schoolyears.repository';
 import {SchoolYearService} from '../services/school-year.service';
+import {AuthService} from '../services/auth.service';
 
 export abstract class BaseRepository<T> {
 
@@ -22,19 +23,24 @@ export abstract class BaseRepository<T> {
   private dialog: MatDialog;
   protected datasource: BaseDatasource<T>;
   protected schoolYearService: SchoolYearService;
+  protected auth: AuthService;
 
   protected constructor(datasource: BaseDatasource<T>) {
     this.api = inject(ApiService);
     this.dialog = inject(MatDialog);
+    this.auth = inject(AuthService);
     this.datasource = datasource;
     this.schoolYearService = inject(SchoolYearService);
     this.init();
   }
 
   protected async init() {
-    this.schoolYearService.schoolYearSelected.subscribe(async schoolYear => {
-      const data = await this.datasource.list(schoolYear._id);
-      this.genericBehavioSubject.next(data);
+    this.schoolYearService.schoolYear.subscribe(async schoolYear => {
+      if (schoolYear == null) {
+        this.genericBehavioSubject.next(null);
+        return;
+      }
+      this.next = await this.datasource.list(schoolYear);
     });
   }
 
@@ -58,6 +64,10 @@ export abstract class BaseRepository<T> {
 
   set next(object: T[]) {
     this.genericBehavioSubject.next(object);
+  }
+
+  async one(id: string): Promise<T> {
+    return this.datasource.one(id);
   }
 
   async add(object: T) {
