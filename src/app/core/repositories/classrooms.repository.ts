@@ -10,5 +10,6 @@ export class ClassroomsRepository extends BaseRepository<Classroom> {
 
   constructor(private classroomsDatasource: ClassroomsDatasource) {
     super(classroomsDatasource);
+    console.log(ClassroomsRepository.name);
   }
 }

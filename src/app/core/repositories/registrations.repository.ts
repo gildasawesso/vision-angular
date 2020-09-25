@@ -6,6 +6,7 @@ import {Classroom} from '../models/classroom';
 import {filter, first, map} from 'rxjs/operators';
 import {Student} from '../models/student';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {SchoolYear} from '../models/school-year';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,16 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export class RegistrationsRepository extends BaseRepository<Registration> {
 
   private lastYearStudents$ = new BehaviorSubject<Registration[]>(null);
+  private genders$ = new BehaviorSubject<[number, number]>([null, null]);
+  private effectif$ = new BehaviorSubject<number[]>([]);
+
+  get effectif() {
+    return this.effectif$.asObservable();
+  }
+
+  get genders() {
+    return this.genders$.asObservable();
+  }
 
   get lastYearRegisrations(): Observable<Registration[]> {
     return this.lastYearStudents$;
@@ -23,11 +34,10 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
   }
 
   studentReductions(student: string) {
-    console.log(student);
     return this.datasource.query.get(`/student/${student}/reductions`);
   }
 
-  async init(): Promise<void> {
+  protected async init(): Promise<void> {
     await super.init();
     this.schoolYearService.schoolYear.subscribe(async schoolYear => {
       if (schoolYear == null) { return; }
@@ -35,11 +45,19 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
         map(rs => rs.filter(r => r.student != null))
       ).toPromise();
       this.lastYearStudents$.next(registrations);
+      await this.getGenders(schoolYear);
+      await this.getEffectif(schoolYear);
     });
   }
 
-  genders(classroom: Classroom) {
-    return [];
+  private async getGenders(schoolYear: SchoolYear) {
+    const genderStats = await this.datasource.api.get(`/stats/genders?schoolyear=${schoolYear._id}`).toPromise();
+    this.genders$.next([genderStats.boys, genderStats.girls]);
+  }
+
+  private async getEffectif(schoolYear: SchoolYear) {
+    const effectifs = await this.datasource.api.get(`/stats/classrooms/effectif?schoolyear=${schoolYear._id}`).toPromise();
+    this.effectif$.next(effectifs);
   }
 
   studentsForClassroom(registrations: Registration[], classroom: Classroom) {

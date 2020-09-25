@@ -32,6 +32,7 @@ export abstract class BaseRepository<T> {
     this.datasource = datasource;
     this.schoolYearService = inject(SchoolYearService);
     this.init();
+    console.log(this.constructor.name);
   }
 
   protected async init() {
