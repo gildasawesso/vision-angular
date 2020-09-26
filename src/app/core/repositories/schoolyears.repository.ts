@@ -1,14 +1,17 @@
 import {Injectable} from '@angular/core';
 import {BaseRepository} from './base.repository';
 import {SchoolYear} from '../models/school-year';
-import {SchoolyearsDatasource} from '../datasources/schoolyears.datasource';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SchoolyearsRepository extends BaseRepository<SchoolYear> {
 
-  constructor(private schoolyearsDatasource: SchoolyearsDatasource) {
-    super(schoolyearsDatasource);
+  constructor() {
+    super('/schoolyears');
+  }
+
+  currentSchoolYear() {
+    return this.api.get(`${this.url}/current`).toPromise<SchoolYear>();
   }
 }

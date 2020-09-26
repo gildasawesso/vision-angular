@@ -1,10 +1,8 @@
 import {Injectable} from '@angular/core';
 import {BaseRepository} from './base.repository';
 import {Registration} from '../models/registration';
-import {RegistrationsDatasource} from '../datasources/registrations.datasource';
 import {Classroom} from '../models/classroom';
-import {filter, first, map} from 'rxjs/operators';
-import {Student} from '../models/student';
+import {map} from 'rxjs/operators';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {SchoolYear} from '../models/school-year';
 
@@ -29,8 +27,8 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
     return this.lastYearStudents$;
   }
 
-  constructor(private registrationsDatasource: RegistrationsDatasource) {
-    super(registrationsDatasource);
+  constructor() {
+    super('/registrations');
   }
 
   studentReductions(student: string) {

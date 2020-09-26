@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BaseRepository} from './base.repository';
-import {StudentsDatasource} from '../datasources/students.datasource';
 import {Student} from '../models/student';
-import {map} from 'rxjs/operators';
 import {Classroom} from '../models/classroom';
 
 @Injectable({
@@ -12,8 +10,8 @@ export class StudentsRepository extends BaseRepository<Student> {
 
 
 
-  constructor(private studentsDatasource: StudentsDatasource) {
-    super(studentsDatasource);
+  constructor() {
+    super('/students');
   }
 
   effectifOf(gender: string, classroom: Classroom) {

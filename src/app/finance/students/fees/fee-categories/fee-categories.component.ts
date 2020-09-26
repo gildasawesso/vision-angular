@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {FeeCategoriesRepository} from '../../../../core/repositories/fee-categories.repository';
 import {FeeCategory} from '../../../../core/models/fee-category';
 import {Utils} from '../../../../core/shared/utils';
 

@@ -3,34 +3,25 @@
  */
 
 import {BehaviorSubject, Observable} from 'rxjs';
-import {ApiService} from '../services/api.service';
-import {inject, Injectable} from '@angular/core';
+import {inject} from '@angular/core';
 import {BaseDatasource} from '../datasources/base.datasource';
-import {Common} from '../shared/utils/common.util';
 import { MatDialog } from '@angular/material/dialog';
 import {CustomizableAlertDialogComponent} from '../shared/components/customizable-alert-dialog/customizable-alert-dialog.component';
 import {filter} from 'rxjs/operators';
-import {SchoolyearsRepository} from './schoolyears.repository';
-import {SchoolYearService} from '../services/school-year.service';
 import {AuthService} from '../services/auth.service';
 
-export abstract class BaseRepository<T> {
+export abstract class BaseRepository<T> extends BaseDatasource<T>{
 
   protected genericBehavioSubject: BehaviorSubject<T[]> = new BehaviorSubject<T[]>(null);
   private objects: Observable<T[]> = this.genericBehavioSubject.asObservable();
 
-  private api: ApiService;
   private dialog: MatDialog;
-  protected datasource: BaseDatasource<T>;
-  protected schoolYearService: SchoolYearService;
   protected auth: AuthService;
 
-  protected constructor(datasource: BaseDatasource<T>) {
-    this.api = inject(ApiService);
+  protected constructor(protected basePath: string) {
+    super(basePath);
     this.dialog = inject(MatDialog);
     this.auth = inject(AuthService);
-    this.datasource = datasource;
-    this.schoolYearService = inject(SchoolYearService);
     this.init();
     console.log(this.constructor.name);
   }
@@ -41,11 +32,11 @@ export abstract class BaseRepository<T> {
         this.genericBehavioSubject.next(null);
         return;
       }
-      this.next = await this.datasource.list(schoolYear);
+      this.next = await this.list(schoolYear);
     });
   }
 
-  get list() {
+  get snapshot() {
     return this.genericBehavioSubject.value;
   }
 
@@ -60,7 +51,7 @@ export abstract class BaseRepository<T> {
   }
 
   localRefresh() {
-    this.genericBehavioSubject.next(this.list);
+    this.genericBehavioSubject.next(this.snapshot);
   }
 
   set next(object: T[]) {
@@ -68,17 +59,17 @@ export abstract class BaseRepository<T> {
   }
 
   async one(id: string): Promise<T> {
-    return this.datasource.one(id);
+    return this.getOne(id);
   }
 
   async add(object: T) {
-    const newObject = await this.datasource.create(object);
+    const newObject = await this.post(object);
     this.genericBehavioSubject.next([newObject, ...this.genericBehavioSubject.value]);
     return newObject;
   }
 
   async update(object: T, id: any, idKey: any = '_id') {
-    const updatedObject = await this.datasource.update(object, id);
+    const updatedObject = await this.patch(object, id);
     const objects = this.genericBehavioSubject.value;
     const index = objects.findIndex(o => o[idKey] === updatedObject[idKey]);
     objects[index] = updatedObject;
@@ -97,7 +88,7 @@ export abstract class BaseRepository<T> {
     const res = await dialog.afterClosed().toPromise();
 
     if (res === 1) {
-      await this.datasource.remove(id);
+      await this.delete(id);
       const objects = this.genericBehavioSubject.value;
       const index = objects.findIndex(o => o[key] === id);
       objects.splice(index, 1);
