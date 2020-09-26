@@ -12,6 +12,6 @@ export class SchoolyearsRepository extends BaseRepository<SchoolYear> {
   }
 
   currentSchoolYear() {
-    return this.api.get(`${this.url}/current`).toPromise<SchoolYear>();
+    return this.query.get(`/current`);
   }
 }

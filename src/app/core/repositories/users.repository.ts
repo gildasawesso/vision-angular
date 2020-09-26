@@ -10,8 +10,4 @@ export class UsersRepository extends BaseRepository<User> {
   constructor() {
     super('/users');
   }
-
-  async post(object: any) {
-    return this.api.post(`/users/?${this.toPopulate}`, object).toPromise();
-  }
 }

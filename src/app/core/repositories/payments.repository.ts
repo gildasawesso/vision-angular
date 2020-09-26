@@ -20,10 +20,13 @@ export class PaymentsRepository extends BaseRepository<Payment> {
 
   async init() {
     await super.init();
-    this.schoolYearService.schoolYear.subscribe(async schoolYear => {
-      if (schoolYear == null) { return; }
-      const payments = await this.api.get(`/payments/classrooms?schoolyear=${schoolYear?._id}`).toPromise();
-      this.classroomsPayments.next(payments);
+    this.stream.subscribe(async _ => {
+      await this.getClassroomPayments();
     });
+  }
+
+  private async getClassroomPayments() {
+    const payments = await this.query.get(`/classrooms`);
+    this.classroomsPayments.next(payments);
   }
 }
