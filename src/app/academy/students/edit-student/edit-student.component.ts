@@ -7,6 +7,8 @@ import {StudentsRepository} from '../../../core/repositories/students.repository
 import {Utils} from '../../../core/shared/utils';
 import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
 import {Classroom} from '../../../core/models/classroom';
+import {Repositories} from '../../../core/repositories/repositories';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-edit-student',
@@ -16,13 +18,12 @@ import {Classroom} from '../../../core/models/classroom';
 export class EditStudentComponent implements OnInit {
 
   studentsClassroom: Classroom;
+  students: Observable<Student[]>;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<EditStudentComponent>,
               private formBuilder: FormBuilder,
-              public classroomsRepository: ClassroomsRepository,
-              private studentsRepository: StudentsRepository,
-              private registrationsRepository: RegistrationsRepository,
+              private repo: Repositories,
               public utils: Utils) {
     this.student = this.data.student;
     this.studentForm.patchValue(this.student);
@@ -62,12 +63,11 @@ export class EditStudentComponent implements OnInit {
 
     const student: Student = this.studentForm.value;
     try {
-      const studentUpdated = await this.studentsRepository.update(student, this.student._id);
+      const studentUpdated = await this.repo.students.update(student, this.student._id);
       const studentRegistration = this.utils.student.studentRegistration(studentUpdated);
-      studentRegistration.classroom = student.classroom;
-      await this.registrationsRepository.update(studentRegistration, studentRegistration._id);
+      await this.repo.registrations.update(studentRegistration, studentRegistration._id);
       this.utils.common.toast(`L'élève ${student.lastname} a bien été modifié`);
-      this.registrationsRepository.remoteRefresh();
+      this.repo.registrations.remoteRefresh();
       this.isBusy = false;
       this.dialogRef.close();
     } catch (e) {
@@ -79,6 +79,7 @@ export class EditStudentComponent implements OnInit {
 
   ngOnInit() {
     this.studentsClassroom = this.utils.student.studentRegistration(this.student).classroom;
+    this.students = this.repo.students.stream;
   }
 
 }

@@ -1,8 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
 import {flatMap, map, mergeMap} from 'rxjs/operators';
 import {ChartDataSets, ChartOptions} from 'chart.js';
+import {Repositories} from '../../../core/repositories/repositories';
+import {combineLatest} from 'rxjs';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {Services} from '../../../core/services/services';
 
 
 @Component({
@@ -10,58 +14,62 @@ import {ChartDataSets, ChartOptions} from 'chart.js';
   templateUrl: './effectif-per-classroom.component.html',
   styleUrls: ['./effectif-per-classroom.component.scss']
 })
-export class EffectifPerClassroomComponent implements OnInit {
+export class EffectifPerClassroomComponent implements OnInit, AfterViewInit {
 
   labels;
-  data = [];
+  chartDataLabels = ChartDataLabels;
+
   public barChartOptions: ChartOptions = {
     responsive: true,
-    scales: {
-      xAxes: [{}], yAxes: [{
-        ticks: {
-          beginAtZero: true
-        }
-      }]
-    },
+    aspectRatio: 3.2,
     plugins: {
       datalabels: {
-        anchor: 'end',
-        align: 'end',
+        color: '#ffffff',
+        padding: 2
       }
+    },
+    scales: {
+      xAxes: [
+        {
+          gridLines: { display: false },
+        }
+      ],
+      yAxes: [
+        {
+          gridLines: { drawOnChartArea: false }
+        }
+      ]
     }
   };
-  public barChartData: ChartDataSets[] = [
-    {data: [], label: 'Effectif par classe'},
+
+  barChartData: ChartDataSets[] = [
+    {
+      data: [],
+      label: 'Effectif par classe',
+      backgroundColor: 'rgb(54,181,183)',
+      barPercentage: 1,
+      borderCapStyle: 'round',
+      hoverBackgroundColor: '#90e3e5'
+    },
   ];
 
   constructor(private classroomsRepository: ClassroomsRepository,
-              private registrationsRepository: RegistrationsRepository) {
+              private registrationsRepository: RegistrationsRepository,
+              private repo: Repositories,
+              private change: ChangeDetectorRef,
+              private services: Services) {
   }
 
   ngOnInit() {
     this.labels = this.classroomsRepository.stream.pipe(
       map(classrooms => classrooms.map(c => c.name))
     );
+  }
 
-    this.registrationsRepository.stream
-      .pipe(
-        mergeMap(registrations => {
-          return this.classroomsRepository.stream
-            .pipe(
-              map(v => {
-                this.data = [];
-                return v;
-              }),
-              flatMap(c => c),
-              map(classroom => {
-                return this.registrationsRepository.studentsForClassroom(registrations, classroom).length;
-              }),
-            );
-        }),
-      )
-      .subscribe(value => {
-        this.data.push(value);
-        this.barChartData[0].data = this.data;
-      });
+  ngAfterViewInit() {
+    this.services.statsStudent.effectifByClassroom.subscribe(data => {
+      this.barChartData[0].data = data;
+      this.change.detectChanges();
+    });
   }
 }

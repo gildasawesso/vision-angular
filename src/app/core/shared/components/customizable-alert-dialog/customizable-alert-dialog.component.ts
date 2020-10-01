@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-customizable-alert-dialog',
@@ -13,7 +13,8 @@ export class CustomizableAlertDialogComponent implements OnInit {
   actions: any[];
   buttonsNumber: number;
 
-  constructor(@Inject(MAT_DIALOG_DATA)public data: any) {
+  constructor(@Inject(MAT_DIALOG_DATA)public data: any,
+              public dialogRef: MatDialogRef<CustomizableAlertDialogComponent>) {
     this.title = this.data.title;
     this.body = this.data.body;
     this.actions = this.data.actions || ['OK'];

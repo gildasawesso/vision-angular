@@ -10,7 +10,7 @@ export class ReductionLabelPipe implements PipeTransform {
 
   transform(feeType: FeeType, ...args: unknown[]): unknown {
     const registration = args[0] as Registration;
-    const reduction = registration.reductions.find(r => r.fee._id === feeType._id);
+    const reduction = registration.reductions.find(r => r.fee === feeType._id);
     if (reduction) {
       if (reduction.reductionType === 'percentage') {
         return `${reduction.reduction}%`;

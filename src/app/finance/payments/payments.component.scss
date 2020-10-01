@@ -1,0 +1,37 @@
+@import "../../../theme/app.colors";
+$max-data-height: 60vh;
+
+:host {
+  .payments {
+    background-color: white;
+    padding: 0.6em 2em;
+
+    .filter {
+      flex: 0 1 200px;
+      margin-right: 1em;
+    }
+
+    .picker {
+      flex: 0 1 250px;
+      margin-right: 1em;
+    }
+  }
+
+  .ngx-datatable {
+    height: 65vh;
+
+    @media  screen and (max-width: 1366px) {
+      height: 50vh;
+    }
+  }
+
+  .total-payment {
+    background-color: var(--background-color);
+    color: var(--primary);
+    border-radius: 7px;
+    padding: 10px 0;
+    margin: 12px 0;
+    font-size: 2em;
+    font-weight: bold;
+  }
+}

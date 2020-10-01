@@ -1,54 +1,46 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
-import { Observable } from 'rxjs';
-import {SchoolsDatasource} from '../datasources/schools.datasource';
-import {School} from '../models/school';
-import {SchoolYear} from '../models/school-year';
-import {SchoolyearsDatasource} from '../datasources/schoolyears.datasource';
+import {Observable} from 'rxjs';
 import {ApiService} from '../services/api.service';
-import {apiConstants} from '../constants/api.constants';
 import {AuthService} from '../services/auth.service';
 import {ConfigurationService} from '../services/configuration.service';
-import {SchoolYearService} from '../services/school-year.service';
-import {first} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IsConfiguredGuard implements CanActivate, CanActivateChild {
-  constructor(private schoolsDatasource: SchoolsDatasource,
-              private schoolyearsDatasource: SchoolyearsDatasource,
-              private auth: AuthService,
+  constructor(private auth: AuthService,
               private api: ApiService,
               private router: Router,
-              private configuration: ConfigurationService,
-              private schoolYearService: SchoolYearService) {
+              private configuration: ConfigurationService) {
 
   }
+
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.isConfigured();
   }
+
   canActivateChild(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.isConfigured();
   }
 
-  // todo make api to check everything in the server side
   async isConfigured() {
-
     if (!this.configuration.isAdminConfigured) {
-      const usersAvailable = await this.api.get('/r/users/count').toPromise();
-      if (Number(usersAvailable.count) < 1) {
+      const isAdminAvailable = await this.api.get('/config/admin/exist').toPromise();
+      if (!isAdminAvailable) {
         await this.router.navigateByUrl('/setup/admin');
         return false;
       }
     }
     this.configuration.isAdminConfigured = true;
 
-    if (!this.auth.isUserAuthenticated) { return true; }
+    if (!this.auth.isUserAuthenticated) {
+      return Promise.resolve(true);
+    }
 
     if (!this.configuration.isSchoolConfigured) {
       const user = await this.auth.userRemote;
@@ -60,9 +52,8 @@ export class IsConfiguredGuard implements CanActivate, CanActivateChild {
     this.configuration.isSchoolConfigured = true;
 
     if (!this.configuration.isSchoolSessionsConfigured) {
-      const schoolYear = await this.schoolYearService.schoolYearSelected.pipe(first()).toPromise();
-      const schoolYears: SchoolYear[] = await this.schoolyearsDatasource.list(schoolYear._id);
-      if (schoolYears.length <= 0) {
+      const isSchoolYearAvailable = await this.api.get(`/config/schoolyear/exist`).toPromise();
+      if (isSchoolYearAvailable.length <= 0) {
         await this.router.navigateByUrl('/setup/schoolyears');
         return false;
       }

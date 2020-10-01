@@ -48,8 +48,8 @@ export class AppbarComponent implements OnInit {
     await this.auth.signout();
   }
 
-  onSchoolYearChange(schoolyear) {
-    this.schoolYearService.schoolYearSelected$.next(schoolyear);
+  onSchoolYearChange(schoolYear: SchoolYear) {
+    this.schoolYearService.schoolYear = schoolYear;
   }
 
   compareFn(c1, c2): boolean {
@@ -74,7 +74,7 @@ export class AppbarComponent implements OnInit {
       });
 
     this.schoolyearsRepository.stream.subscribe(schoolYears => this.schoolYears = schoolYears);
-    this.schoolYearService.schoolYearSelected.subscribe(s => this.currentSchoolYear = s);
+    this.schoolYearService.schoolYear.subscribe(s => this.currentSchoolYear = s);
 
     this.phone.subscribe(result => {
       if (this.routes == null) { return; }

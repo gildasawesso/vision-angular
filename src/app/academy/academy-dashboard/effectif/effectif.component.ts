@@ -1,7 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {StudentsRepository} from '../../../core/repositories/students.repository';
-import {map} from 'rxjs/operators';
-import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
+import {Component, OnInit} from '@angular/core';
+import {Color, SingleDataSet} from 'ng2-charts';
+import {Observable} from 'rxjs';
+import {Services} from '../../../core/services/services';
+import {ChartOptions} from 'chart.js';
 
 @Component({
   selector: 'app-effectif',
@@ -10,18 +11,23 @@ import {RegistrationsRepository} from '../../../core/repositories/registrations.
 })
 export class EffectifComponent implements OnInit {
 
-  data;
+  options: ChartOptions = {
+    plugins: {
+      datalabels: {
+        color: '#ffffff'
+      }
+    },
+  };
+  data: Observable<SingleDataSet>;
   labels = ['Garçon', 'Fille'];
+  colors: Color[] = [
+    { backgroundColor: ['#396afc', '#f953c6'] }
+  ];
 
-  constructor(private studentsRepository: StudentsRepository,
-              private registrationsRepository: RegistrationsRepository) { }
+  constructor(private services: Services) {
+  }
 
   ngOnInit() {
-    this.data = this.registrationsRepository.genders(null)
-      .pipe(
-        map(genders => {
-          return [genders.male, genders.female];
-        })
-      );
+    this.data = this.services.statsStudent.schoolGenders;
   }
 }

@@ -1,0 +1,19 @@
+<div class="d-flex flex-column">
+  <h3 class="h3">Sélection de l'élève</h3>
+  <mat-divider class="mb-4"></mat-divider>
+
+  <label>Classe</label>
+  <select class="form-control-lg filter mb-3" [formControl]="classroomSelected" [compareWith]="utils.common.compareFn">
+    <option *ngFor="let classroom of classrooms" [ngValue]="classroom">{{classroom.name}}</option>
+  </select>
+
+
+  <div *ngIf="classroomSelected.valid" class="d-flex flex-column my-3">
+    <label>Elève</label>
+    <select class="form-control-lg filter" [formControl]="studentSelected" [compareWith]="utils.common.compareFn">
+      <option *ngFor="let registration of registrationsFiltered" [ngValue]="registration">{{registration.student.lastname | uppercase}} {{registration.student.firstname | titlecase}}</option>
+    </select>
+  </div>
+
+  <button class="btn btn-primary ml-auto" (click)="choose()">Valider</button>
+</div>

@@ -1,0 +1,137 @@
+@import 'src/theme/app.colors';
+
+:host {
+  .check-icon {
+    img {
+      height: 20px;
+    }
+  }
+
+  .classrooms {
+    height: 70vh;
+    overflow: auto;
+    background-color: white;
+    border-radius: 7px;
+    box-shadow: $shadow;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+
+    .classroom {
+      font-size: 1.3em;
+      margin: 10px 0;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 7px;
+
+      &.selected {
+        background-color: $accent;
+        color: white;
+      }
+    }
+  }
+
+  .buttons {
+    button {
+      margin: 5px 10px;
+    }
+  }
+
+  .payments-state-header {
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    box-shadow: $shadow;
+    border-radius: 2px;
+    font-size: 1.3em;
+    padding: 0 24px;
+
+    div {
+      flex-basis: 0;
+      flex-grow: 1;
+      padding: 10px 0;
+      display: flex;
+      flex-direction: column;
+
+      span.amount {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .payments-state-body {
+    overflow: auto;
+    font-size: 1.2em;
+
+    mat-expansion-panel {
+      box-shadow: none;
+      border-radius: 7px;
+    }
+
+    .expansion-panel {
+      margin: 10px 0;
+    }
+
+    .panel-body {
+      width: auto;
+
+      .payment {
+        border: 1px solid rgba(0,0,0,.16);
+        border-radius: 7px;
+        margin-right: 20px;
+        padding: 10px 20px;
+      }
+    }
+
+    .student {
+      width: 100%;
+
+      .check-icon {
+        img {
+          height: 20px;
+        }
+      }
+
+      div {
+        flex-basis: 0;
+        flex-grow: 1;
+        //padding: 5px 5px;
+      }
+    }
+
+    .classroom {
+      width: 100%;
+      padding: 24px 24px;
+      background-color: white;
+      margin: 5px 0;
+
+      .check-icon {
+        img {
+          height: 20px;
+        }
+      }
+
+      div {
+        flex-basis: 0;
+        flex-grow: 1;
+        //padding: 5px 5px;
+      }
+    }
+  }
+
+  .payments-state-total {
+    background-color: #2196F3;
+    padding: 0 24px;
+    color: white;
+    position: sticky;
+    top: 58px;
+
+    div {
+      flex-basis: 0;
+      flex-grow: 1;
+      padding: 10px 0;
+    }
+  }
+
+}

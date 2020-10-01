@@ -4,10 +4,10 @@
     <mat-grid-tile *ngFor="let card of pkiCards" [colspan]="card.cols" [rowspan]="card.rows">
       <mat-card class="dashboard-card" [ngStyle]="{'background-image': card.color}">
         <mat-card-header>
-          <h4 class="mat-h4">{{card.title}}</h4>
+          <h5 class="h5 text-white-50">{{card.title}}</h5>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <h1 class="mat-h1 font-weight-bold">{{ (card.value | async)?.length}}</h1>
+          <h2 class="h2 font-weight-bold">{{ (card.value | async)?.length}}</h2>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>

@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  overflow-x: hidden;
+
+  .main-menu {
+    padding-top: 50px;
+
+    .menu-item {
+      padding: 25px 0 25px 30px;
+      cursor: pointer;
+
+      &.active-link {
+        background-color: var(--menu-item-selected-color);
+
+        mat-icon {
+          color: var(--primary);
+        }
+
+        .route-text {
+          color: var(--dark);
+        }
+      }
+
+      mat-icon {
+        color: var(--menu-item-color);
+      }
+
+      .route-text {
+        padding-left: 30px;
+        color: var(--menu-item-color);
+      }
+    }
+  }
+}

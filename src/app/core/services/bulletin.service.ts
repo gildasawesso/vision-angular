@@ -11,6 +11,6 @@ export class BulletinService {
 
   async getBulletins() {
     const currentUser = await this.auth.userRemote;
-    return this.api.get(`/bulletins?schoolId=${currentUser.schools[0]._id}`).toPromise();
+    return this.api.get(`/bulletins?schoolId=${currentUser.schools[0]}`).toPromise();
   }
 }

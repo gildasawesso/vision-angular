@@ -1,4 +1,4 @@
-@import 'angular-material.theme';
+@import 'variables';
 $icon-size: 80px;
 $bit-button-size: 100px;
 
@@ -9,13 +9,13 @@ $bit-button-size: 100px;
 .big-button {
   height: $bit-button-size;
   width: $bit-button-size;
-  border: 1px solid mat-color($primary, 700);
+  border: 1px solid mat-color($primary-palette, 700);
   border-radius: 50%;
 
   mat-icon {
     height: $icon-size !important;
     width: $icon-size !important;
     font-size: $icon-size !important;
-    color: mat-color($primary, 700) !important;
+    color: mat-color($primary-palette, 700) !important;
   }
 }

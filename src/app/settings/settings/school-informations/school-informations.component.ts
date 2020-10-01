@@ -54,9 +54,6 @@ export class SchoolInformationsComponent implements OnInit {
   }
 
   ngOnInit() {
-    const currentSchool: School = this.auth.currentUser.schools[0];
-    this.schoolForm.patchValue(currentSchool);
-
     this.schoolForm.valueChanges
       .subscribe(_ => {
         this.isEdited = true;

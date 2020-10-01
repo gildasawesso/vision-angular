@@ -24,40 +24,16 @@ export class StudentUtil {
   currentSchoolYear: SchoolYear;
   classroomPayments = {};
 
-  constructor(private examinationsRepository: ExaminationsRepository,
-              private registrationsRepository: RegistrationsRepository,
-              private paymentsRepository: PaymentsRepository,
-              private schoolyearsRepository: SchoolyearsRepository,
-              private classroomsRepository: ClassroomsRepository,
-              private commonUtil: Common) {
-    this.init();
+  constructor(private commonUtil: Common) {
+
   }
 
-  parseReduction(reduction: Reduction, fee: FeeType) {
-    if (reduction) {
-      if (reduction.reductionType === 'percentage') {
-        return reduction.reduction / 100 * fee.amount;
-      } else {
-        return reduction.reduction;
-      }
-    } else {
-      return 0;
-    }
-  }
-
-  init() {
-    this.examinationsRepository.stream.subscribe(examinations => this.examinations = examinations);
-    this.registrationsRepository.stream.subscribe(registrations => this.registrations = registrations);
-    this.paymentsRepository.stream.subscribe(payments => this.payments = payments);
-    this.schoolyearsRepository.selectedSchoolYear.subscribe(schoolYear => this.currentSchoolYear = schoolYear);
-    this.classroomsRepository.stream.subscribe(classrooms => this.classrooms = classrooms);
-  }
 
   studentPayments(payments: Payment[], student: Student) {
-    return payments.filter(p => {
-      if (student == null) { return false; }
-      return p.student ? p.student._id === student._id : false;
-    });
+    // return payments.filter(p => {
+    //   if (student == null) { return false; }
+    //   return p.student ? p.student._id === student._id : false;
+    // });
   }
 
   classroomsAllRegistrationsFeePayments(classroom: Classroom, schoolYear?: SchoolYear) {
@@ -65,60 +41,60 @@ export class StudentUtil {
   }
 
   allStudentsPaymentsForClassroom(allPayments: Payment[], classroom: Classroom, fee?: FeeType, schoolYear?: SchoolYear) {
-    const classroomStudents = this.classroomStudents(classroom);
-    const payments = classroomStudents.map(s => {
-      return this.studentPaymentsForFee(fee, s, allPayments);
-    });
-    return payments.reduce((acc, cur) => acc + cur, 0);
+    // const classroomStudents = this.classroomStudents(classroom);
+    // const payments = classroomStudents.map(s => {
+    //   return this.studentPaymentsForFee(fee, s, allPayments);
+    // });
+    // return payments.reduce((acc, cur) => acc + cur, 0);
   }
 
   // todo je ne dois en aucun cas utiliser la classroomId du payement
   classroomPaymentsForFee(fee: FeeType, classroom: Classroom, allPayments: Payment[], onlyOtherPayments = false, schoolYear?: SchoolYear) {
-    if (fee != null && this.classroomPayments[classroom._id] && this.classroomPayments[classroom._id][fee._id]) {
-      return this.classroomPayments[classroom._id][fee._id];
-    } else if (fee == null && this.classroomPayments[classroom._id] && this.classroomPayments[classroom._id].other) {
-      return this.classroomPayments[classroom._id].other;
-    } else {
-      const payments = allPayments.filter(p => this.isPaymentForClassroom(classroom, p)).map(p => p.fees);
-      const paymentsFlattened = onlyOtherPayments ?
-        this.flatSubPayments(payments).filter(p => p.fee._id !== classroom.registrationFee._id && p.fee._id !== classroom.schoolFee._id && p.fee._id !== classroom.reregistrationFee._id)
-        : this.flatSubPayments(payments).filter(p => p.fee._id === fee._id);
-      const paymentsWithoutReductions = paymentsFlattened.reduce((acc, cur) => acc + cur.amount, 0);
-
-      if (allPayments.length > 0) {
-        if (!this.classroomPayments[classroom._id]) { this.classroomPayments[classroom._id] = {}; }
-        if (fee != null) {
-          this.classroomPayments[classroom._id][fee._id] = paymentsWithoutReductions;
-        } else {
-          this.classroomPayments[classroom._id].other = paymentsWithoutReductions;
-        }
-      }
-      return paymentsWithoutReductions;
-    }
+    // if (fee != null && this.classroomPayments[classroom._id] && this.classroomPayments[classroom._id][fee._id]) {
+    //   return this.classroomPayments[classroom._id][fee._id];
+    // } else if (fee == null && this.classroomPayments[classroom._id] && this.classroomPayments[classroom._id].other) {
+    //   return this.classroomPayments[classroom._id].other;
+    // } else {
+    //   const payments = allPayments.filter(p => this.isPaymentForClassroom(classroom, p)).map(p => p.paymentLines);
+    //   const paymentsFlattened = onlyOtherPayments ?
+    //     this.flatSubPayments(payments).filter(p => p.fee._id !== classroom.registrationFee._id && p.fee._id !== classroom.schoolFee._id && p.fee._id !== classroom.reregistrationFee._id)
+    //     : this.flatSubPayments(payments).filter(p => p.fee._id === fee._id);
+    //   const paymentsWithoutReductions = paymentsFlattened.reduce((acc, cur) => acc + cur.amount, 0);
+    //
+    //   if (allPayments.length > 0) {
+    //     if (!this.classroomPayments[classroom._id]) { this.classroomPayments[classroom._id] = {}; }
+    //     if (fee != null) {
+    //       this.classroomPayments[classroom._id][fee._id] = paymentsWithoutReductions;
+    //     } else {
+    //       this.classroomPayments[classroom._id].other = paymentsWithoutReductions;
+    //     }
+    //   }
+    //   return paymentsWithoutReductions;
+    // }
   }
 
   paymentsNotMapReduced(allPayments: Payment[], classroom: Classroom, fee?: FeeType, onlyOtherPayments = false, schoolYear?: SchoolYear) {
-    const payments = allPayments.filter(p => p.classroom._id === classroom._id).map(p => p.fees);
-    return onlyOtherPayments ?
-      this.flatSubPayments(payments).filter(p => p.fee._id !== classroom.registrationFee._id && p.fee._id !== classroom.schoolFee._id && p.fee._id !== classroom.reregistrationFee._id)
-      : this.flatSubPayments(payments).filter(p => p.fee._id === fee._id);
+    // const payments = allPayments.filter(p => p.classroom._id === classroom._id).map(p => p.paymentLines);
+    // return onlyOtherPayments ?
+    //   this.flatSubPayments(payments).filter(p => p.fee._id !== classroom.registrationFee._id && p.fee._id !== classroom.schoolFee._id && p.fee._id !== classroom.reregistrationFee._id)
+    //   : this.flatSubPayments(payments).filter(p => p.fee._id === fee._id);
   }
 
   studentPaymentsNotMapReduced(allPayments: Payment[], student?: Student, fee?: FeeType, reduce = false, onlyOtherPayments = false, schoolYear?: SchoolYear) {
-    const studentRegistration = this.studentRegistration(student);
-    const payments = this.studentPayments(allPayments, student).map(p => p.fees);
-    const filteredPayments = onlyOtherPayments ?
-      this.flatSubPayments(payments).filter(p => p.fee._id
-        !== studentRegistration.classroom.registrationFee._id && p.fee._id
-        !== studentRegistration.classroom.schoolFee._id && p.fee._id
-        !== studentRegistration.classroom.reregistrationFee._id)
-      : this.flatSubPayments(payments).filter(p => p.fee._id === fee._id);
-
-    if (reduce) {
-      return filteredPayments.reduce((acc, cur) => acc + cur.amount, 0);
-   } else {
-      return filteredPayments;
-   }
+   //  const studentRegistration = this.studentRegistration(student);
+   //  const payments = this.studentPayments(allPayments, student).map(p => p.paymentLines);
+   //  const filteredPayments = onlyOtherPayments ?
+   //    this.flatSubPayments(payments).filter(p => p.fee._id
+   //      !== studentRegistration.classroom.registrationFee._id && p.fee._id
+   //      !== studentRegistration.classroom.schoolFee._id && p.fee._id
+   //      !== studentRegistration.classroom.reregistrationFee._id)
+   //    : this.flatSubPayments(payments).filter(p => p.fee._id === fee._id);
+   //
+   //  if (reduce) {
+   //    return filteredPayments.reduce((acc, cur) => acc + cur.amount, 0);
+   // } else {
+   //    return filteredPayments;
+   // }
   }
 
   allStudents(allPayments: Payment[], schoolYear?: SchoolYear) {
@@ -126,23 +102,23 @@ export class StudentUtil {
   }
 
   allStudentsRegistrationsPayments(allPayments: Payment[], schoolYear?: SchoolYear) {
-    const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(classroom.registrationFee, classroom, allPayments));
-    return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
+    // const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(classroom.registrationFee, classroom, allPayments));
+    // return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
   }
 
   allStudentsReRegistrationsPayments(allPayments: Payment[], schoolYear?: SchoolYear) {
-    const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(classroom.reregistrationFee, classroom, allPayments));
-    return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
+    // const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(classroom.reregistrationFee, classroom, allPayments));
+    // return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
   }
 
   allStudentsSchoolFeesPayments(allPayments: Payment[], schoolYear?: SchoolYear) {
-    const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(classroom.schoolFee, classroom, allPayments));
-    return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
+    // const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(classroom.schoolFee, classroom, allPayments));
+    // return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
   }
 
   allStudentsOtherFeesPayments(allPayments: Payment[], schoolYear?: SchoolYear) {
-    const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(null, classroom, allPayments, true));
-    return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
+    // const paymentsPerClassroom = this.classrooms.map(classroom => this.classroomPaymentsForFee(null, classroom, allPayments, true));
+    // return paymentsPerClassroom.reduce((acc, cur) => acc + cur, 0);
   }
 
   studentOtherFeesPayments(allPayments: Payment[], classroom: Classroom, student: Student, schoolYear?: SchoolYear) {
@@ -150,11 +126,11 @@ export class StudentUtil {
   }
 
   allPaymentsExpected(classroom: Classroom, allPayments: Payment[], fee?: FeeType, schoolYear?: SchoolYear) {
-    const classroomStudents = this.classroomStudents(classroom);
-    const payments = classroomStudents.map(s => {
-      return this.studentPaymentsForFee(fee, s, allPayments);
-    });
-    return payments.reduce((acc, cur) => acc + cur, 0);
+    // const classroomStudents = this.classroomStudents(classroom);
+    // const payments = classroomStudents.map(s => {
+    //   return this.studentPaymentsForFee(fee, s, allPayments);
+    // });
+    // return payments.reduce((acc, cur) => acc + cur, 0);
   }
 
   studentRegistration(student: Student) {
@@ -162,13 +138,13 @@ export class StudentUtil {
   }
 
   paymentClassroom(payment: Payment) {
-    const registration = this.studentRegistration(payment.student);
-    if (registration === undefined) { return null; }
-    return registration.classroom;
+    // const registration = this.studentRegistration(payment.student);
+    // if (registration === undefined) { return null; }
+    // return registration.classroom;
   }
 
   isPaymentForClassroom(classroom: Classroom, payment: Payment) {
-    return this.paymentClassroom(payment) ? this.paymentClassroom(payment)._id === classroom._id : false;
+    // return this.paymentClassroom(payment) ? this.paymentClassroom(payment)._id === classroom._id : false;
   }
 
   classroomRegistrations(classroom: Classroom) {
@@ -200,41 +176,41 @@ export class StudentUtil {
   }
 
   studentReductionsForFee(fee: FeeType, student: Student) {
-    const registration = this.studentRegistration(student);
-    if (registration === undefined) { return 0; }
-
-    const reductionForFee = registration.reductions.find(r => fee != null ? r.fee._id === fee._id : false);
-    if (reductionForFee === undefined) { return 0; }
-
-    if (reductionForFee.reduction === undefined || reductionForFee.reduction == null) { return 0; }
-
-    if (reductionForFee.reductionType === 'percentage') {
-      return reductionForFee.fee.amount * reductionForFee.reduction / 100;
-    } else {
-      return reductionForFee.reduction;
-    }
+    // const registration = this.studentRegistration(student);
+    // if (registration === undefined) { return 0; }
+    //
+    // const reductionForFee = registration.reductions.find(r => fee != null ? r.fee._id === fee._id : false);
+    // if (reductionForFee === undefined) { return 0; }
+    //
+    // if (reductionForFee.reduction === undefined || reductionForFee.reduction == null) { return 0; }
+    //
+    // if (reductionForFee.reductionType === 'percentage') {
+    //   return reductionForFee.fee.amount * reductionForFee.reduction / 100;
+    // } else {
+    //   return reductionForFee.reduction;
+    // }
   }
 
   classroomReductionsForFee(fee: FeeType, classroom) {
-    const students = this.classroomStudents(classroom);
-    return students.map(student => {
-      return this.studentReductionsForFee(fee, student);
-    }).reduce((acc, cur) => acc + cur, 0);
+    // const students = this.classroomStudents(classroom);
+    // return students.map(student => {
+    //   return this.studentReductionsForFee(fee, student);
+    // }).reduce((acc, cur) => acc + cur, 0);
   }
 
   studentPaymentsForFee(fee: FeeType, student: Student, payments: Payment[]) {
-    const studentPayments = this.studentPayments(payments, student);
-    const subPayments = studentPayments.map(p => p.fees);
-    const subPaymentsFlattened = this.flatSubPayments(subPayments);
-    const feeSubPayments = subPaymentsFlattened.filter(p => {
-      if (p.fee == null) { return false; }
-      return p.fee._id === fee._id;
-    });
-    return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
+    // const studentPayments = this.studentPayments(payments, student);
+    // const subPayments = studentPayments.map(p => p.paymentLines);
+    // const subPaymentsFlattened = this.flatSubPayments(subPayments);
+    // const feeSubPayments = subPaymentsFlattened.filter(p => {
+    //   if (p.fee == null) { return false; }
+    //   return p.fee._id === fee._id;
+    // });
+    // return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
   }
 
   allStudentsPaymentsWithOtherPayments(payments: Payment[], schoolYear?: SchoolYear) {
-    const subPayments = payments.map(payment => payment.fees);
+    const subPayments = payments.map(payment => payment.paymentLines);
     const subPaymentsFlattened = subPayments.reduce((acc, cur) => {
       acc = [...acc, ...cur];
       return acc;

@@ -2,7 +2,7 @@ import {FeeType} from './fee-type';
 
 export class Reduction {
   '_id'?: string;
-  fee: FeeType;
+  fee: string;
   reductionType: string;
   reduction: number;
 }

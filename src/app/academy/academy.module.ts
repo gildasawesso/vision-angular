@@ -17,6 +17,7 @@ import { AddOrEditSubjectComponent } from './subjects/add-or-edit-subject/add-or
 import { AddOrEditTeacherComponent } from './teachers/add-or-edit-teacher/add-or-edit-teacher.component';
 import { EffectifComponent } from './academy-dashboard/effectif/effectif.component';
 import { EffectifPerClassroomComponent } from './academy-dashboard/effectif-per-classroom/effectif-per-classroom.component';
+import { PastAndNewStudentsComponent } from './academy-dashboard/past-and-new-students/past-and-new-students.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { EffectifPerClassroomComponent } from './academy-dashboard/effectif-per-
     AddOrEditSubjectComponent,
     AddOrEditTeacherComponent,
     EffectifComponent,
-    EffectifPerClassroomComponent
+    EffectifPerClassroomComponent,
+    PastAndNewStudentsComponent
   ],
   imports: [
     AcademyRoutingModule,

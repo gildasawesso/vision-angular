@@ -98,19 +98,19 @@ export class ExaminationsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.schoolyearsRepository.selectedSchoolYearTerm
-      .subscribe((session: SchoolSession) => {
-        if (session == null) { return; }
-        this.examinationsRepository.stream
-          .subscribe(async (examinations: Examination[]) => {
-            this.examinations = examinations
-              .filter(e => e.subject != null)
-              .filter(e => {
-              return moment(e.examinationDate).isBetween(moment(session.startDate), moment(session.endDate), null, '[]');
-            });
-            this.loadExaminations();
-          });
-      });
+    // this.schoolyearsRepository.selectedSchoolYearTerm
+    //   .subscribe((session: SchoolSession) => {
+    //     if (session == null) { return; }
+    //     this.examinationsRepository.stream
+    //       .subscribe(async (examinations: Examination[]) => {
+    //         this.examinations = examinations
+    //           .filter(e => e.subject != null)
+    //           .filter(e => {
+    //           return moment(e.examinationDate).isBetween(moment(session.startDate), moment(session.endDate), null, '[]');
+    //         });
+    //         this.loadExaminations();
+    //       });
+    //   });
 
     this.examinationTypesRepository.stream.subscribe(examinationTypes => this.examinationTypes = examinationTypes);
     this.classroomsRepository.stream.subscribe(classrooms => this.classrooms = classrooms);

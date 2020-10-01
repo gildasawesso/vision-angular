@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import {last} from 'rxjs/operators';
 import {BulletinService} from '../../core/services/bulletin.service';
 import {SchoolsRepository} from '../../core/repositories/schools.repository';
+import {SchoolYearService} from '../../core/services/school-year.service';
 
 @Component({
   selector: 'app-bulletins',
@@ -136,6 +137,7 @@ export class BulletinsComponent implements OnInit {
               private subjectsRepository: SubjectsRepository,
               private bulletinService: BulletinService,
               private schoolsRepository: SchoolsRepository,
+              private schoolYearService: SchoolYearService,
               private utils: Utils) {
   }
 
@@ -377,7 +379,7 @@ export class BulletinsComponent implements OnInit {
       .subscribe(registrations => this.registrations = registrations);
 
     this.schoolyearsRepository.stream.subscribe(schoolYears => this.schoolYear = schoolYears[0]);
-    this.schoolyearsRepository.selectedSchoolYear.subscribe(schoolYear => this.schoolYearSelected = schoolYear);
+    this.schoolYearService.schoolYear.subscribe(sySelected => this.schoolYearSelected = sySelected);
 
     this.subjectsRepository.stream
       .subscribe(subjects => this.subjects = subjects);

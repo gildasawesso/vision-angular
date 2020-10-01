@@ -1,89 +1,47 @@
 export const menuConfig = [
   {
     finance: [
-      {text: 'dashboard', url: '/finance/dashboard', submenu: null},
-      {
-        text: 'élèves',
-        url: '/finance/students',
-        submenu: [
-          {text: 'payements des contributions', url: '/finance/students/payments'},
-          {text: 'Etat', url: '/finance/students/state'},
-          {text: 'Types de contributions', url: '/finance/students/fees'},
-          {text: 'Catégories de contributions', url: '/finance/students/fee-categories'},
-        ]
-      },
-      {
-        text: 'Bilan Financier',
-        url: '/finance/balance',
-        submenu: [
-          {text: 'Bilan', url: '/finance/balance'},
-          {text: 'Types de dépenses', url: '/finance/balance/expense-types'},
-          {text: 'Types de revenus', url: '/finance/balance/income-types'},
-        ]
-      },
+      {text: 'dashboard', url: '/finance/dashboard', icon: 'pie_chart_outline'},
+      {text: 'payements', url: '/finance/students/payments', icon: 'monetization_on_outline'},
+      {text: 'Etat', url: '/finance/students/state', icon: 'check_circle_outline'},
+      {text: 'Transactions', url: '/finance/balance', icon: 'account_balance'},
+      {text: 'contributions', url: '/finance/students/fees', icon: 'device_hub'},
+      {text: 'Dépenses', url: '/finance/balance/expense-types', icon: 'arrow_back_ios'},
+      {text: 'Revenus', url: '/finance/balance/income-types', icon: 'arrow_forward_ios'},
     ]
   },
   {
     academy: [
-      { text: 'dashboard', url: '/academy/dashboard', submenu: null },
-      {
-        text: 'Élèves',
-        url: '/academy/students',
-        submenu: [
-          {text: 'Liste des élèves', url: '/academy/students/list'},
-        ]
-      },
-      {
-        text: 'Classes',
-        url: '/academy/classrooms',
-        submenu: [
-          {text: 'Liste des classes', url: '/academy/classrooms/list'},
-        ]
-      },
-      {
-        text: 'Cours',
-        url: '/academy/subjects',
-        submenu: [
-          {text: 'Liste des cours', url: '/academy/subjects/list'},
-        ]
-      },
-      {
-        text: 'Professeurs',
-        url: '/academy/teachers',
-        submenu: [
-          {text: 'Liste des professeurs', url: '/academy/teachers/list'},
-        ]
-      },
+      { text: 'dashboard', url: '/academy/dashboard', icon: 'pie_chart_outline' },
+      {text: 'Élèves', url: '/academy/students/list', icon: 'group'},
+      {text: 'Classes', url: '/academy/classrooms/list', icon: 'store'},
+      {text: 'Cours', url: '/academy/subjects/list', icon: 'menu_book'},
+      {text: 'Professeurs', url: '/academy/teachers/list', icon: 'supervisor_account'},
     ]
   },
   {
     settings: [
-      { text: 'paramètres généraux', url: '/settings', submenu: [
-          {text: 'Informations sur l\'école', url: '/settings/school'},
-          {text: 'Années scolaires', url: '/settings/schoolyears'},
-        ] },
+      {text: 'École', url: '/settings/school', icon: 'school'},
+      {text: 'Années scolaires', url: '/settings/schoolyears', icon: 'event'},
     ]
   },
   {
     registration: [
-      { text: 'inscription', url: '/registration/register', submenu: null },
-      { text: 'réinscription', url: '/registration/re-register', submenu: null },
+      { text: 'inscription', url: '/registration/register', icon: 'person_outline' },
+      { text: 'réinscription', url: '/registration/re-register', icon: 'refresh' },
     ]
   },
   {
     staff: [
-      { text: 'personnel', url: '/staff/users', submenu: null },
-      { text: 'rôles', url: '/staff/roles', submenu: null },
-      // { text: 'réinscription', url: '/registration/re-register', submenu: null },
+      { text: 'personnel', url: '/staff/users', icon: 'people' },
+      { text: 'rôles', url: '/staff/roles', icon: 'admin_panel_settings' },
     ]
   },
   {
     notes: [
-      { text: 'Exmaninations', url: '/notes/examinations', submenu: [
-          {text: 'Liste des examinations', url: '/notes/examinations/list'},
-          {text: 'Types d\'examinations', url: '/notes/examinations/types'},
-        ] },
-      { text: 'Bulletins', url: '/notes/bulletins', submenu: null },
+      {text: 'Examinations', url: '/notes/examinations/list', icon: 'science'},
+      {text: 'Types examinations', url: '/notes/examinations/types', icon: 'reorder'},
+      { text: 'Bulletins', url: '/notes/bulletins', icon: 'emoji_events' },
     ]
   },
 ];

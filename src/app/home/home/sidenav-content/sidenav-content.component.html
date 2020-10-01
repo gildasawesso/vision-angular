@@ -1,0 +1,9 @@
+<div class="main-menu d-flex flex-column">
+  <div *ngFor="let route of routes"
+       class="d-flex text-capitalize align-items-center menu-item"
+       [routerLink]="[route.url]"
+       routerLinkActive="active-link" style="height: 100%;">
+    <mat-icon>{{route.icon}}</mat-icon>
+    <div class="route-text">{{route.text}}</div>
+  </div>
+</div>

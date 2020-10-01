@@ -14,6 +14,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { SidenavContentComponent } from './home/sidenav-content/sidenav-content.component';
+import { SidenavHeaderComponent } from './home/sidenav-header/sidenav-header.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,9 @@ import {FormsModule} from '@angular/forms';
     MenuItemComponent,
     HomeContentComponent,
     AppbarComponent,
-    SubbarComponent
+    SubbarComponent,
+    SidenavContentComponent,
+    SidenavHeaderComponent
   ],
   imports: [
     CommonModule,
@@ -32,6 +37,7 @@ import {FormsModule} from '@angular/forms';
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatSidenavModule,
     FormsModule,
     NgxPermissionsModule.forChild()
   ]

@@ -38,6 +38,8 @@ import { ReductionsComponent } from '../../finance/reductions/reductions.compone
 import { AddOrEditReductionComponent } from '../../finance/reductions/add-or-edit-reduction/add-or-edit-reduction.component';
 import { ReductionLabelPipe } from './pipes/reductionLabel.pipe';
 import { ReductionPipe } from './pipes/reduction.pipe';
+import { WorkInProgressComponent } from './components/work-in-progress/work-in-progress.component';
+import { StudentChooserComponent } from './components/student-chooser/student-chooser.component';
 
 const components = [
   AdmissionComponent,
@@ -59,7 +61,11 @@ const components = [
   CloseButtonComponent,
   NewInputComponent,
   ListComponent,
-  DatatableComponent
+  DatatableComponent,
+  ReductionLabelPipe,
+  ReductionPipe,
+  WorkInProgressComponent,
+  StudentChooserComponent,
 ];
 
 const directives = [
@@ -85,9 +91,7 @@ const modules = [
   declarations: [
     ...components,
     ...pipes,
-    ...directives,
-    ReductionLabelPipe,
-    ReductionPipe,
+    ...directives
   ],
   imports: [
     ...modules,
@@ -96,9 +100,7 @@ const modules = [
     ...components,
     ...pipes,
     ...directives,
-    ...modules,
-    ReductionLabelPipe,
-    ReductionPipe,
+    ...modules
   ],
   entryComponents: [
     AlertDialogComponent,

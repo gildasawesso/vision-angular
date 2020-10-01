@@ -19,6 +19,7 @@ import {Utils} from '../../core/shared/utils';
 import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
 import {EffectifPerClassroomComponent} from './effectif-per-classroom/effectif-per-classroom.component';
 import {Observable} from 'rxjs';
+import {PastAndNewStudentsComponent} from './past-and-new-students/past-and-new-students.component';
 
 @Component({
   selector: 'app-academy-dashboard',
@@ -47,8 +48,8 @@ export class AcademyDashboardComponent implements OnInit, AfterViewInit {
 
       return [
         { title: 'Effectif par sexe', cols: 2, rows: 1, component: EffectifComponent },
-        { title: 'Effectif par classe', cols: 2, rows: 1, component: EffectifPerClassroomComponent },
-        // { title: 'Effectif par classe', cols: 2, rows: 1, component: EffectifComponent },
+        { title: 'Anciens et nouveaux inscrits', cols: 2, rows: 1, component: PastAndNewStudentsComponent },
+        { title: 'Effectif par classe', cols: 4, rows: 1, component: EffectifPerClassroomComponent },
         // { title: 'courses', cols: 1, rows: 1 },
         // { title: 'professors', cols: 1, rows: 1 },
         // { title: 'Card 2', cols: 1, rows: 1 },

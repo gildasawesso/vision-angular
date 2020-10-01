@@ -48,4 +48,7 @@ export class RegistrationsRepository extends BaseRepository<Registration> {
     this.lastYearRegistrations.next(registrations);
   }
 
+  async student(studentId: string) {
+    return await this.query.get(`/student/${studentId}`);
+  }
 }

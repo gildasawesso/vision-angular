@@ -1,22 +1,19 @@
-<mat-toolbar class="appbar" color="primary" [ngClass]="{'home': isHomeMenu}">
-  <mat-icon class="home-button" routerLink="/">apps</mat-icon>
-    <div class="main-menu d-flex align-items-center">
-      <div class="module-name">{{moduleSelected}}</div>
-      <div *ngFor="let route of routes" class="text-capitalize align-items-center link main-menu-link d-none d-lg-flex"
-           [routerLink]="[route.url]"
-           routerLinkActive="app-link-active" style="height: 100%;">
-        {{route.text}}
-      </div>
-    </div>
+<mat-toolbar class="appbar bg-transparent p-3 d-flex align-items-center">
   <span class="flex-grow-1"></span>
   <mat-form-field class="school-years" color="accent" appearance="outline">
     <mat-select [(ngModel)]="currentSchoolYear" (ngModelChange)="onSchoolYearChange($event)" [compareWith]="compareFn">
-      <mat-option *ngFor="let schoolYear of schoolYears" [value]="schoolYear">{{schoolYear.startDate | date: 'yyyy'}} - {{schoolYear.endDate | date: 'yyyy'}}</mat-option>
+      <mat-option
+        *ngFor="let schoolYear of schoolYears"
+        [value]="schoolYear">
+        {{schoolYear.startDate | date: 'yyyy'}} - {{schoolYear.endDate | date: 'yyyy'}}
+      </mat-option>
     </mat-select>
   </mat-form-field>
   <div>
-    <div [matMenuTriggerFor]="profileMenu" style="cursor: pointer;">
-      <button mat-icon-button ><mat-icon>person</mat-icon></button>
+    <div class="d-flex align-items-center" [matMenuTriggerFor]="profileMenu" style="cursor: pointer;">
+      <button mat-icon-button>
+        <mat-icon>account_circle</mat-icon>
+      </button>
       <span class="text-capitalize">{{(auth.user | async)?.firstname}}</span>
     </div>
     <mat-menu #profileMenu>
@@ -24,14 +21,16 @@
       <button mat-menu-item (click)="signout()">Déconnexion</button>
     </mat-menu>
   </div>
+<!--  only for small screens-->
   <div class="d-flex d-lg-none">
     <button [matMenuTriggerFor]="appMenu" mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
 
     <mat-menu #appMenu>
-      <button class="text-capitalize" *ngFor="let route of routes" routerLinkActive="app-link-active" [routerLink]="[route.url]" mat-menu-item>{{route.text}}</button>
+      <button class="text-capitalize" *ngFor="let route of routes" routerLinkActive="app-link-active"
+              [routerLink]="[route.url]" mat-menu-item>{{route.text}}</button>
     </mat-menu>
   </div>
-
 </mat-toolbar>
+<div class="divider"></div>

@@ -23,6 +23,10 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
+            "allowedCommonJsDependencies": [
+              "chart.js",
+              "chartjs-plugin-datalabels"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"

@@ -12,7 +12,7 @@ export class AppbarService {
   constructor(private router: Router) {}
 
   private subbarRoutesBehaviorSubject = new BehaviorSubject<Array<{text: string, url: string}>>(null);
-  private appbarRoutesBehaviorSubject = new BehaviorSubject<Array<{text: string, url: string}>>(null);
+  private appbarRoutesBehaviorSubject = new BehaviorSubject<Array<{text: string, url: string, icon: string}>>(null);
   private moduleNameBehaviorSubject = new BehaviorSubject<string>('');
 
   get moduleSelectedStream() {

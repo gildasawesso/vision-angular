@@ -47,7 +47,7 @@ export class MarksComponent implements OnInit {
   }
 
   async updateExamination() {
-    this.examination = await this.examinationsRepository.updateStudents(this.examination, this.examination._id);
+    // this.examination = await this.examinationsRepository.updateStudents(this.examination, this.examination._id);
   }
 
   isMarksCorrect() {

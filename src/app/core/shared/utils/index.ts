@@ -4,6 +4,7 @@ import {PrintUtil} from './print.utils';
 import {FormUtil} from './form.util';
 import {StudentUtil} from './student.util';
 import {ExaminationUtil} from './examination.util';
+import {PaymentUtil} from './payment.util';
 
 
 @Injectable()
@@ -20,7 +21,8 @@ export class Utils {
               private printUtil: PrintUtil,
               private formUtil: FormUtil,
               private studentUtil: StudentUtil,
-              private examinationUtil: ExaminationUtil) {
+              private examinationUtil: ExaminationUtil,
+              public payments: PaymentUtil) {
     this.common = this.commonUtil;
     this.print = this.printUtil;
     this.form = this.formUtil;

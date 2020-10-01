@@ -8,8 +8,13 @@ export class Classroom {
   code: string;
   capacity: number;
   teacher: Teacher;
-  registrationFee: FeeType;
-  reregistrationFee: FeeType;
-  schoolFee: FeeType;
+  registrationFee: string;
+  reregistrationFee: string;
+  schoolFee: string;
   subjects: Array<Subject>;
+
+
+  // registrationFee: FeeType | string;
+  // reregistrationFee: FeeType | string;
+  // schoolFee: FeeType | string;
 }

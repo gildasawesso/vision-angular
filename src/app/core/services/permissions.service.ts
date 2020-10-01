@@ -3,13 +3,21 @@ import {ApiService} from './api.service';
 import {NgxPermissionsService} from 'ngx-permissions';
 import {SchoolYearService} from './school-year.service';
 import {first} from 'rxjs/operators';
+import {SchoolYear} from '../models/school-year';
 
 @Injectable()
 export class PermissionsService {
 
+  schoolyear: SchoolYear;
+
   constructor(private api: ApiService,
               private ngxPermissions: NgxPermissionsService,
-              private schoolYearService: SchoolYearService) { }
+              private schoolYearService: SchoolYearService) {
+    this.schoolYearService.schoolYear.subscribe(async sy => {
+      this.schoolyear = sy;
+      await this.loadPermissions();
+    });
+  }
 
   get permissions() {
     return this.userPermissions();
@@ -20,8 +28,10 @@ export class PermissionsService {
   }
 
   private async userPermissions() {
-    const schoolYear = await this.schoolYearService.schoolYearSelected.pipe(first()).toPromise();
-    return !!localStorage.getItem('credentials') ? await this.api.get(`/users/permissions?schoolyear=${schoolYear._id}`).toPromise() : [];
+    if (this.schoolyear == null) {
+      return [];
+    }
+    return !!localStorage.getItem('credentials') ? await this.api.get(`/users/permissions?schoolyear=${this.schoolyear._id}`).toPromise() : [];
   }
 
   private async getAllPermissions() {

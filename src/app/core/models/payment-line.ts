@@ -4,10 +4,6 @@ import {FeeType} from './fee-type';
 import {Classroom} from './classroom';
 
 export class PaymentLine {
-  // tslint:disable-next-line:variable-name
-  _id?: string;
-  fee: FeeType;
+  fee: string;
   amount: number;
-  createdAt = '';
-  updatedAt = '';
 }

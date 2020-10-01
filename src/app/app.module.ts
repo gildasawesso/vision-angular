@@ -8,12 +8,14 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthInterceptor} from './core/interceptors/auth.interceptor';
 import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
 import {PermissionsService} from './core/services/permissions.service';
-import {Common} from './core/shared/utils/common.util';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TestCompComponent } from './test-comp/test-comp.component';
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
 
 @NgModule({
   declarations: [
     AppComponent,
+    TestCompComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -21,7 +23,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     AppRoutingModule,
     HttpClientModule,
     MatDialogModule,
-    NgxPermissionsModule.forRoot()
+    NgxPermissionsModule.forRoot(),
+    BsDatepickerModule.forRoot()
   ],
   providers: [
     {

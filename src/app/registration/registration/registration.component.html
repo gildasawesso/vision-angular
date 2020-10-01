@@ -53,7 +53,7 @@
         <mat-radio-button style="margin-right:40px;" [value]="true">Oui</mat-radio-button>
         <mat-radio-button [value]="false">Non</mat-radio-button>
       </mat-radio-group>
-      <div class="small text-danger">Si c'est une réinscription et que l'élève existe en base alors veuillez utiliser le module <button class="btn btn-light small">Réinscription</button></div>
+      <div class="small text-danger">Si c'est une réinscription et que l'élève existe en base alors veuillez utiliser le module <button [routerLink]="['/registration/re-register']" class="btn btn-light small">Réinscription</button></div>
     </div>
 
     <div class="mb-4">
@@ -76,10 +76,7 @@
   </div>
 
   <div class="actions d-flex justify-content-end align-items-center">
-    <app-action-button (appClick)="save()" color="primary"
-                       [isBusy]="isBusy">
-      {{'Procéder au payement'}}
-    </app-action-button>
+    <app-action-button (appClick)="save()" color="primary">Procéder au payement</app-action-button>
   </div>
 </div>
 

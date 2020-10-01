@@ -18,6 +18,10 @@ export class PaymentsRepository extends BaseRepository<Payment> {
     return this.query.get(`/student/${studentId}`);
   }
 
+  async studentFeePayments(studentId: string, feeId: string) {
+    return this.query.get(`/student/${studentId}/fee/${feeId}`);
+  }
+
   async init() {
     await super.init();
     this.stream.subscribe(async _ => {

@@ -7,6 +7,7 @@ import {FeeTypesRepository} from '../../../core/repositories/fee-types.repositor
 import {AbstractControl, FormControl, Validators} from '@angular/forms';
 import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
 import {Reduction} from '../../../core/models/reduction';
+import {Repositories} from '../../../core/repositories/repositories';
 
 @Component({
   selector: 'app-add-or-edit-reduction',
@@ -22,13 +23,14 @@ export class AddOrEditReductionComponent implements OnInit {
 
   reductionType = new FormControl('amount', Validators.required);
   fee = new FormControl('', Validators.required);
-  amount = new FormControl('', [this.validatePercentage(this.reductionType, this.fee)]);
+  amount = new FormControl('', [this.validatePercentage(this.reductionType, this.fee), Validators.min(0)]);
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<AddOrEditReductionComponent>,
               private feeTypesRepository: FeeTypesRepository,
               private registrationsRepository: RegistrationsRepository,
-              private utils: Utils) {
+              private utils: Utils,
+              private repo: Repositories) {
     this.registration = this.data.registration;
     this.reduction = this.data.reduction;
     this.index = this.data.index;
@@ -55,12 +57,30 @@ export class AddOrEditReductionComponent implements OnInit {
     };
   }
 
+  async isReductionValid() {
+    const pastPayments: number = await this.repo.payments.studentFeePayments(this.registration.student._id, this.fee.value?._id);
+    const reduction = this.getReduction();
+    console.log(Number(this.fee.value?.amount));
+    console.log(pastPayments);
+    console.log(reduction);
+    const remainingFeePayment = Number(this.fee.value?.amount) - pastPayments - reduction;
+    console.log('remining', remainingFeePayment);
+    return remainingFeePayment >= 0;
+  }
+
   async save() {
+    const isReductionValid = await this.isReductionValid();
+    console.log(isReductionValid);
+    if (!isReductionValid) {
+      this.utils.common.toast(`Le reste à payer après réduction est invalide, modifiez la valeur de la réduction`);
+      return;
+    }
+
     if (this.reductionType.valid && this.fee.valid && this.amount.valid) {
       if (this.reduction) {
-        await this.edit();
+        return this.edit();
       } else {
-        await this.add();
+        return this.add();
       }
     }
     this.utils.common.toast(`Il existe des erreurs dans le formulaire`);
@@ -70,7 +90,7 @@ export class AddOrEditReductionComponent implements OnInit {
     const reductionLike = new Reduction();
     reductionLike.reductionType = this.reductionType.value;
     reductionLike.reduction = this.amount.value;
-    reductionLike.fee = this.fee.value;
+    reductionLike.fee = this.fee.value._id;
     if (this.registration.reductions === undefined || this.registration.reductions == null) {
       this.registration.reductions = [];
     }
@@ -87,6 +107,14 @@ export class AddOrEditReductionComponent implements OnInit {
     } else {
       this.utils.common.toast(`Réduction ajoutée avec succès`);
       this.dialogRef.close();
+    }
+  }
+
+  getReduction() {
+    if (this.reductionType.value === 'percentage') {
+      return Number(this.amount.value) / 100 * Number(this.fee.value.amount);
+    } else {
+      return Number(this.amount.value);
     }
   }
 

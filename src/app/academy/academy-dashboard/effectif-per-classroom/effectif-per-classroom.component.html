@@ -1,8 +1,9 @@
-<div style="display: block;" *ngIf="data">
+<div>
   <canvas baseChart
           [options]="barChartOptions"
           [datasets]="barChartData"
           [labels]="labels | async"
+          [plugins]="[chartDataLabels]"
           [chartType]="'bar'">
   </canvas>
 </div>

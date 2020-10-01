@@ -58,7 +58,7 @@ export abstract class BaseRepository<T> extends BaseDatasource<T>{
     this.genericBehaviorSubject.next(this.snapshot);
   }
 
-  set next(object: T[]) {
+  protected set next(object: T[]) {
     this.genericBehaviorSubject.next(object);
   }
 

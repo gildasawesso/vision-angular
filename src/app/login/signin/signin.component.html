@@ -3,7 +3,7 @@
     <h1 class="display-1">Connexion</h1>
     <app-input [control]="signinForm.get('username')" formControlName="username">Username</app-input>
     <app-input [control]="signinForm.get('password')" (keyup.enter)="signin()" formControlName="password" type="password">Mot de passe</app-input>
-    <app-action-button (appClick)="signin()" class="mt-4" isReady="true" color="primary" [isBusy]="isBusy">Connexion</app-action-button>
+    <app-action-button (appClick)="signin()" class="mt-4" color="primary">Connexion</app-action-button>
   </div>
  <div class="d-flex flex-column align-items-center mt-4">
    <mat-label>Si vous ne disposez pas d'un compte </mat-label>

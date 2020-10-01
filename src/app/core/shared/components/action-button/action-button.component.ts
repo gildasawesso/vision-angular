@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {WorkService} from '../../../services/work.service';
+import {Services} from '../../../services/services';
 
 @Component({
   selector: 'app-action-button',
@@ -7,20 +9,21 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class ActionButtonComponent implements OnInit {
 
-  @Input() isBusy: boolean;
+  isBusy: boolean;
   @Input() text: string;
   @Input() color: string;
   @Input() type: string;
 
   @Output() appClick = new EventEmitter();
 
-  constructor() { }
+  constructor(private services: Services) { }
 
   onClick() {
     this.appClick.emit();
   }
 
   ngOnInit() {
+    this.services.smallWork.isBusy.subscribe(v => this.isBusy = v);
   }
 
 }

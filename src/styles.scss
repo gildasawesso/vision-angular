@@ -1,19 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import 'variables';
+@import "~bootstrap-css-only/css/bootstrap.min.css";
+@import 'angular-material.theme';
 @import '~@swimlane/ngx-datatable/index.css';
 @import '~@swimlane/ngx-datatable/themes/material.scss';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
+@import '~ngx-bootstrap/datepicker/bs-datepicker.css';
 //@import "./assets/fonts/SF-Pro-Text-Regular.otf";
 
-$small-icon-size: 16px;
+// background-color : #E9EDF3
+// background-color : #FAFAFB
+// input text color : #7386A0
 
-//@font-face {
-//  font-family: 'SF Pro Text', sans-serif;
-//  src: url('/assets/fonts/SF-Pro-Text-Regular.otf') format('opentype'),
-//  url('assets/fonts/SF-Pro-Text-Regular.otf') format('woff2'),
-//  url('assets/fonts/sf-pro-text-regular-webfont.woff') format('woff');
-//}
+$small-icon-size: 16px;
 
 @font-face {
   font-family: 'SF Pro Text';
@@ -42,7 +41,7 @@ html, body {
   padding: 0;
   font-size: 16px;
   font-family: "SF Pro Text", sans-serif !important;
-  background-color: white;
+  background-color: var(--background-color) !important;
 }
 
 .link {
@@ -96,6 +95,12 @@ mat-dialog-container {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
-//
+
+:root {
+  --background-color: #E9EDF3;
+  --primary: #1976d2;
+  --menu-item-color: #B7B8CE;
+  --menu-item-selected-color: #ddeeff;
+}
 
 

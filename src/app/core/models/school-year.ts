@@ -1,4 +1,3 @@
-import {School} from './school';
 import {SchoolSession} from './school-session';
 
 export class SchoolYear {
@@ -6,5 +5,5 @@ export class SchoolYear {
   startDate: Date;
   endDate: Date;
   sessions: Array<SchoolSession>;
-  school: School;
+  school: string;
 }

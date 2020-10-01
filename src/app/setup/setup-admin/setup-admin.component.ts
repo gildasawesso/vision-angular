@@ -5,6 +5,7 @@ import {Utils} from '../../core/shared/utils';
 import {AuthService} from '../../core/services/auth.service';
 import {Router} from '@angular/router';
 import {Signup} from '../../core/models/app-models/signup';
+import {Services} from '../../core/services/services';
 
 @Component({
   selector: 'app-setup-admin',
@@ -25,27 +26,27 @@ export class SetupAdminComponent implements OnInit {
 
   constructor(private utils: Utils,
               private formBuilder: FormBuilder,
-              private auth: AuthService,
-              private router: Router) { }
+              private router: Router,
+              private services: Services) { }
 
   async signup() {
-    this.isBusy = true;
+    this.services.smallWork.started();
     if (this.utils.form.isValid(this.signupForm)) {
       if (this.arePasswordsSame()) {
         const signupInfo: Signup = this.signupForm.value;
         try {
-          await this.auth.signup(signupInfo);
+          await this.services.auth.signup(signupInfo);
           await this.router.navigateByUrl('/setup/school');
         } catch (e) {
           this.utils.common.alert(e.error.message, 'Erreur');
-          this.isBusy = false;
+          this.services.smallWork.finished();
         }
       } else {
         this.utils.common.toast('Les mots de passe sont différents');
-        this.isBusy = false;
+        this.services.smallWork.finished();
       }
     } else {
-      this.isBusy = false;
+      this.services.smallWork.finished();
     }
   }
 

@@ -11,57 +11,32 @@ import {Student} from '../../models/student';
 import {RegistrationsRepository} from '../../repositories/registrations.repository';
 import {StudentUtil} from './student.util';
 import {Common} from './common.util';
+import {Repositories} from '../../repositories/repositories';
+import {PaymentUtil} from './payment.util';
+import {Reduction} from '../../models/reduction';
+import {SchoolYearService} from '../../services/school-year.service';
+import {PaymentLine} from '../../models/payment-line';
+import {WorkService} from '../../services/work.service';
 
 moment.locale('fr');
 
 @Injectable()
 export class PrintUtil {
 
-  private payments = [];
-  private registrations = [];
-
   constructor(private dialog: MatDialog,
               private snackBar: MatSnackBar,
-              private schools: SchoolsRepository,
               private api: ApiService,
-              private paymentsRepository: PaymentsRepository,
-              private registrationsRepository: RegistrationsRepository,
               private studentUtils: StudentUtil,
-              private commonUtils: Common) {
-    this.loadRepositories();
+              private commonUtils: Common,
+              private paymentUtil: PaymentUtil,
+              private repo: Repositories,
+              private schoolYearService: SchoolYearService,
+              private work: WorkService) {
   }
 
   private spaced(value, suffix = '') {
     if (value === undefined || value == null ) { return value; }
     return value.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ') + ' ' + suffix;
-  }
-
-  private studentPayments(student: Student) {
-    return this.studentUtils.studentPayments(this.payments, student);
-  }
-
-  private feeReduction(student: Student, fee: FeeType) {
-    const registration = this.studentUtils.studentRegistration(student);
-    if (registration === undefined) { return 0; }
-
-    const reductionForFee = registration.reductions.find(r => r.fee._id === fee._id);
-    if (reductionForFee === undefined) { return 0; }
-
-    if (reductionForFee.reductionType === 'percentage') {
-      return reductionForFee.fee.amount * reductionForFee.reduction / 100;
-    } else {
-      return reductionForFee.reduction;
-    }
-  }
-
-  private paymentsForFee(oldPayments: Payment[], fee: FeeType) {
-    const subPayments = oldPayments.map(p => p.fees);
-    const subPaymentsFlattened = subPayments.reduce((acc, cur) => {
-      acc = [...acc, ...cur];
-      return acc;
-    }, []);
-    const feeSubPayments = subPaymentsFlattened.filter(p => p.fee._id === fee._id);
-    return feeSubPayments.reduce((acc, cur) => acc + cur.amount, 0);
   }
 
   async bulletin(notes) {
@@ -77,7 +52,7 @@ export class PrintUtil {
 
   processNotes(notes) {
     return notes;
-    const currentSchool = this.schools.list[0];
+    // const currentSchool = this.schools.list[0];
     const examTypes = {};
     const isReRegistration = this.studentUtils.studentRegistration(notes.student).isReregistration;
     const totalCoef = notes.subjects.reduce((acc, cur) => acc + cur.coef, 0);
@@ -158,49 +133,55 @@ export class PrintUtil {
     this.download(file);
   }
 
-  async registrationReceipt(payment: Payment | any) {
-    const currentSchool = this.schools.list[0];
-    const studentPayments = this.studentPayments(payment.student);
+  async registrationReceipt(payment: Payment) {
+    this.work.started(`Impresssion de la facture en cours`);
+    const student = await this.repo.students.one(payment.student);
+    const classroom = await this.repo.classrooms.one(payment.classroom);
+    const school = await this.repo.schools.one(payment.school);
+    const studentPayments: Payment[] = await this.repo.payments.studentPayments(payment.student);
+    const studentReductions: Reduction[] = await this.repo.registrations.studentReductions(payment.student);
+    const schoolYear = await this.schoolYearService.snapshot;
 
-    const fees = payment.fees.map((subPayement, index) => {
-      const oldPayment = this.paymentsForFee(studentPayments, subPayement.fee) - subPayement.amount;
-      const reduction = this.feeReduction(payment.student, subPayement.fee);
+    const paymentLines: any[] = await Promise.all(payment.paymentLines.map(async (line, index) => {
+      const fee = await this.repo.fees.one(line.fee);
+      const pastPayments = this.paymentUtil.studentPastPayments(fee._id, studentPayments);
+      const reduction = this.paymentUtil.reduction(fee, studentReductions);
       return {
-          designation: subPayement.fee.name,
-          amount: subPayement.fee.amount,
-          reduction,
-          payed: subPayement.amount,
-          oldPayments: oldPayment,
-          balance: subPayement.fee.amount - subPayement.amount - reduction - oldPayment,
-        };
-      });
+        designation: fee.name,
+        amount: fee.amount,
+        reduction,
+        payed: line.amount,
+        oldPayments: pastPayments - line.amount,
+        balance: fee.amount - (reduction + pastPayments),
+      };
+    }));
     const data = {
       code: payment.code,
       createdAt: payment.paymentDate ? moment(payment.paymentDate).format('DD MMMM YYYY') : moment(payment.createdAt).format('DD MMMM YYYY'),
-      schoolYear: moment(payment.schoolYear.startDate).format('YYYY') + ' - ' + moment(payment.schoolYear.endDate).format('YYYY'),
-      schoolName: currentSchool.name,
-      schoolAddress: currentSchool.zipCode,
-      schoolPhone: currentSchool.phone,
-      schoolMobile: currentSchool.mobile,
-      schoolEmail: currentSchool.email,
-      studentFullName: payment.student.firstname + ' ' + payment.student.lastname,
-      studentAddress: payment.student.address,
-      classroom: payment.classroom.name,
-      fees: fees.map((fee, index) => {
+      schoolYear: moment(schoolYear.startDate).format('YYYY') + ' - ' + moment(schoolYear.endDate).format('YYYY'),
+      schoolName: school.name,
+      schoolAddress: school.zipCode,
+      schoolPhone: school.phone,
+      schoolMobile: school.mobile,
+      schoolEmail: school.email,
+      studentFullName: student.firstname + ' ' + student.lastname,
+      studentAddress: student.address ?? '',
+      classroom: classroom.name,
+      fees: paymentLines.map((line, index) => {
         return {
-          designation: fee.designation,
-          amount: this.spaced(fee.amount),
-          reduction: this.spaced(fee.reduction),
-          payed: this.spaced(fee.payed),
-          oldPayments: this.spaced(fee.oldPayments),
-          balance: this.spaced(fee.balance)
+          designation: line.designation,
+          amount: this.spaced(line.amount),
+          reduction: this.spaced(line.reduction),
+          payed: this.spaced(line.payed),
+          oldPayments: this.spaced(line.oldPayments),
+          balance: this.spaced(line.balance)
         };
       }),
-      totalAmount: this.spaced(fees.reduce((acc, cur) => acc + cur.amount, 0), 'FCFA'),
-      totalReduction: this.spaced(fees.reduce((acc, cur) => acc + cur.reduction, 0), 'FCFA'),
-      totalPayed: this.spaced(fees.reduce((acc, cur) => acc + cur.payed, 0), 'FCFA'),
-      totalOldPayments: this.spaced(fees.reduce((acc, cur) => acc + cur.oldPayments, 0), 'FCFA'),
-      totalBalance: this.spaced(fees.reduce((acc, cur) => acc + cur.balance, 0), 'FCFA'),
+      totalAmount: this.spaced(paymentLines.reduce((acc, cur) => acc + cur.amount, 0), 'FCFA'),
+      totalReduction: this.spaced(paymentLines.reduce((acc, cur) => acc + cur.reduction, 0), 'FCFA'),
+      totalPayed: this.spaced(paymentLines.reduce((acc, cur) => acc + cur.payed, 0), 'FCFA'),
+      totalOldPayments: this.spaced(paymentLines.reduce((acc, cur) => acc + cur.oldPayments, 0), 'FCFA'),
+      totalBalance: this.spaced(paymentLines.reduce((acc, cur) => acc + cur.balance, 0), 'FCFA'),
     };
     const options = {
       body: data,
@@ -209,6 +190,7 @@ export class PrintUtil {
     const file = await this.api.request('post', '/report/print/registration', options).toPromise();
 
     this.download(file);
+    this.work.ended();
   }
 
   private download(blob: Blob) {
@@ -224,18 +206,6 @@ export class PrintUtil {
     const file = await this.api.request('post', `/report/print/excel`, options).toPromise();
 
     this.download(file);
-  }
-
-  private loadRepositories() {
-    this.paymentsRepository.stream
-      .subscribe(payments => {
-        this.payments = payments;
-      });
-
-    this.registrationsRepository.stream
-      .subscribe(registrations => {
-        this.registrations = registrations;
-      });
   }
 }
 

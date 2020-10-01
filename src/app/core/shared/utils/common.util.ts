@@ -40,7 +40,7 @@ export class Common {
     return dialog.afterClosed().toPromise();
   }
 
-  modal(component, data, noPadding = false, config?: MatDialogConfig): Promise<MatDialogRef<any>> {
+  modal<T>(component, data, noPadding = false, config?: MatDialogConfig): Promise<T> {
     const dialog: MatDialogRef<any> = this.matDialog.open(component, {
       panelClass: noPadding ? 'dialog-without-padding' : 'relative',
       minWidth: '60%',

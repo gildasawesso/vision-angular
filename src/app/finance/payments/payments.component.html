@@ -1,0 +1,42 @@
+<div class="payments">
+  <div class="d-flex justify-content-end my-3">
+    <button mat-flat-button color="primary" class="ml-auto" (click)="add()">Ajouter une contribution</button>
+  </div>
+
+  <div class="d-flex align-items-center">
+    <select class="form-control filter" [formControl]="classroomSelected" [compareWith]="utils.common.compareFn">
+      <option [value]="null">Toutes les classes</option>
+      <option *ngFor="let classroom of classrooms; let i = index;" [value]="classroom">{{classroom.name}}</option>
+    </select>
+
+    <select class="form-control filter" [formControl]="studentSelected" [compareWith]="utils.common.compareFn">
+      <option [value]="null">Tous les élèves</option>
+      <option *ngFor="let student of students" [value]="student">{{student.lastname | uppercase}} {{student.firstname | titlecase}}</option>
+    </select>
+
+    <input class="form-control picker" type="text" [bsConfig]="datePickerConfg" [formControl]="filterDate" bsDaterangepicker/>
+  </div>
+
+  <div class="total-payment text-center">{{totalPayments | spaced: 'FCFA'}}</div>
+
+  <ngx-datatable class="ngx-datatable fixed-header"
+                 [rows]="rows"
+                 [columns]="columns"
+                 columnMode="force"
+                 [headerHeight]="50"
+                 [footerHeight]="0"
+                 [scrollbarV]="true"
+                 [rowHeight]="75">
+    <ng-template #studentFullName let-row="row">{{row?._student.lastname}} {{row?._student.firstname}}</ng-template>
+    <ng-template #classroom let-row="row">{{row?._classroom.name}}</ng-template>
+    <ng-template #fees let-row="row">
+      <li class="text-capitalize" *ngFor="let fee of row?.fees">{{fee?.fee?.name}}</li>
+    </ng-template>
+    <ng-template #actions let-row="row">
+      <button (click)="printReceipt(row)" color="primary" mat-icon-button><mat-icon>print</mat-icon></button>
+      <button (click)="edit(row)" color="accent" mat-icon-button><mat-icon>edit</mat-icon></button>
+      <button (click)="delete(row)" color="warn" mat-icon-button><mat-icon>delete</mat-icon></button>
+    </ng-template>
+  </ngx-datatable>
+
+</div>

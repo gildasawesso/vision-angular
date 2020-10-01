@@ -25,11 +25,11 @@
 
     <div *ngFor="let reduction of registration.reductions; let i = index;" class="py-3 row align-items-center">
       <div class="col-10 d-flex align-items-center justify-content-between">
-        <div class="text-secondary">{{reduction.fee.name}}</div>
-        <div class="text-secondary">-{{reduction.reduction}} {{reduction.reductionType == "percentage" ? "%" : "FCFA"}}</div>
+        <div class="text-secondary">{{fees[reduction.fee]['name']}}</div>
+        <div class="text-secondary">- {{reduction.reduction}} {{reduction.reductionType == "percentage" ? "%" : "FCFA"}}</div>
       </div>
       <div class="col-2 d-flex align-items-center">
-        <button (click)="editReduction(reduction, i)" mat-icon-button color="accent"><mat-icon>edit</mat-icon></button>
+<!--        <button (click)="editReduction(reduction, i)" mat-icon-button color="accent"><mat-icon>edit</mat-icon></button>-->
         <button (click)="deleteReduction(reduction, i)" mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
       </div>
     </div>

@@ -1,5 +1,10 @@
-@import "angular-material.theme";
-@import "~bootstrap-css-only/css/bootstrap.min.css";
+@import '~@angular/material/theming';
+
+$primary-color: $mat-blue;
+$secondary-color: $mat-brown;
+
+$primary-palette: mat-palette($primary-color, 700);
+$secondary-palette: mat-palette($secondary-color, 500);
 
 $subbar_grey: #777777;
 $app-input-color: #D6D6D6;

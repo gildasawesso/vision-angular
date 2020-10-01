@@ -3,5 +3,6 @@
   <p>{{body}}</p>
 </div>
 <div mat-dialog-actions>
-  <button *ngFor="let action of actions; let i = index;" mat-button color="primary" [mat-dialog-close]="i" [tabindex]="i">{{action}}</button>
+  <app-action-button *ngFor="let action of actions; let i = index;" (click)="dialogRef.close(i)">{{action}}</app-action-button>
+<!--  <button  mat-button color="primary" [mat-dialog-close]="i" [tabindex]="i">{{action}}</button>-->
 </div>

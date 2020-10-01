@@ -6,6 +6,7 @@ import {RegistrationComponent} from './registration/registration.component';
 import { RegisterComponent } from './re-registration/register/register.component';
 import { PayComponent } from './pay/pay.component';
 import {FinanceModule} from '../finance/finance.module';
+import { EditPayComponent } from './edit-pay/edit-pay.component';
 
 
 
@@ -14,7 +15,8 @@ import {FinanceModule} from '../finance/finance.module';
     RegistrationComponent,
     ReRegistrationComponent,
     RegisterComponent,
-    PayComponent
+    PayComponent,
+    EditPayComponent
   ],
   imports: [
     RegistrationRoutingModule,

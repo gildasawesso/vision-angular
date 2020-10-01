@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import {Utils} from '../../core/shared/utils';
-import {AuthService} from '../../core/services/auth.service';
 import {Router} from '@angular/router';
 import {formConstants} from '../../core/constants/form.constants';
-import {PermissionsService} from '../../core/services/permissions.service';
+import {Services} from '../../core/services/services';
 
 @Component({
   selector: 'app-signin',
@@ -15,9 +14,8 @@ export class SigninComponent implements OnInit {
 
   constructor(private utils: Utils,
               private formBuilder: FormBuilder,
-              private auth: AuthService,
               private router: Router,
-              private permissions: PermissionsService) { }
+              private services: Services) { }
 
   signinForm = this.formBuilder.group({
     username: ['', Validators.required],
@@ -30,8 +28,8 @@ export class SigninComponent implements OnInit {
     if (this.signinForm.valid) {
       const signinInfo = this.signinForm.value;
       try {
-        await this.auth.signin(signinInfo.username, signinInfo.password);
-        await this.permissions.loadPermissions();
+        await this.services.auth.signin(signinInfo.username, signinInfo.password);
+        await this.services.permission.loadPermissions();
         await this.router.navigateByUrl('');
       } catch (e) {
         this.utils.common.alert(e.error.message, 'Erreur');

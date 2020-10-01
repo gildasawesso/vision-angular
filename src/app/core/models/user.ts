@@ -12,5 +12,5 @@ export class User {
   phone: string;
   disabled: boolean;
   roles: Array<Role>;
-  schools: Array<School> = [];
+  schools: Array<string> = [];
 }

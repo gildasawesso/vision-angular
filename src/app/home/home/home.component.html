@@ -1,11 +1,14 @@
-<div class="home d-flex flex-column" [ngClass]="{'home-menu': (appBarService.appbarMenus | async) == null}">
-  <app-appbar></app-appbar>
-  <app-subbar></app-subbar>
-  <div class="container" style="overflow: auto;">
-    <div class="app-content row justify-content-center">
-      <div class="col-12">
+<mat-sidenav-container fullscreen>
+  <mat-sidenav [opened]="!isHomeMenu" mode="side">
+    <app-sidenav-header></app-sidenav-header>
+    <app-sidenav-content></app-sidenav-content>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="home d-flex flex-column" [ngClass]="{'home-menu': (services.appBar.appbarMenus | async) == null}">
+      <app-appbar></app-appbar>
+      <div class="container overflow-auto">
         <router-outlet></router-outlet>
       </div>
     </div>
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,1 +1,7 @@
-<p>work-in-progress works!</p>
+<div class="d-flex flex-column">
+  <h3 class="h3 p-3 mx-auto">{{message}}</h3>
+  <mat-spinner [diameter]="50" class="mx-auto p-3"></mat-spinner>
+  <div class="mx-auto p-4">
+    <button class="btn btn-outline-secondary" (click)="dialogRef.close()">Annuler</button>
+  </div>
+</div>

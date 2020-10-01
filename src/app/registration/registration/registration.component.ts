@@ -90,16 +90,16 @@ export class RegistrationComponent implements OnInit {
       registrationDate: form.registrationDate,
       isReregistration: this.isReregistration,
       isNewStudent: !this.isReregistration,
-      registrationFeeReduction: form.registrationFeeReduction,
       reductions: []
     };
 
-    const defaultFee = this.isReregistration ? classroom.reregistrationFee : classroom.registrationFee;
+    const defaultFeeId = this.isReregistration ? classroom.reregistrationFee : classroom.registrationFee;
+    const defaultFee = await this.feeTypesRepository.one(defaultFeeId);
     await this.utils.common.modal(PayComponent, {
       registration: registrationLike,
       defaultFee
     });
-    this.isBusy = false;
+    this.resetAllForms();
   }
 
   resetAllForms() {
@@ -108,10 +108,12 @@ export class RegistrationComponent implements OnInit {
 
   onClassroomSelected() {
     this.registrationForm.controls.classroom.valueChanges
-      .subscribe((obj: Classroom) => {
+      .subscribe(async (obj: Classroom) => {
         if (obj == null) {
           return;
         }
+        console.log(obj);
+
         const classroom = this.classrooms.find(c => c._id === obj._id);
         if (classroom.registrationFee === undefined || classroom.registrationFee === null) {
           this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des frais d'inscription`);
@@ -131,7 +133,8 @@ export class RegistrationComponent implements OnInit {
           return;
         }
 
-        if (classroom.schoolFee.tranches === null || classroom.schoolFee.tranches === undefined || classroom.schoolFee.tranches.length <= 0) {
+        const schoolFee = await this.feeTypesRepository.one(classroom.schoolFee as string);
+        if (schoolFee.tranches === null || schoolFee.tranches === undefined || schoolFee.tranches.length <= 0) {
           this.utils.common.alert(`La classe sélèctionnée n'est pas associée à des tranches de scolarité.
           Veuillez vous rendre dans le module Finance afin d'associer des tranches à ce type de contribution.`);
           this.registrationForm.controls.classroom.setValue('', {emitEvent: false});
@@ -174,7 +177,7 @@ export class RegistrationComponent implements OnInit {
 
   ngOnInit() {
 
-    this.schoolYearService.schoolYearSelected.subscribe(sy => this.schoolYear = sy);
+    this.schoolYearService.schoolYear.subscribe(sy => this.schoolYear = sy);
 
     this.classroomsRepository.stream
       .subscribe((classrooms: Classroom[]) => {
@@ -188,10 +191,11 @@ export class RegistrationComponent implements OnInit {
 
     this.onClassroomSelected();
 
-    this.siblingClassroom.valueChanges
-      .subscribe((classroom: Classroom) => {
-        this.siblingClassroomStudents = this.registrationRepository.studentsForClassroom(this.registrations, classroom);
-      });
+    // todo fixe here
+    // this.siblingClassroom.valueChanges
+    //   .subscribe((classroom: Classroom) => {
+    //     this.siblingClassroomStudents = this.registrationRepository.studentsForClassroom(this.registrations, classroom);
+    //   });
 
     this.sibling.valueChanges
       .subscribe((student: Student) => {

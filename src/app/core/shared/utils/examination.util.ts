@@ -13,15 +13,6 @@ export class ExaminationUtil {
 
   examinations: Examination[] = [];
 
-  constructor(private examinationsRepository: ExaminationsRepository) {
-    this.init();
-  }
-
-  init() {
-    this.examinationsRepository.stream
-      .subscribe(examinations => this.examinations = examinations);
-  }
-
   classroomExaminations(classroom: Classroom) {
     return this.examinations.filter(e => e.classroom._id === classroom._id);
   }

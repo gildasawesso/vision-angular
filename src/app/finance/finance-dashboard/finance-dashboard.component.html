@@ -1,0 +1,25 @@
+<div class="grid-container">
+  <h4 class="h4 font-weight-bolder">Dashboard</h4>
+  <mat-grid-list cols="{{pkiCards.length}}" [rowHeight]="pkiTileHeigth">
+    <mat-grid-tile *ngFor="let card of pkiCards" [colspan]="card.cols" [rowspan]="card.rows">
+      <mat-card class="dashboard-card" [ngStyle]="{'background-image': card.color}">
+        <mat-card-header>
+          <h5 class="mat-h4 text-white-50">{{card.title}}</h5>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <h2 class="h2 font-weight-bold">{{ card.value | spaced: 'F' }}</h2>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+<!--  <mat-grid-list cols="4" rowHeight="350px">-->
+<!--    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">-->
+<!--      <mat-card class="dashboard-card">-->
+<!--        <mat-card-content class="dashboard-card-content">-->
+<!--          <ng-template [chartHost]="card.component"></ng-template>-->
+<!--        </mat-card-content>-->
+<!--      </mat-card>-->
+<!--    </mat-grid-tile>-->
+<!--  </mat-grid-list>-->
+</div>

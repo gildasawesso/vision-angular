@@ -11,7 +11,7 @@
       <app-input [control]="signupForm.get('username')" formControlName="username">Username</app-input>
       <app-input [control]="signupForm.get('password')" formControlName="password" type="password">Mot de passe</app-input>
       <app-input [control]="passwordConfirmation" [formControl]="passwordConfirmation" type="password">Confirmation du mot passe</app-input>
-      <app-action-button (appClick)="signup()" class="mt-4" isReady="true" color="primary" [isBusy]="isBusy">Créer le compte admin</app-action-button>
+      <app-action-button (appClick)="signup()" class="mt-4">Créer le compte admin</app-action-button>
     </div>
   </div>
 </div>

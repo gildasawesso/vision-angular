@@ -1,42 +1,29 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {constants} from '../constants';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {WorkInProgressComponent} from '../shared/components/work-in-progress/work-in-progress.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class WorkService {
 
-  constructor(private httpClient: HttpClient) { }
+  isBusy = new BehaviorSubject(false);
+  private dialogRef: MatDialogRef<any>;
 
-  get(query: string): Observable<any> {
-    const url = `${constants.api.baseUrl}${query}`;
-    return this.httpClient.get(url);
+  started(message: string) {
+    this.dialogRef = this.dialog.open(WorkInProgressComponent, {
+      data: message,
+      minWidth: 400,
+      hasBackdrop: false
+    });
   }
 
-  post(query: string, body: any): Observable<any> {
-    const url = `${constants.api.baseUrl}${query}`;
-    return this.httpClient.post(url, body);
+  ended() {
+    this.dialogRef?.close();
   }
 
-  update(query: string, body: any): Observable<any> {
-    const url = `${constants.api.baseUrl}${query}`;
-    return this.httpClient.put(url, body);
-  }
+  constructor(private dialog: MatDialog) {
 
-  patch(query: string, body: any): Observable<any> {
-    const url = `${constants.api.baseUrl}${query}`;
-    return this.httpClient.patch(url, body);
-  }
-
-  delete(query: string): Observable<any> {
-    const url = `${constants.api.baseUrl}${query}`;
-    return this.httpClient.delete(url);
-  }
-
-  request(method: string, query: string, options: any): Observable<any> {
-    const url = `${constants.api.baseUrl}${query}`;
-    return this.httpClient.request(method, url, options);
   }
 }

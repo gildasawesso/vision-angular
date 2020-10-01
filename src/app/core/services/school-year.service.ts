@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {filter, single, take} from 'rxjs/operators';
 import {BehaviorSubject} from 'rxjs';
 import {SchoolYear} from '../models/school-year';
 import {ApiService} from './api.service';
@@ -9,17 +8,23 @@ import {ApiService} from './api.service';
 })
 export class SchoolYearService {
 
-  schoolYearSelected$ = new BehaviorSubject<SchoolYear>(null);
-  schoolYearSelected = this.schoolYearSelected$.asObservable().pipe(
-    filter(schoolYear => schoolYear != null)
-  );
+  private schoolYearSelected$ = new BehaviorSubject<SchoolYear>(null);
 
-  constructor(private api: ApiService) {
-    this.init();
+  get snapshot() {
+    return this.schoolYearSelected$.value;
   }
 
-  async init() {
-    const schoolYear = await this.api.get(`/schoolyears/current`).toPromise<SchoolYear>();
+  get schoolYear() {
+    return this.schoolYearSelected$.asObservable();
+  }
+
+  set schoolYear(schoolYear: SchoolYear | any) {
     this.schoolYearSelected$.next(schoolYear);
+  }
+
+  constructor(private api: ApiService) {}
+
+  async init() {
+    this.schoolYear = await this.api.get(`/schoolyears/current`).toPromise<SchoolYear>();
   }
 }

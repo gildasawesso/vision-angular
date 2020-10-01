@@ -12,7 +12,6 @@ export class Registration {
   registrationDate: Date;
   isReregistration: boolean;
   isNewStudent?: boolean;
-  registrationFeeReduction: number;
   reductions: Array<Reduction>;
-  school: School;
+  school: string;
 }

@@ -1,13 +1,4 @@
-@import '~@angular/material/theming';
-@include mat-core();
+@import "variables";
 
-//private
-$primary-palette: $mat-pink;
-$secondary-palette: $mat-brown;
-
-$primary: mat-palette($primary-palette, 700);
-$secondary: mat-palette($secondary-palette, 500);
-
-$app-theme: mat-light-theme($primary, $secondary);
-
+$app-theme: mat-light-theme($primary-palette, $secondary-palette);
 @include angular-material-theme($app-theme);

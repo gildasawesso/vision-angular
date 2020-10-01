@@ -5,6 +5,7 @@ import {Registration} from '../../core/models/registration';
 import {AddOrEditReductionComponent} from './add-or-edit-reduction/add-or-edit-reduction.component';
 import {Reduction} from '../../core/models/reduction';
 import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
+import {Repositories} from '../../core/repositories/repositories';
 
 @Component({
   selector: 'app-reductions',
@@ -14,11 +15,13 @@ import {RegistrationsRepository} from '../../core/repositories/registrations.rep
 export class ReductionsComponent implements OnInit {
 
   registration: Registration;
+  fees: {string, any};
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<ReductionsComponent>,
               private utils: Utils,
-              private registrationsRepository: RegistrationsRepository) {
+              private registrationsRepository: RegistrationsRepository,
+              private repo: Repositories) {
     this.registration = this.data;
   }
 
@@ -44,7 +47,9 @@ export class ReductionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.repo.fees.stream.subscribe(fees => {
+      const map = fees.map(fee => [fee._id, fee]);
+      this.fees = Object.fromEntries(map);
+    });
   }
-
 }
