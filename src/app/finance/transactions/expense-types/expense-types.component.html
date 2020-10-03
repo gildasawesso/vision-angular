@@ -1,0 +1,12 @@
+<button mat-flat-button color="primary" (click)="add()">Ajouter un type de dépense</button>
+
+<div class="expense-type my-4">
+  <div class="mt-4">
+    <app-datatable
+      [hideDelete]="true"
+      [rows]="expenseTypes | async"
+      [columns]="columns"
+      (edit)="edit($event)">
+    </app-datatable>
+  </div>
+</div>

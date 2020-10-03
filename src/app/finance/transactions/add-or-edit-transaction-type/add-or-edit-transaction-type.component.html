@@ -1,0 +1,8 @@
+<div class="d-flex flex-column">
+  <h4 class="h4">{{message}}</h4>
+  <input class="form-control my-4 text-muted" [(ngModel)]="name"/>
+  <div class="d-flex">
+    <button mat-flat-button class="mr-3" (click)="close()">Annuler</button>
+    <button mat-flat-button color="primary" (click)="save()">{{isEdit ? 'Modifier' : 'Ajouter'}}</button>
+  </div>
+</div>

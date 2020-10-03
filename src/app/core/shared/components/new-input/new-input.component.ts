@@ -1,5 +1,5 @@
 import {Component, forwardRef, Input, OnInit} from '@angular/core';
-import {AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {AbstractControl, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {formConstants} from '../../../constants/form.constants';
 import {Utils} from '../../utils';
 
@@ -17,7 +17,7 @@ import {Utils} from '../../utils';
 })
 export class NewInputComponent implements OnInit, ControlValueAccessor {
 
-  @Input() formControl: AbstractControl;
+  @Input() formControl: AbstractControl | any;
   @Input('type') type = 'text';
   focused: boolean;
   passwordMinimumLength = formConstants.passwordMinimumLength;

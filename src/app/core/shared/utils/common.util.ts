@@ -239,4 +239,13 @@ export class Common {
 
     return now.diff(tokenExpiration) > 0;
   }
+
+  groupBy(key: string, array: any[]) {
+    return array.reduce((acc, cur) => {
+      acc[cur[key]] = [ ...acc[cur[key]] || [], cur ];
+      return acc;
+    }, {});
+  }
+
+
 }

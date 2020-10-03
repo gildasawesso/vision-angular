@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  background-color: white;
+  padding: 1em;
+  border-radius: 7px;
+  margin-top: .7em;
+
+  .group-viewport {
+    height: 67vh;
+
+    @media  screen and (max-width: 1366px) {
+      height: 50vh;
+    }
+
+    .group {
+      .group-head {
+        background-color: var(--background-color);
+        border-radius: 7px;
+        padding: .5em 1em;
+        margin: .6em 0;
+      }
+
+      .group-content {
+        .group-item {
+          padding: 1em;
+
+          .amount {
+            font-size: 1.2em;
+            font-weight: bold;
+
+            &.expense {
+
+            }
+
+            &.income {
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .balance {
+    .label {
+      font-size: .3em;
+    }
+
+    font-size: 2em;
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    font-weight: bolder;
+    padding: 20px 0;
+    border-radius: 7px;
+    text-align: center;
+  }
+}

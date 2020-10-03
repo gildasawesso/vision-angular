@@ -14,19 +14,21 @@ import { IncomesListComponent } from './incomes/incomes-list/incomes-list.compon
 import { FeesComponent } from './fees/fees.component';
 import { AddOrEditFeeTypeComponent } from './fees/add-or-edit-fee/add-or-edit-fee-type.component';
 import { AddOrEditTrancheComponent } from './fees/add-or-edit-tranche/add-or-edit-tranche.component';
-import { ExpenseTypesComponent } from './balance/expense-types/expense-types.component';
-import { IncomeTypesComponent } from './balance/income-types/income-types.component';
+import { ExpenseTypesComponent } from './transactions/expense-types/expense-types.component';
+import { IncomeTypesComponent } from './transactions/income-types/income-types.component';
 import { EditPaymentComponent } from './payments/edit-payment/edit-payment.component';
 import { AddPaymentComponent } from './payments/add-payment/add-payment.component';
 import { PaymentsStateComponent } from './payments-state/payments-state.component';
-import { BalanceComponent } from './balance/balance.component';
-import { BalanceSheetComponent } from './balance/balance-sheet/balance-sheet.component';
-import { AddOrEditSpendComponent } from './balance/balance-sheet/add-or-edit-spend/add-or-edit-spend.component';
-import { AddOrEditIncomeComponent } from './balance/balance-sheet/add-or-edit-income/add-or-edit-income.component';
+import { TransactionComponent } from './transactions/transaction.component';
+import { BalanceSheetComponent } from './transactions/balance-sheet/balance-sheet.component';
+import { AddOrEditSpendComponent } from './transactions/balance-sheet/add-or-edit-spend/add-or-edit-spend.component';
+import { AddOrEditIncomeComponent } from './transactions/balance-sheet/add-or-edit-income/add-or-edit-income.component';
 import {ReductionsComponent} from './reductions/reductions.component';
 import {AddOrEditReductionComponent} from './reductions/add-or-edit-reduction/add-or-edit-reduction.component';
 import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
 import {RegistrationModule} from '../registration/registration.module';
+import { AddOrEditTransactionTypeComponent } from './transactions/add-or-edit-transaction-type/add-or-edit-transaction-type.component';
+import { AddOrEditTransactionComponent } from './transactions/add-or-edit-transaction/add-or-edit-transaction.component';
 
 @NgModule({
   declarations: [
@@ -48,12 +50,14 @@ import {RegistrationModule} from '../registration/registration.module';
     EditPaymentComponent,
     AddPaymentComponent,
     PaymentsStateComponent,
-    BalanceComponent,
+    TransactionComponent,
     BalanceSheetComponent,
     AddOrEditSpendComponent,
     AddOrEditIncomeComponent,
     ReductionsComponent,
     AddOrEditReductionComponent,
+    AddOrEditTransactionTypeComponent,
+    AddOrEditTransactionComponent,
   ],
     imports: [
         SharedModule,

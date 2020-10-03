@@ -1,0 +1,25 @@
+<div [formGroup]="transactionForm">
+  <div class="mb-3">
+    <h4>{{ operation == 'expense' ? 'Ajouter une dépense' : 'Ajouter un revenu' }}</h4>
+    <mat-divider></mat-divider>
+  </div>
+
+  <app-new-input [formControl]="transactionForm.get('name')">Description</app-new-input>
+
+  <app-new-input type="number" [formControl]="transactionForm.get('amount')">Montant</app-new-input>
+
+  <div class="my-3 form-group">
+    <label class="text-muted">Type</label>
+    <select class="form-control" formControlName="type">
+      <option *ngFor="let type of types | async" [value]="type._id">{{type.name}}</option>
+    </select>
+  </div>
+
+  <div class="my-3 form-group">
+    <label class="text-muted">Date</label>
+    <input class="form-control" formControlName="date" bsDatepicker [bsConfig]="{dateInputFormat: 'DD MMMM YYYY'}"/>
+  </div>
+</div>
+
+<button mat-flat-button (click)="dialogRef.close()">Annuler</button>
+<button mat-flat-button color="primary" class="ml-3 px-3" (click)="save()">Valider</button>

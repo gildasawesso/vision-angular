@@ -1,50 +1,27 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {FinanceStudentsComponent} from './students/finance-students.component';
 import {FinanceComponent} from './finance.component';
 import {PaymentsComponent} from './payments/payments.component';
-import {ExpensesListComponent} from './expenses/expenses-list/expenses-list.component';
-import {ExpensesComponent} from './expenses/expenses.component';
-import {IncomesComponent} from './incomes/incomes.component';
-import {IncomesListComponent} from './incomes/incomes-list/incomes-list.component';
 import {FinanceDashboardComponent} from './finance-dashboard/finance-dashboard.component';
 import {FeesComponent} from './fees/fees.component';
-import {ExpenseTypesComponent} from './balance/expense-types/expense-types.component';
-import {IncomeTypesComponent} from './balance/income-types/income-types.component';
+import {ExpenseTypesComponent} from './transactions/expense-types/expense-types.component';
+import {IncomeTypesComponent} from './transactions/income-types/income-types.component';
 import {PaymentsStateComponent} from './payments-state/payments-state.component';
-import {BalanceComponent} from './balance/balance.component';
-import {BalanceSheetComponent} from './balance/balance-sheet/balance-sheet.component';
+import {TransactionComponent} from './transactions/transaction.component';
 
 const routes: Routes = [
   {
     path: '',
     component: FinanceComponent,
     children: [
-      {
-        path: 'dashboard',
-        component: FinanceDashboardComponent
-      },
-      {
-        path: 'students',
-        component: FinanceStudentsComponent,
-        children: [
-          { path: 'state', component: PaymentsStateComponent },
-          { path: 'payments', component: PaymentsComponent },
-          { path: 'fees', component: FeesComponent },
-          { path: '', redirectTo: 'payments', pathMatch: 'full' },
-        ]
-      },
-      {
-        path: 'balance',
-        component: BalanceComponent,
-        children: [
-          { path: '', component: BalanceSheetComponent },
-          { path: 'expense-types', component: ExpenseTypesComponent },
-          { path: 'income-types', component: IncomeTypesComponent },
-          { path: '', redirectTo: '', pathMatch: 'full' },
-        ]
-      },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {path: 'dashboard', component: FinanceDashboardComponent},
+      {path: 'expense-types', component: ExpenseTypesComponent},
+      {path: 'income-types', component: IncomeTypesComponent},
+      {path: 'state', component: PaymentsStateComponent},
+      {path: 'payments', component: PaymentsComponent},
+      {path: 'fees', component: FeesComponent},
+      {path: 'transactions', component: TransactionComponent,},
+      {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     ]
   }
 ];
@@ -53,4 +30,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class FinanceRoutingModule { }
+export class FinanceRoutingModule {
+}

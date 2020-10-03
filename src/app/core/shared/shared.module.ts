@@ -34,12 +34,11 @@ import { ListComponent } from './components/list/list.component';
 import { NewInputComponent } from './components/new-input/new-input.component';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import { DatatableComponent } from './components/datatable/datatable.component';
-import { ReductionsComponent } from '../../finance/reductions/reductions.component';
-import { AddOrEditReductionComponent } from '../../finance/reductions/add-or-edit-reduction/add-or-edit-reduction.component';
 import { ReductionLabelPipe } from './pipes/reductionLabel.pipe';
 import { ReductionPipe } from './pipes/reduction.pipe';
 import { WorkInProgressComponent } from './components/work-in-progress/work-in-progress.component';
 import { StudentChooserComponent } from './components/student-chooser/student-chooser.component';
+import {AtomSpinnerModule} from 'angular-epic-spinners';
 
 const components = [
   AdmissionComponent,
@@ -84,7 +83,8 @@ const modules = [
   NgxPermissionsModule,
   ChartsModule,
   RouterModule,
-  NgxDatatableModule
+  NgxDatatableModule,
+  AtomSpinnerModule
 ];
 
 @NgModule({

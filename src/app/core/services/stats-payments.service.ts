@@ -31,7 +31,6 @@ export class StatsPaymentsService {
 
   private async paymentsPKI() {
     const payments = await this.get(`/stats/payments`);
-    console.log(payments);
     this.paymentsPki$.next(payments);
   }
 

@@ -2,12 +2,12 @@ export const menuConfig = [
   {
     finance: [
       {text: 'dashboard', url: '/finance/dashboard', icon: 'pie_chart_outline'},
-      {text: 'payements', url: '/finance/students/payments', icon: 'monetization_on_outline'},
-      {text: 'Etat', url: '/finance/students/state', icon: 'check_circle_outline'},
-      {text: 'Transactions', url: '/finance/balance', icon: 'account_balance'},
-      {text: 'contributions', url: '/finance/students/fees', icon: 'device_hub'},
-      {text: 'Dépenses', url: '/finance/balance/expense-types', icon: 'arrow_back_ios'},
-      {text: 'Revenus', url: '/finance/balance/income-types', icon: 'arrow_forward_ios'},
+      {text: 'payements', url: '/finance/payments', icon: 'monetization_on_outline'},
+      {text: 'Etat', url: '/finance/state', icon: 'check_circle_outline'},
+      {text: 'Transactions', url: '/finance/transactions', icon: 'account_balance'},
+      {text: 'contributions', url: '/finance/fees', icon: 'device_hub'},
+      {text: 'Revenus', url: '/finance/income-types', icon: 'arrow_forward_ios'},
+      {text: 'Dépenses', url: '/finance/expense-types', icon: 'arrow_back_ios'},
     ]
   },
   {

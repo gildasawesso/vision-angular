@@ -24,6 +24,8 @@ export class DatatableComponent implements OnInit, OnChanges {
   @Input() columns;
   @Input() loading;
   @Input() hideOptions = false;
+  @Input() hideEdit = false;
+  @Input() hideDelete = false;
   @Input() count = 0;
 
   @Output() edit = new EventEmitter();

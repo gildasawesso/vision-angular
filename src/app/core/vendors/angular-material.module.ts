@@ -24,6 +24,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {LayoutModule} from '@angular/cdk/layout';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 const angularModules = [
   MatButtonModule,
@@ -49,7 +50,8 @@ const angularModules = [
   MatMomentDateModule,
   MatGridListModule,
   MatCardModule,
-  MatExpansionModule
+  MatExpansionModule,
+  ScrollingModule
 ];
 
 @NgModule({

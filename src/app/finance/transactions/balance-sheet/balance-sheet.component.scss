@@ -1,11 +1,11 @@
 @import 'app.colors';
 
 :host {
-  .global-balance {
+  .balance {
     font-size: 3em;
     width: 100%;
-    background-color: $accent;
-    color: white;
+    background-color: var(--background-color);
+    color: var(--primary);
     padding: 20px 0;
     border-radius: 7px;
     text-align: center;

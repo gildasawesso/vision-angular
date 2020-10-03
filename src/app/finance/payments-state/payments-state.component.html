@@ -1,19 +1,19 @@
-<!--<div class="buttons d-flex align-items-baseline">-->
-<!--  <div class="mr-auto">-->
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>Classe sélectionnée</mat-label>-->
-<!--      <mat-select [formControl]="classroomSelected" [compareWith]="utils.common.compareFn">-->
-<!--        <mat-option [value]="null">Toutes les classes</mat-option>-->
-<!--        <mat-option *ngFor="let classroom of classrooms; let i = index;" [value]="classroom">{{classroom.name}}</mat-option>-->
-<!--      </mat-select>-->
-<!--    </mat-form-field>-->
-<!--  </div>-->
-<!--  <div class="ml-auto d-flex align-items-center">-->
-<!--    <div>Exporter :</div>-->
-<!--    <button mat-stroked-button color="accent">Toutes les classes</button>-->
-<!--    <button mat-stroked-button color="accent" (click)="exportCurrentClassroom()">Classe sélectionnée</button>-->
-<!--  </div>-->
-<!--</div>-->
+<div class="buttons d-flex align-items-baseline">
+  <div class="mr-auto">
+    <mat-form-field appearance="outline">
+      <mat-label>Classe sélectionnée</mat-label>
+      <mat-select [formControl]="classroomSelected" [compareWith]="utils.common.compareFn">
+        <mat-option [value]="null">Toutes les classes</mat-option>
+        <mat-option *ngFor="let classroom of classrooms; let i = index;" [value]="classroom">{{classroom.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="ml-auto d-flex align-items-center">
+    <div>Exporter :</div>
+    <button mat-stroked-button color="accent">Toutes les classes</button>
+    <button mat-stroked-button color="accent" (click)="exportCurrentClassroom()">Classe sélectionnée</button>
+  </div>
+</div>
 
 <!--<div *ngIf="classroomSelected.value != null">-->
 <!--  <div class="d-flex align-items-stretch payments-state-header">-->
@@ -66,40 +66,40 @@
 <!--  </div>-->
 <!--</div>-->
 
-<!--<div *ngIf="classroomSelected.value == null">-->
-<!--  <div class="d-flex align-items-stretch payments-state-header">-->
-<!--    <div>Nom</div>-->
-<!--    <div class="registration">-->
-<!--      <span>Inscription/</span>-->
-<!--      <span>Réinscription</span>-->
-<!--    </div>-->
-<!--    <ng-container *ngIf="defaultClassroom">-->
-<!--      <div class="school-fee" *ngFor="let tranche of defaultClassroom?.schoolFee?.tranches">{{tranche.name}}</div>-->
-<!--    </ng-container>-->
-<!--    <div>Réduction</div>-->
-<!--    <div class="remaining">Scolarité restante</div>-->
-<!--    <div class="remaining">Autres payements</div>-->
-<!--    <div class="">Total payé sans réduction</div>-->
-<!--  </div>-->
+<div *ngIf="classroomSelected.value == null">
+  <div class="d-flex align-items-stretch payments-state-header">
+    <div>Nom</div>
+    <div class="registration">
+      <span>Inscription/</span>
+      <span>Réinscription</span>
+    </div>
+    <ng-container *ngIf="defaultClassroom">
+      <div class="school-fee" *ngFor="let tranche of defaultClassroom?.schoolFee?.tranches">{{tranche.name}}</div>
+    </ng-container>
+    <div>Réduction</div>
+    <div class="remaining">Scolarité restante</div>
+    <div class="remaining">Autres payements</div>
+    <div class="">Total payé sans réduction</div>
+  </div>
 
-<!--  <div class="payments-state-body">-->
-<!--    <div class="classroom d-flex align-items-center" *ngFor="let classroomPayment of classroomsPayments(classrooms)">-->
-<!--      <div class="text-capitalize">{{classroomPayment.classroom}}</div>-->
-<!--      <div class="registration-payments">-->
-<!--        <span class="check-icon d-flex align-items-center justify-content-start" *ngIf="classroomPayment.areRegistrationsSold">-->
-<!--          <img class="mr-3" src="assets/images/good.png"/>-->
-<!--          <span style="color: grey">{{classroomPayment.registrationsPayed | spaced}}</span>-->
-<!--        </span>-->
-<!--        <span *ngIf="!classroomPayment.areRegistrationsSold"><span style="color: grey">{{classroomPayment.registrationsPayed | spaced}}/</span>{{classroomPayment.registrationsExpected | spaced}}</span>-->
-<!--      </div>-->
-<!--      <div class="schoolfee-payments" *ngFor="let tranche of classroomPayment.tranches">{{tranche.payed | spaced}}</div>-->
-<!--      <div>{{classroomPayment.classroomReduction}}</div>-->
-<!--      <div *ngIf="!classroomPayment.areSchoolFeesSold" class="total-remaining">{{classroomPayment.schoolFeeRemaining | spaced }}</div>-->
-<!--      <div *ngIf="classroomPayment.areSchoolFeesSold" class="check-icon d-flex align-items-center justify-content-start">-->
-<!--        <img src="assets/images/good.png"/>-->
-<!--      </div>-->
-<!--      <div>{{classroomPayment.otherPayments | spaced }}</div>-->
-<!--      <div>{{classroomPayment.totalPayed | spaced }}</div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+  <div class="payments-state-body">
+    <div class="classroom d-flex align-items-center" *ngFor="let classroomPayment of classroomsPayments(classrooms)">
+      <div class="text-capitalize">{{classroomPayment.classroom}}</div>
+      <div class="registration-payments">
+        <span class="check-icon d-flex align-items-center justify-content-start" *ngIf="classroomPayment.areRegistrationsSold">
+          <img class="mr-3" src="assets/images/good.png"/>
+          <span style="color: grey">{{classroomPayment.registrationsPayed | spaced}}</span>
+        </span>
+        <span *ngIf="!classroomPayment.areRegistrationsSold"><span style="color: grey">{{classroomPayment.registrationsPayed | spaced}}/</span>{{classroomPayment.registrationsExpected | spaced}}</span>
+      </div>
+      <div class="schoolfee-payments" *ngFor="let tranche of classroomPayment.tranches">{{tranche.payed | spaced}}</div>
+      <div>{{classroomPayment.classroomReduction}}</div>
+      <div *ngIf="!classroomPayment.areSchoolFeesSold" class="total-remaining">{{classroomPayment.schoolFeeRemaining | spaced }}</div>
+      <div *ngIf="classroomPayment.areSchoolFeesSold" class="check-icon d-flex align-items-center justify-content-start">
+        <img src="assets/images/good.png"/>
+      </div>
+      <div>{{classroomPayment.otherPayments | spaced }}</div>
+      <div>{{classroomPayment.totalPayed | spaced }}</div>
+    </div>
+  </div>
+</div>

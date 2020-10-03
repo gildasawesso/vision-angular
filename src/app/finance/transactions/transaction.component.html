@@ -1,0 +1,39 @@
+<div class="transactions">
+  <div class="balance">
+    <div class="label">Solde</div>
+    <div>{{balance | async | spaced: 'F'}}</div>
+  </div>
+
+  <div class="row my-3 align-items-end">
+    <div class="col-3">
+      <div class="d-flex align-items-center ">
+        <div class="pr-1">Filtres</div>
+        <input class="form-control picker" type="text"
+               [bsConfig]="datePickerConfg"
+               [formControl]="datePickerFilter"
+               bsDaterangepicker/>
+      </div>
+    </div>
+    <div class="ml-auto">
+      <button (click)="addIncome()" class="mx-2" mat-flat-button color="primary">Ajouter un revenu</button>
+      <button (click)="spend()" class="mx-2" mat-flat-button color="primary">Réaliser une dépense</button>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+
+  <cdk-virtual-scroll-viewport [itemSize]="200" class="group-viewport">
+    <div *cdkVirtualFor="let group of groupedTransactions" class="group">
+      <div class="group-head text-muted">{{group[0]}}</div>
+      <div class="group-content">
+        <div *ngFor="let transaction of group[1]" class="group-item d-flex align-items-center justify-content-between">
+          <div>
+            <div class="text-uppercase">{{transaction.name}}</div>
+            <div class="text-muted small">{{transaction.transactionType.name}}</div>
+          </div>
+          <div class="amount income text-success" *ngIf="transaction.operation === constants.common.incomeTransaction">{{transaction.amount}} F</div>
+          <div class="amount expense text-danger" *ngIf="transaction.operation === constants.common.expenseTransaction">- {{transaction.amount}} F</div>
+        </div>
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</div>
