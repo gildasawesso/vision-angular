@@ -58,7 +58,8 @@ export class RegisterComponent implements OnInit {
       const defaultFee = await this.repo.fees.one(registrationLike.classroom.reregistrationFee);
       const canClose = await this.utils.common.modal(PayComponent, {
         defaultFee,
-        registration: registrationLike
+        registration: registrationLike,
+        isRegistration: true
       }, true);
 
       if (canClose) {

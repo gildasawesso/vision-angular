@@ -28,7 +28,7 @@ export class StudentChooserComponent implements OnInit {
 
   constructor(private repo: Repositories,
               public utils: Utils,
-              private dialogRef: MatDialogRef<StudentChooserComponent>) {
+              public dialogRef: MatDialogRef<StudentChooserComponent>) {
   }
 
   async choose() {

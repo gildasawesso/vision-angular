@@ -97,7 +97,8 @@ export class RegistrationComponent implements OnInit {
     const defaultFee = await this.feeTypesRepository.one(defaultFeeId);
     await this.utils.common.modal(PayComponent, {
       registration: registrationLike,
-      defaultFee
+      defaultFee,
+      isRegistration: true
     });
     this.resetAllForms();
   }

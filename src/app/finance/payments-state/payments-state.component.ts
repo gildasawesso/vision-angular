@@ -33,6 +33,7 @@ export class PaymentsStateComponent implements OnInit {
   payments: Payment[] = [];
   totalPaymentsByTranche: Array<any>;
   defaultClassroom: Classroom;
+  tranchesName : string[];
   exportExcelHeader = [
     'Nom',
     'Prénom',
@@ -325,9 +326,10 @@ export class PaymentsStateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.repo.classrooms.stream.subscribe(classrooms => {
-      this.classrooms = classrooms;
-      this.defaultClassroom = classrooms.find(c => c.schoolFee != null && c.schoolFee.tranches != null && c.schoolFee.tranches.length > 0);
+    this.repo.classrooms.stream.subscribe(classrooms => this.classrooms = classrooms);
+
+    this.repo.fees.stream.subscribe(fees => {
+      this.tranchesName = fees.find(f => f.tranches.length >= 2).tranches.map(tranche => tranche.name);
     });
     this.registrationsRepository.stream.subscribe(registrations => this.registrations = registrations);
     this.paymentsRepository.stream.subscribe(payments => this.payments = payments);

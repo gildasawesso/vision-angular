@@ -15,5 +15,8 @@
     </select>
   </div>
 
-  <button class="btn btn-primary ml-auto" (click)="choose()">Valider</button>
+  <div class="d-flex justify-content-end">
+    <button mat-button (click)="dialogRef.close()">Annuler</button>
+    <button mat-flat-button color="primary" class="ml-3" (click)="choose()">Valider</button>
+  </div>
 </div>

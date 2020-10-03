@@ -7,6 +7,16 @@
     }
   }
 
+  .state {
+    .header {
+
+    }
+
+    .body {
+
+    }
+  }
+
   .classrooms {
     height: 70vh;
     overflow: auto;
@@ -18,7 +28,6 @@
     top: 0;
 
     .classroom {
-      font-size: 1.3em;
       margin: 10px 0;
       padding: 10px;
       cursor: pointer;
@@ -44,7 +53,6 @@
     background-color: white;
     box-shadow: $shadow;
     border-radius: 2px;
-    font-size: 1.3em;
     padding: 0 24px;
 
     div {

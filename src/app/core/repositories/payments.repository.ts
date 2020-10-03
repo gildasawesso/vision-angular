@@ -9,6 +9,7 @@ import {BehaviorSubject} from 'rxjs';
 export class PaymentsRepository extends BaseRepository<Payment> {
 
   public classroomsPayments: BehaviorSubject<unknown> = new BehaviorSubject<unknown>(null);
+  public state: BehaviorSubject<unknown> = new BehaviorSubject<unknown>(null);
 
   constructor() {
     super('/payments');
@@ -26,11 +27,17 @@ export class PaymentsRepository extends BaseRepository<Payment> {
     await super.init();
     this.stream.subscribe(async _ => {
       await this.getClassroomPayments();
+      await this.getPaymentsState();
     });
   }
 
   private async getClassroomPayments() {
     const payments = await this.query.get(`/classrooms`);
     this.classroomsPayments.next(payments);
+  }
+
+  private async getPaymentsState() {
+    const state = await this.query.get(`/classrooms/state`);
+    this.state.next(state);
   }
 }

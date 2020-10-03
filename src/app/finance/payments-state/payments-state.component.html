@@ -66,16 +66,11 @@
 <!--  </div>-->
 <!--</div>-->
 
-<div *ngIf="classroomSelected.value == null">
+<div class="state" *ngIf="classroomSelected.value == null">
   <div class="d-flex align-items-stretch payments-state-header">
     <div>Nom</div>
-    <div class="registration">
-      <span>Inscription/</span>
-      <span>Réinscription</span>
-    </div>
-    <ng-container *ngIf="defaultClassroom">
-      <div class="school-fee" *ngFor="let tranche of defaultClassroom?.schoolFee?.tranches">{{tranche.name}}</div>
-    </ng-container>
+    <div class="registration">Inscriptions</div>
+    <div class="school-fee" *ngFor="let trancheName of tranchesName">{{trancheName}}</div>
     <div>Réduction</div>
     <div class="remaining">Scolarité restante</div>
     <div class="remaining">Autres payements</div>
