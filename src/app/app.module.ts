@@ -11,6 +11,7 @@ import {PermissionsService} from './core/services/permissions.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TestCompComponent } from './test-comp/test-comp.component';
 import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
+import {ProgressbarModule} from 'ngx-bootstrap/progressbar';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
     HttpClientModule,
     MatDialogModule,
     NgxPermissionsModule.forRoot(),
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    ProgressbarModule.forRoot()
   ],
   providers: [
     {

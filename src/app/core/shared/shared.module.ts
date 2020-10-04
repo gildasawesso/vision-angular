@@ -39,6 +39,7 @@ import { ReductionPipe } from './pipes/reduction.pipe';
 import { WorkInProgressComponent } from './components/work-in-progress/work-in-progress.component';
 import { StudentChooserComponent } from './components/student-chooser/student-chooser.component';
 import {AtomSpinnerModule} from 'angular-epic-spinners';
+import { ProgressColorPipe } from './pipes/progress-color.pipe';
 
 const components = [
   AdmissionComponent,
@@ -91,17 +92,19 @@ const modules = [
   declarations: [
     ...components,
     ...pipes,
-    ...directives
+    ...directives,
+    ProgressColorPipe
   ],
   imports: [
     ...modules,
   ],
-  exports: [
-    ...components,
-    ...pipes,
-    ...directives,
-    ...modules
-  ],
+    exports: [
+        ...components,
+        ...pipes,
+        ...directives,
+        ...modules,
+        ProgressColorPipe
+    ],
   entryComponents: [
     AlertDialogComponent,
     AlertDialogYesNoComponent,

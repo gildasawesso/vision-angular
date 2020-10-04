@@ -90,14 +90,18 @@ export class PayComponent implements OnInit {
         }
 
         const message = this.isRegistration ? `Inscription réalisée avec succès` : `Payement effectué`;
-        await this.utils.common.customAlert(message, '', ['Imprimer le reçu']);
+        const result = await this.utils.common.customAlert(message, '', ['Annuler', 'Imprimer le reçu']);
 
-        try {
-          await this.utils.print.registrationReceipt(payment as Payment);
+        if (result === 1) {
+          try {
+            await this.utils.print.registrationReceipt(payment as Payment);
+            this.dialogRef.close(true);
+          } catch (e) {
+            console.error(e);
+            this.utils.common.alert(`Une erreur est survenue lors de l'impression du ticket`, `Erreur`);
+          }
+        } else {
           this.dialogRef.close(true);
-        } catch (e) {
-          console.error(e);
-          this.utils.common.alert(`Une erreur est survenue lors de l'impression du ticket`, `Erreur`);
         }
       } catch (e) {
         console.error(e);

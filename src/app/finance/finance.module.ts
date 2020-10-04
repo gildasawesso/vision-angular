@@ -29,6 +29,7 @@ import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
 import {RegistrationModule} from '../registration/registration.module';
 import { AddOrEditTransactionTypeComponent } from './transactions/add-or-edit-transaction-type/add-or-edit-transaction-type.component';
 import { AddOrEditTransactionComponent } from './transactions/add-or-edit-transaction/add-or-edit-transaction.component';
+import {ProgressbarModule} from 'ngx-bootstrap/progressbar';
 
 @NgModule({
   declarations: [
@@ -59,11 +60,12 @@ import { AddOrEditTransactionComponent } from './transactions/add-or-edit-transa
     AddOrEditTransactionTypeComponent,
     AddOrEditTransactionComponent,
   ],
-    imports: [
-        SharedModule,
-        FinanceRoutingModule,
-      BsDatepickerModule
-    ],
+  imports: [
+    SharedModule,
+    FinanceRoutingModule,
+    BsDatepickerModule,
+    ProgressbarModule
+  ],
   entryComponents: [
     AddOrEditFeeTypeComponent,
     AddOrEditTrancheComponent,
