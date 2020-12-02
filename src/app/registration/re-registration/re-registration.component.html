@@ -1,5 +1,6 @@
 <div class="row col-8 mx-auto">
-  <h1 class="h1 w-100">Inscription ancien élève</h1>
+  <h3 class="h3 w-100">Inscription ancien élève</h3>
+  <p class="small w-100">Liste des anciens élèves</p>
 
   <div [style.visibility]="lastYearRegistrations != null ? 'visible' : 'hidden'" class="searchbar d-flex align-items-center w-100" [ngClass]="{'focused': focused}">
     <input #searchStudent placeholder="Nom de l'ancien élève à inscrire" (focus)="focused = true" (focusout)="focused = false"/>
@@ -7,13 +8,13 @@
 
   <div *ngIf="lastYearRegistrations" class="result w-100">
     <ng-container *ngFor="let registration of registrationsFiltered; trackBy: trackBy">
-      <div class="d-flex justify-content-between align-items-center app-card mx-auto my-4">
+      <div class="d-flex justify-content-between align-items-center result-item mx-auto">
         <div>
           <h4 class="h4 font-weight-normal">{{registration.student.firstname}} {{registration.student.lastname.toUpperCase()}}</h4>
           <div class="text-black-50 py-2 text-capitalize">{{registration.classroom.name}}</div>
           <div class="text-black-50 py-2">{{registration.student.birthday | date: 'dd MMMM yyyy'}}</div>
         </div>
-        <button *ngIf="currentYearRegistrations[registration.student._id] === undefined"  mat-raised-button color="primary" class="px-4 py-2 rounded" (click)="register(registration)">Inscrire</button>
+        <button *ngIf="currentYearRegistrations[registration.student._id] === undefined"  mat-flat-button color="primary" class="px-4" (click)="register(registration)">Inscrire</button>
         <div *ngIf="currentYearRegistrations[registration.student._id] !== undefined" class="px-4 py-2 rounded">Élève déjà inscrit</div>
       </div>
     </ng-container>

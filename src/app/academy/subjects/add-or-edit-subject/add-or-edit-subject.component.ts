@@ -5,6 +5,7 @@ import {Utils} from '../../../core/shared/utils';
 import {SubjectsRepository} from '../../../core/repositories/subjects.repository';
 import {Subject} from '../../../core/models/subject';
 import {TeachersRepository} from '../../../core/repositories/teachers.repository';
+import {Repositories} from '../../../core/repositories/repositories';
 
 @Component({
   selector: 'app-add-or-edit-subject',
@@ -14,15 +15,14 @@ import {TeachersRepository} from '../../../core/repositories/teachers.repository
 export class AddOrEditSubjectComponent implements OnInit {
 
   subjectForm = this.formBuilder.group({
-    _id: null,
     name: [''],
     code: [''],
-    teachers: [],
     markBy: [20],
     coefficient: [1]
   });
   title = `Ajout d'un nouveau cours`;
   submitText = `Ajout le cours`;
+  subjectId: string;
   subject: Subject;
   markByList = [10, 20];
 
@@ -30,21 +30,17 @@ export class AddOrEditSubjectComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<AddOrEditSubjectComponent>,
               private utils: Utils,
+              private repo: Repositories,
               private subjectsRepository: SubjectsRepository,
               public teachersRepository: TeachersRepository) {
-    this.subject = this.data.subject;
-    if (this.subject) {
-      this.subjectForm.patchValue(this.subject);
-      this.submitText = 'Modifier le cours';
-      this.title = 'Modification du cours de' + this.subject.name;
-    }
+    this.subjectId = this.data.subjectId;
   }
 
 
 
   save() {
     if (this.subjectForm.valid) {
-      this.subject ? this.update() : this.create();
+      this.subjectId ? this.update() : this.create();
       this.utils.common.toast(`Opération réalisée avec succès`);
       this.dialogRef.close();
     } else {
@@ -60,7 +56,17 @@ export class AddOrEditSubjectComponent implements OnInit {
     await this.subjectsRepository.update(this.subjectForm.value, this.subject._id);
   }
 
-  ngOnInit() {
+  async init() {
+    this.subject = await this.repo.subjects.one(this.subjectId);
+    console.log(this.subject);
+    this.subjectForm.patchValue(this.subject);
+    this.submitText = 'Modifier le cours';
+    this.title = 'Modification du cours de' + this.subject.name;
   }
 
+  ngOnInit() {
+    if (this.subjectId) {
+      this.init();
+    }
+  }
 }

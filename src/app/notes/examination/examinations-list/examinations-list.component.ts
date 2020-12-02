@@ -15,6 +15,7 @@ import {SchoolyearsRepository} from '../../../core/repositories/schoolyears.repo
 import {SchoolSession} from '../../../core/models/school-session';
 import * as moment from 'moment';
 import { SortType } from '@swimlane/ngx-datatable';
+import {Repositories} from '../../../core/repositories/repositories';
 
 @Component({
   selector: 'app-examinations-list',
@@ -45,6 +46,7 @@ export class ExaminationsListComponent implements OnInit {
   examinationTypeSelected = new FormControl(null);
 
   @ViewChild('subjectTemplate', {static: true}) subjectTemplate: TemplateRef<any>;
+  @ViewChild('classroomTemplate', {static: true}) classroomTemplate: TemplateRef<any>;
   @ViewChild('examinationTypeTemplate', {static: true}) examinationTypeTemplate: TemplateRef<any>;
   @ViewChild('noteTemplate', {static: true}) noteTemplate: TemplateRef<any>;
   @ViewChild('actionsTemplate', {static: true}) actionsTemplate: TemplateRef<any>;
@@ -53,6 +55,7 @@ export class ExaminationsListComponent implements OnInit {
               private examinationTypesRepository: ExaminationTypesRepository,
               private classroomsRepository: ClassroomsRepository,
               private schoolyearsRepository: SchoolyearsRepository,
+              private repo: Repositories,
               public utils: Utils) { }
 
   async add() {
@@ -71,7 +74,7 @@ export class ExaminationsListComponent implements OnInit {
   }
 
   openNotesPage(examination: Examination) {
-    this.utils.common.modal(MarksComponent, { examination }, true);
+    this.utils.common.modal(MarksComponent, { examinationId: examination._id }, true);
   }
 
   isClassroomHasSubjects(classroom: Classroom) {
@@ -98,24 +101,15 @@ export class ExaminationsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.schoolyearsRepository.selectedSchoolYearTerm
-    //   .subscribe((session: SchoolSession) => {
-    //     if (session == null) { return; }
-    //     this.examinationsRepository.stream
-    //       .subscribe(async (examinations: Examination[]) => {
-    //         this.examinations = examinations
-    //           .filter(e => e.subject != null)
-    //           .filter(e => {
-    //           return moment(e.examinationDate).isBetween(moment(session.startDate), moment(session.endDate), null, '[]');
-    //         });
-    //         this.loadExaminations();
-    //       });
-    //   });
+    this.repo.exams.stream.subscribe(examinations => {
+      this.examinations = examinations;
+      this.loadExaminations();
+    });
 
     this.examinationTypesRepository.stream.subscribe(examinationTypes => this.examinationTypes = examinationTypes);
     this.classroomsRepository.stream.subscribe(classrooms => this.classrooms = classrooms);
     this.classroomSelected.valueChanges.subscribe((classroom: Classroom) => {
-      if (classroom != null) { this.subjects = classroom.subjects; }
+      if (classroom != null) this.subjects = classroom.subjects;
       this.loadExaminations();
     });
     this.subjectSelected.valueChanges.subscribe(_ => this.loadExaminations());
@@ -124,6 +118,7 @@ export class ExaminationsListComponent implements OnInit {
     this.columns = [
       { prop: 'examinationDate', name: 'Date d\'examen', pipe: { transform: this.utils.common.formatDate} },
       { name: 'Matière', cellTemplate: this.subjectTemplate },
+      { name: 'Classe', cellTemplate: this.classroomTemplate },
       { name: 'Type d\'examen', cellTemplate: this.examinationTypeTemplate },
       { name: 'Note', cellTemplate: this.noteTemplate },
       { name: 'Options', cellTemplate: this.actionsTemplate }

@@ -1,0 +1,49 @@
+@import 'src/theme/variables';
+
+:host {
+  display: block;
+}
+
+.pay {
+  padding: 48px;
+  margin: 0 auto;
+
+  .pay-line {
+    padding: 24px 0;
+    position: relative;
+
+    .delete-btn {
+      position: absolute;
+      top: 45px;
+      left: -45px;
+    }
+  }
+
+  .payment-input {
+    border: 1px solid $app-input-color;
+    border-radius: 7px;
+    overflow: hidden;
+    //height: 60px;
+    padding: 12px 24px 12px 5px;
+    font-size: 1.2em;
+
+    .remaining {
+      flex-basis: 100px;
+      flex-shrink: 0;
+    }
+
+    &.focused {
+      border: 2px solid mat-color($primary-palette, 700);
+    }
+
+    input {
+      height: 36px;
+      border: 0;
+      padding: 10px;
+      color: #111111;
+      width: 100%;
+    }
+  }
+}
+
+

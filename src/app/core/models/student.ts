@@ -21,4 +21,5 @@ export class Student {
   lastClass: string;
   lastSchool: string;
   createdAt?: Date;
+  classroomId?: string;
 }

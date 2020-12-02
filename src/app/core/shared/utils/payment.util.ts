@@ -10,7 +10,7 @@ export class PaymentUtil {
 
   studentPastPayments(feeId: string, payments: Payment[]) {
     const feePayments = payments.map(p => {
-      const paymentLine = p.paymentLines.find(line => line.fee === feeId);
+      const paymentLine = p.paymentLines.find(line => line.feeId === feeId);
       return paymentLine ? paymentLine.amount : 0;
     });
     return feePayments.reduce((acc, cur) => acc + cur, 0);

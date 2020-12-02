@@ -30,5 +30,4 @@ export class ExaminationUtil {
   private examinationTypeAlreadyAdded(examination: Examination, examinationTypes: ExaminationType[]) {
     return examinationTypes.find(et => et._id === examination.type._id) !== undefined;
   }
-
 }

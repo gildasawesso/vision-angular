@@ -1,0 +1,13 @@
+<div class="d-flex align-items-center justify-content-between header">
+  <div>
+    <h4 class="h4"><ng-content></ng-content></h4>
+    <div class="d-flex">
+      <ng-content select=".head1"></ng-content>
+      <ng-content select=".head2"></ng-content>
+    </div>
+  </div>
+  <div>
+    <ng-content select=".btn"></ng-content>
+  </div>
+</div>
+<mat-divider class="mb-4"></mat-divider>

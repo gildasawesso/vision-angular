@@ -11,6 +11,8 @@ import * as moment from 'moment';
 import {SchoolyearsRepository} from '../../../core/repositories/schoolyears.repository';
 import {Subject} from '../../../core/models/subject';
 import {ExaminationType} from '../../../core/models/examination-type';
+import {Services} from '../../../core/services/services';
+import {Repositories} from '../../../core/repositories/repositories';
 
 @Component({
   selector: 'app-add-or-edit-examination',
@@ -31,6 +33,8 @@ export class AddOrEditExaminationComponent implements OnInit {
               public examinationTypesRepository: ExaminationTypesRepository,
               public dialogRef: MatDialogRef<AddOrEditExaminationComponent>,
               private schoolyearsRepository: SchoolyearsRepository,
+              private services: Services,
+              private repo: Repositories,
               private utils: Utils) {
   }
 
@@ -49,11 +53,12 @@ export class AddOrEditExaminationComponent implements OnInit {
         examinationTypes.map(type => {
           subjects.map(async subject => {
             const examination: Examination = {
-              classroom: this.classroomFormControl.value,
-              subject,
-              type,
+              classroomId: this.classroomFormControl.value._id,
+              subjectId: subject._id,
+              typeId: type._id,
               examinationDate: this.examinationDateFormControl.value,
-              schoolYear: this.schoolyearsRepository.list[0]
+              schoolYearId: this.services.schoolYear.snapshot._id,
+              schoolId: this.services.auth.currentUser.schools[0]
             };
             await this.examinationsRepository.add(examination);
           });

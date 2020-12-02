@@ -15,8 +15,8 @@ import * as moment from 'moment';
 import {BsDatepickerConfig} from 'ngx-bootstrap/datepicker';
 import {StudentChooserComponent} from '../../core/shared/components/student-chooser/student-chooser.component';
 import {Repositories} from '../../core/repositories/repositories';
-import {PayComponent} from '../../registration/pay/pay.component';
-import {EditPayComponent} from '../../registration/edit-pay/edit-pay.component';
+import {PayComponent} from '../pay/pay.component';
+import {EditPayComponent} from '../edit-pay/edit-pay.component';
 
 @Component({
   selector: 'app-scholarships',
@@ -29,15 +29,16 @@ export class PaymentsComponent implements OnInit {
   columns: any[];
   totalPayments: number;
 
-  datePickerConfg: Partial<BsDatepickerConfig> = {
-    rangeInputFormat: 'DD MMM YYYY - DD MMM YYYY'
-  };
-
   ranges: any = [{
     value: [new Date(new Date().setDate(new Date().getDate() - 7)), new Date()],
     label: 'Derniers 7 jours'
   }
   ];
+
+  datePickerConfg: Partial<BsDatepickerConfig> = {
+    rangeInputFormat: 'DD MMM YYYY',
+    ranges: this.ranges
+  };
 
   get startDateFiltering() {
     return localStorage.getItem('filteringStartDate');
@@ -71,8 +72,8 @@ export class PaymentsComponent implements OnInit {
   classroomSelected = new FormControl(null);
   studentSelected = new FormControl(null);
   filterDate = new FormControl([
-    this.startDateFiltering,
-    this.endDateFiltering
+    new Date(this.startDateFiltering),
+    new Date(this.endDateFiltering)
   ]);
   startOfTheWeek = null;
   endOfTheWeek = null;
@@ -95,11 +96,11 @@ export class PaymentsComponent implements OnInit {
     payments = payments.filter(p => p.student != null);
 
     if (this.classroomSelected.value != null) {
-      payments = payments.filter(p => p.classroom === this.classroomSelected.value._id);
+      payments = payments.filter(p => p.classroom === this.classroomSelected.value);
     }
 
     if (this.studentSelected.value != null) {
-      payments = payments.filter(p => p.student === this.studentSelected.value._id);
+      payments = payments.filter(p => p.student === this.studentSelected.value);
     }
 
     if (this.filterDate.value[0] != null || this.filterDate.value[0] !== undefined) {
@@ -118,6 +119,7 @@ export class PaymentsComponent implements OnInit {
       });
     }
     this.totalPayments = payments.reduce((acc, cur) => acc + cur.amount, 0);
+
     this.rows = [...payments];
   }
 
@@ -200,8 +202,10 @@ export class PaymentsComponent implements OnInit {
       });
 
     this.classroomSelected.valueChanges
-      .subscribe((classroom: Classroom) => {
-        this.students = this.utils.student.classroomStudents(classroom);
+      .subscribe((classroomId: string) => {
+        this.students = this.registrations
+          .filter(r => r.classroom._id === classroomId)
+          .map(r => r.student);
         this.studentSelected.patchValue(null, {emitEvent: false});
         this.refreshList();
       });

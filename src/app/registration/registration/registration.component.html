@@ -4,8 +4,8 @@
   <div class="mb-4 app-card bg-white registration-item">
     <label class="genre">Sexe</label>
     <mat-radio-group formControlName="gender">
-      <mat-radio-button style="margin-right:40px;" value="M">M</mat-radio-button>
-      <mat-radio-button value="F">F</mat-radio-button>
+      <mat-radio-button style="margin-right:40px;" [value]="'M'">M</mat-radio-button>
+      <mat-radio-button [value]="'F'">F</mat-radio-button>
     </mat-radio-group>
     <div class="row">
       <app-input [control]="registrationForm.get('lastname')" name="lastname" formControlName="lastname" class="inputs col-12 col-sm-6">Nom</app-input>

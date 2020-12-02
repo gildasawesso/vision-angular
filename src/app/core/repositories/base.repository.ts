@@ -7,7 +7,7 @@ import {inject} from '@angular/core';
 import {BaseDatasource} from '../datasources/base.datasource';
 import { MatDialog } from '@angular/material/dialog';
 import {CustomizableAlertDialogComponent} from '../shared/components/customizable-alert-dialog/customizable-alert-dialog.component';
-import {filter} from 'rxjs/operators';
+import {filter, first} from 'rxjs/operators';
 import {AuthService} from '../services/auth.service';
 import {SchoolYear} from '../models/school-year';
 
@@ -50,8 +50,12 @@ export abstract class BaseRepository<T> extends BaseDatasource<T>{
     );
   }
 
-  remoteRefresh() {
-    this.init();
+  sync() {
+    this.schoolYearService.schoolYear.pipe(first()).subscribe(async schoolYear => {
+      if (schoolYear) {
+        this.next = await this.list(schoolYear);
+      }
+    });
   }
 
   localRefresh() {

@@ -10,4 +10,8 @@ export class ClassroomsRepository extends BaseRepository<Classroom> {
   constructor() {
     super('/classrooms');
   }
+
+  async classroomStudents(classroomId: string) {
+    return await this.query.get(`/${classroomId}/students`);
+  }
 }

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {BehaviorSubject} from 'rxjs';
-import {menuConfig} from '../shared/routeConfigs';
+import {menuConfig} from '../../routeConfigs';
 import {WorkService} from './work.service';
 import {ApiService} from './api.service';
 import {AppbarService} from './appbar.service';

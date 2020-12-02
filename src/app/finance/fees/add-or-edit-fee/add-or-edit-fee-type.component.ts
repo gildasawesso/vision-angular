@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {FeeTypesRepository} from '../../../core/repositories/fee-types.repository';
 import {Utils} from '../../../core/shared/utils';
 import {AddOrEditTrancheComponent} from '../add-or-edit-tranche/add-or-edit-tranche.component';
+import {Repositories} from '../../../core/repositories/repositories';
 
 @Component({
   selector: 'app-add-or-edit-fee',
@@ -21,8 +22,7 @@ export class AddOrEditFeeTypeComponent implements OnInit {
     amount: [''],
     deadline: [''],
     isSchoolFee: [false],
-    tranches: this.formBuilder.array([]),
-    feeCategory: ['']
+    tranches: this.formBuilder.array([])
   });
 
   get tranches() {
@@ -33,6 +33,7 @@ export class AddOrEditFeeTypeComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               private feeTypesRepository: FeeTypesRepository,
               private formBuilder: FormBuilder,
+              public repo: Repositories,
               public dialogRef: MatDialogRef<AddOrEditFeeTypeComponent>,
               private utils: Utils) {
     if (this.data) {
@@ -40,6 +41,7 @@ export class AddOrEditFeeTypeComponent implements OnInit {
       this.buttonSubmitText = `Modifier le type de contribution`;
       this.contributionId = this.data._id;
       this.feeForm.patchValue(this.data);
+      console.log(this.data);
 
       const tranchesFormArray = this.feeForm.controls.tranches as FormArray;
       this.data.tranches.forEach(t => tranchesFormArray.push(this.formBuilder.group(t)));

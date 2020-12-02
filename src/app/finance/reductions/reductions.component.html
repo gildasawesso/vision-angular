@@ -7,11 +7,11 @@
     </div>
   </div>
 
-  <div class="mt-4 flex-fill d-flex align-items-center justify-content-center" *ngIf="registration?.reductions.length <= 0">
+  <div class="mt-4 flex-fill d-flex align-items-center justify-content-center" *ngIf="registration?.reductions?.length <= 0">
     <button mat-raised-button color="primary" (click)="addReduction()">Ajouter une réduction</button>
   </div>
 
-  <div *ngIf="registration?.reductions.length > 0">
+  <div *ngIf="registration?.reductions?.length > 0">
 
     <button class="mt-4 mb-3" (click)="addReduction()" mat-raised-button color="primary">Ajouter</button>
 

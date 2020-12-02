@@ -22,6 +22,7 @@ export class CustomizableAlertDialogComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
 
 }

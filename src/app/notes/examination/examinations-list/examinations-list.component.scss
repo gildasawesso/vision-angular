@@ -1,16 +1,19 @@
 @import "app.colors";
 
 :host {
-  app-list {
-    display: block;
-    margin: 0 10px;
-    background-color: white;
-    border-radius: 7px;
-    box-shadow: $shadow;
+  display: block;
+  padding: 1em 2em;
+  background-color: white;
+
+  .filter {
+    margin-right: 2em;
+    flex: 0 1 200px;
   }
 
   .ngx-datatable {
+    margin-top: 2em;
     height: 70vh;
+    overflow-x: hidden;
   }
 
   .classroom-not-selected {

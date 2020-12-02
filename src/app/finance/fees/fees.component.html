@@ -1,8 +1,15 @@
-<div class="d-flex align-items-center ml-4 mb-3">
-  <h5 class="mr-4">Contributions</h5>
-  <button (click)="add()" mat-flat-button color="primary">Ajouter</button>
-</div>
-
 <div>
-  <app-table [mapping]="mapping" [data]="data" (edit)="edit($event)" (delete)="delete($event)"></app-table>
+  <div class="d-flex align-items-center mb-4">
+    <h5 class="h5 mr-4">Contributions</h5>
+    <button (click)="add()" mat-flat-button color="primary">Ajouter</button>
+  </div>
+
+  <app-datatable
+    [rows]="fees"
+    [columns]="columns"
+    (edit)="edit($event)"
+    (remove)="delete($event)"
+  >
+
+  </app-datatable>
 </div>

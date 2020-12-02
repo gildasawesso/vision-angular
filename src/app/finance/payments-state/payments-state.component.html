@@ -36,15 +36,7 @@
   <div class="body d-flex align-items-center" *ngFor="let student of classroomSelectedStudents">
     <div class="name">{{student?.lastname | uppercase}} {{student?.firstname}}</div>
     <div class="registrations">
-      <progressbar
-        [type]="classroomSelectedState?.students[student._id]?.registrationFeePayed | progressColor: classroomSelectedState?.students[student._id]?.registrationFeeToPay"
-        [max]="classroomSelectedState?.students[student._id]?.registrationFeeToPay"
-        [value]="classroomSelectedState?.students[student._id]?.registrationFeePayed">
-        {{
-        classroomSelectedState?.students[student._id]?.registrationFeePayed !== 0 ?
-          (classroomSelectedState?.students[student._id]?.registrationFeePayed | spaced: 'F') : ''
-        }}
-      </progressbar>
+      <app-registration-state [state]="classroomSelectedState?.students[student._id]"></app-registration-state>
     </div>
     <div class="tranches d-flex align-items-center">
       <div class="flex-fill tranche-progress" *ngFor="let tranche of classroomSelectedState?.students[student._id]?.tranches">
@@ -62,11 +54,11 @@
     <div class="text-dark name">Nom</div>
     <div class="registrations">
       <div class="text-dark">Inscriptions</div>
-      <div class="text-primary">{{paymentsState.registrationFeePayed | spaced: 'F'}} / {{paymentsState.registrationFeeRemaining | spaced: 'F'}}</div>
+      <div class="text-primary">{{paymentsState.registrationFeePayed | spaced: 'F'}} / {{paymentsState.registrationFeeToPay | spaced: 'F'}}</div>
     </div>
     <div class="tranches">
       <div class="text-dark">Tranches</div>
-      <div class="text-primary">{{paymentsState.schoolFeePayed | spaced: 'F'}} / {{paymentsState.schoolFeeRemaining | spaced: 'F'}}</div>
+      <div class="text-primary">{{paymentsState.schoolFeePayed | spaced: 'F'}} / {{paymentsState.schoolFeeToPay | spaced: 'F'}}</div>
     </div>
     <div class="others">
       <div class="text-dark">Autres</div>
@@ -81,15 +73,7 @@
   <div class="body d-flex align-items-center" *ngFor="let classroom of classrooms">
     <div class="text-capitalize name">{{classroom.name}}</div>
     <div class="registrations">
-      <progressbar
-        [type]="paymentsState.classrooms[classroom._id]?.registrationFeePayed | progressColor: paymentsState.classrooms[classroom._id]?.registrationFeeToPay: paymentsState.classrooms[classroom._id]?.registrationFeeToPay"
-        [max]="paymentsState.classrooms[classroom._id]?.registrationFeeToPay"
-        [value]="paymentsState.classrooms[classroom._id]?.registrationFeePayed">
-        {{
-        paymentsState.classrooms[classroom._id]?.registrationFeePayed !== 0 ?
-          (paymentsState.classrooms[classroom._id]?.registrationFeePayed | spaced: 'F') : ''
-        }}
-      </progressbar>
+      <app-registration-state [state]="paymentsState.classrooms[classroom._id]" hideReduLabel="true"></app-registration-state>
     </div>
     <div class="tranches d-flex align-items-center">
       <div class="flex-fill tranche-progress" *ngFor="let tranche of paymentsState.classrooms[classroom._id]?.tranches">

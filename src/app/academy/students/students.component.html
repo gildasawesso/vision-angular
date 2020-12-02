@@ -1,1 +1,20 @@
-<router-outlet></router-outlet>
+<app-title>Liste des élèves</app-title>
+<div class="d-flex pb-4 justify-content-between">
+ <div class="d-flex align-items-center">
+   <select class="custom-select filter" [formControl]="classroomSelected" [compareWith]="utils.common.compareFn">
+     <option [ngValue]="null">Toutes les classes</option>
+     <option *ngFor="let classroom of classrooms; let i = index;" [ngValue]="classroom._id">{{classroom.name}}</option>
+   </select>
+   <div class="text-success font-weight-bold pl-2">{{ this.filteredStudents.length }}</div>
+ </div>
+  <input placeholder="Rechercher" class="form-control search" [formControl]="searchTerm" #searchInput>
+</div>
+<div class="bg-white p-4 rounded">
+  <app-datatable
+    [rows]="filteredStudents"
+    [columns]="columns"
+    (edit)="edit($event)"
+    (remove)="delete($event)">
+    <ng-template #studentFullName let-row="row">{{row?.lastname?.toUpperCase()}} {{row?.firstname}}</ng-template>
+  </app-datatable>
+</div>

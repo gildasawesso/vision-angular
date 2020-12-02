@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {WorkService} from '../../../services/work.service';
 import {Services} from '../../../services/services';
 
@@ -25,5 +25,4 @@ export class ActionButtonComponent implements OnInit {
   ngOnInit() {
     this.services.smallWork.isBusy.subscribe(v => this.isBusy = v);
   }
-
 }

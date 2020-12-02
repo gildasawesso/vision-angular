@@ -1,14 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {Student} from '../../../core/models/student';
-import {FormBuilder} from '@angular/forms';
-import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
-import {StudentsRepository} from '../../../core/repositories/students.repository';
+import {FormBuilder, FormControl} from '@angular/forms';
 import {Utils} from '../../../core/shared/utils';
-import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
 import {Classroom} from '../../../core/models/classroom';
 import {Repositories} from '../../../core/repositories/repositories';
 import {Observable} from 'rxjs';
+import {Registration} from '../../../core/models/registration';
 
 @Component({
   selector: 'app-edit-student',
@@ -17,19 +15,20 @@ import {Observable} from 'rxjs';
 })
 export class EditStudentComponent implements OnInit {
 
-  studentsClassroom: Classroom;
-  students: Observable<Student[]>;
+  classrooms: Observable<Classroom[]>;
+  student: Student;
+  registration: Registration;
+  studentId: string;
+  studentClassroom = new FormControl();
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<EditStudentComponent>,
               private formBuilder: FormBuilder,
               private repo: Repositories,
               public utils: Utils) {
-    this.student = this.data.student;
-    this.studentForm.patchValue(this.student);
+    this.studentId = this.data.studentId;
   }
 
-  student: Student;
   isBusy = false;
   studentForm = this.formBuilder.group({
     _id: [''],
@@ -50,8 +49,7 @@ export class EditStudentComponent implements OnInit {
     mothersPhone: [''],
     address: [''],
     lastClass: [''],
-    lastSchool: [''],
-    classroom: ['']
+    lastSchool: ['']
   });
 
   async save() {
@@ -63,12 +61,13 @@ export class EditStudentComponent implements OnInit {
 
     const student: Student = this.studentForm.value;
     try {
-      const studentUpdated = await this.repo.students.update(student, this.student._id);
-      const studentRegistration = this.utils.student.studentRegistration(studentUpdated);
-      await this.repo.registrations.update(studentRegistration, studentRegistration._id);
+      await this.repo.students.update(student, this.student._id);
+      if (this.studentClassroom.value._id !== this.registration.classroom._id) {
+        this.registration.classroom = this.studentClassroom.value;
+        await this.repo.registrations.update(this.registration, this.registration._id);
+      }
+
       this.utils.common.toast(`L'élève ${student.lastname} a bien été modifié`);
-      this.repo.registrations.remoteRefresh();
-      this.isBusy = false;
       this.dialogRef.close();
     } catch (e) {
       console.error(e);
@@ -77,9 +76,15 @@ export class EditStudentComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    this.studentsClassroom = this.utils.student.studentRegistration(this.student).classroom;
-    this.students = this.repo.students.stream;
+  async getStudent() {
+    this.registration = await this.repo.registrations.student(this.studentId);
+    this.student = this.registration.student;
+    this.studentForm.patchValue(this.student);
+    this.studentClassroom.patchValue(this.registration.classroom);
   }
 
+  ngOnInit() {
+    this.classrooms = this.repo.classrooms.stream;
+    this.getStudent();
+  }
 }

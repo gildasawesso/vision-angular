@@ -30,6 +30,10 @@ import {RegistrationModule} from '../registration/registration.module';
 import { AddOrEditTransactionTypeComponent } from './transactions/add-or-edit-transaction-type/add-or-edit-transaction-type.component';
 import { AddOrEditTransactionComponent } from './transactions/add-or-edit-transaction/add-or-edit-transaction.component';
 import {ProgressbarModule} from 'ngx-bootstrap/progressbar';
+import {PayComponent} from './pay/pay.component';
+import {EditPayComponent} from './edit-pay/edit-pay.component';
+import { RegistrationStateComponent } from './payments-state/registration-state/registration-state.component';
+import { TrancheStateComponent } from './payments-state/tranche-state/tranche-state.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +63,10 @@ import {ProgressbarModule} from 'ngx-bootstrap/progressbar';
     AddOrEditReductionComponent,
     AddOrEditTransactionTypeComponent,
     AddOrEditTransactionComponent,
+    PayComponent,
+    EditPayComponent,
+    RegistrationStateComponent,
+    TrancheStateComponent
   ],
   imports: [
     SharedModule,

@@ -4,6 +4,6 @@ import {FeeType} from './fee-type';
 import {Classroom} from './classroom';
 
 export class PaymentLine {
-  fee: string;
+  feeId: string;
   amount: number;
 }

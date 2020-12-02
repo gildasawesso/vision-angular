@@ -9,6 +9,7 @@ import { AddOrEditExaminationTypeComponent } from './examination/add-or-edit-exa
 import { MarksComponent } from './examination/marks/marks.component';
 import { ExaminationTypesComponent } from './examination/examination-types/examination-types.component';
 import { ExaminationsListComponent } from './examination/examinations-list/examinations-list.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 

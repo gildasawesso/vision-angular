@@ -1,24 +1,22 @@
 <app-close-button [dialog]="dialogRef"></app-close-button>
-<h1>Notes</h1>
-<div class="d-flex mt-4">
+<h3 class="h3">Notes</h3>
+<div class="d-flex mt-2">
   <div class="flex-fill">
-    <p>Matière</p>
-    <p class="font-weight-bold">{{examination.subject.name}}</p>
+    <div class="text-muted">Matière</div>
+    <div class="text-success">{{examination?.subject?.code}}</div>
   </div>
 
   <div class="flex-fill">
-    <p>Type d'examination</p>
-    <p class="font-weight-bold">{{examination.type.name}}</p>
+    <div class="text-muted">Type d'examination</div>
+    <div class="text-success">{{examination?.type?.name}}</div>
   </div>
 </div>
 <mat-divider></mat-divider>
-<div class="d-flex align-items-center note" style="width: 100%;" *ngFor="let mark of marksSorted()">
-  <p class="flex-fill text-capitalize font-weight-bold">{{mark.student.lastname + ' ' + mark.student.firstname | titlecase}}</p>
+<div class="d-flex align-items-center note" style="width: 100%;" *ngFor="let mark of examination?.marks">
+  <p class="flex-fill text-capitalize">{{mark?.student?.lastname + ' ' + mark?.student?.firstname | titlecase}}</p>
   <div class="d-flex align-items-center">
-    <mat-form-field appearance="outline">
-      <input matInput placeholder="note" [(ngModel)]="mark.mark" (ngModelChange)="onModelChange($event)"/>
-    </mat-form-field>
-    <div>/{{examination.subject.markBy}}</div>
+    <input class="form-control" placeholder="note" [(ngModel)]="mark.mark" (ngModelChange)="onModelChange($event)"/>
+    <div class="text-muted pl-1">/{{examination?.subject?.markBy}}</div>
   </div>
 </div>
 

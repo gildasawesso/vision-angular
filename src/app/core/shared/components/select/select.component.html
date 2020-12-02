@@ -2,13 +2,13 @@
 <mat-form-field *ngIf="!multiple" appearance="outline" color="primary" >
   <select matNativeControl required [(ngModel)]="value" [compareWith]="utils.common.compareFn" [disabled]="disabled">
     <option *ngIf="addEmptyOption" [value]="null">{{ emptyLabel }}</option>
-    <option *ngFor="let option of options" [ngValue]="option">{{option[displayKey]}}</option>
+    <option *ngFor="let option of options" [ngValue]="option">{{option[displayKey] | capitalize}}</option>
   </select>
 </mat-form-field>
 
 <mat-form-field *ngIf="multiple" appearance="outline">
   <mat-select [(ngModel)]="value" multiple [compareWith]="utils.common.compareFn">
-    <mat-option *ngFor="let option of options" [value]="option">{{option[displayKey]}}</mat-option>
+    <mat-option *ngFor="let option of options" [value]="option">{{option[displayKey] | titlecase}}</mat-option>
   </mat-select>
 </mat-form-field>
 

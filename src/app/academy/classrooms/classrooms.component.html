@@ -1,1 +1,19 @@
-<router-outlet></router-outlet>
+<app-title>
+  <div>Liste des classes</div>
+  <button (click)="add()" class="btn" mat-flat-button color="primary">Ajouter</button>
+</app-title>
+
+<div class="py-3">
+  <div class="bg-white p-4 rounded">
+    <app-datatable
+      [rows]="classrooms"
+      [columns]="columns"
+      (edit)="edit($event)"
+      (remove)="delete($event)">
+      <ng-template #registrationFee let-row="row">{{row?._registrationFee?.amount | spaced: 'F' }}</ng-template>
+      <ng-template #reRegistrationFee let-row="row">{{row?._reRegistrationFee?.amount  | spaced: 'F'}}</ng-template>
+      <ng-template #schoolFee let-row="row">{{row?._schoolFee?.amount | spaced: 'F'}}</ng-template>
+    </app-datatable>
+</div>
+</div>
+

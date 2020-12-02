@@ -40,12 +40,13 @@ export class PrintUtil {
   }
 
   async bulletin(notes) {
-
+    const schoolyear = this.schoolYearService.snapshot;
+    console.log(notes);
     const options = {
       body: this.processNotes(notes),
       responseType: 'blob'
     };
-    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes`, options).toPromise();
+    const file = await this.api.request('post', `/report/print/bulletin-${notes.examinationsTypes.length}-notes?schoolyear=${schoolyear._id}`, options).toPromise();
 
     this.download(file);
   }
@@ -119,6 +120,7 @@ export class PrintUtil {
   }
 
   async classroomBulletin(notesArray) {
+    const schoolyear = this.schoolYearService.snapshot;
     const notesArrayProccessed = notesArray.map(notes => {
       console.log(notes);
       return this.processNotes(notes);
@@ -128,7 +130,7 @@ export class PrintUtil {
       body: notesArrayProccessed,
       responseType: 'blob'
     };
-    const file = await this.api.request('post', `/report/print/multiple`, options).toPromise();
+    const file = await this.api.request('post', `/report/print/multiple?schoolyear=${schoolyear._id}`, options).toPromise();
 
     this.download(file);
   }
@@ -143,7 +145,8 @@ export class PrintUtil {
     const schoolYear = await this.schoolYearService.snapshot;
 
     const paymentLines: any[] = await Promise.all(payment.paymentLines.map(async (line, index) => {
-      const fee = await this.repo.fees.one(line.fee);
+      console.log(line);
+      const fee = await this.repo.fees.one(line.feeId);
       const pastPayments = this.paymentUtil.studentPastPayments(fee._id, studentPayments);
       const reduction = this.paymentUtil.reduction(fee, studentReductions);
       return {

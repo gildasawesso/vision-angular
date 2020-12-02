@@ -2,6 +2,8 @@
 
 :host {
   display: block;
+  //background-color: white;
+  //height: 100%;
 
   //width: 55%;
   //margin: 25px auto;
@@ -12,8 +14,14 @@
 
   .result {
     overflow: auto;
-    max-height: 50vh;
+    //max-height: 50vh;
     padding: 1px;
+
+    .result-item {
+      background-color: white;
+      padding: 1em;
+      border-bottom: 1px solid var(--background-color);
+    }
   }
 
   .searchbar {

@@ -1,8 +1,7 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {fromEvent} from 'rxjs';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {fromEvent, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {StudentsRepository} from '../../core/repositories/students.repository';
-import {Student} from '../../core/models/student';
 import {Utils} from '../../core/shared/utils';
 import {RegisterComponent} from './register/register.component';
 import {RegistrationsRepository} from '../../core/repositories/registrations.repository';
@@ -29,6 +28,8 @@ export class ReRegistrationComponent implements OnInit {
 
   async register(registration: Registration) {
     await this.utils.common.modal(RegisterComponent, registration);
+    this.registrationsFiltered = [];
+    this.registrationSearch.nativeElement.value = '';
   }
 
   trackBy(index, item) {
@@ -39,7 +40,10 @@ export class ReRegistrationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.registrationsRepository.lastYearRegisrations.subscribe(r => this.lastYearRegistrations = r);
+    this.registrationsRepository.lastYearRegisrations.subscribe(registrations => {
+      this.lastYearRegistrations = null;
+      this.lastYearRegistrations = registrations;
+    });
     this.registrationsRepository.stream
       .pipe(
         map(registrations => {
@@ -54,7 +58,7 @@ export class ReRegistrationComponent implements OnInit {
     fromEvent(this.registrationSearch.nativeElement, 'keyup')
       .pipe(
         map((event: any) => event.target.value),
-        debounceTime(500),
+        debounceTime(300),
         distinctUntilChanged(),
       )
       .subscribe(value => {

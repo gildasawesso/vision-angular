@@ -2,37 +2,16 @@
 
 :host {
   display: block;
-  //margin: 25px auto;
-  background-color: $app-background;
+  background-color: var(--background-color);
   padding: 36px;
-  //border-radius: 7px;
-  //box-shadow: $app-box-shadow;
-  //
 
   .section {
-    margin-top: 16px;
     padding: 36px;
     background-color: white;
     border-radius: 7px;
-    box-shadow: $app-box-shadow;
   }
 
-  .section-title {
-    margin-top: 36px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  //
-  //.inputs {
-  //  margin-top: 15px;
-  //}
-  //
   .genre {
     margin-right: 55px;
   }
-  //
-  //.stats {
-  //  margin-bottom: 30px;
-  //  font-size: 14px;
-  //}
 }

@@ -20,10 +20,11 @@ export class AddOrEditReductionComponent implements OnInit {
   reduction: Reduction;
   index: number;
   fees: FeeType[];
+  feesAvailable: FeeType[];
 
   reductionType = new FormControl('amount', Validators.required);
   fee = new FormControl('', Validators.required);
-  amount = new FormControl('', [this.validatePercentage(this.reductionType, this.fee), Validators.min(0)]);
+  amount = new FormControl('', [this.validatePercentage(this.reductionType, this.fee), Validators.required, Validators.min(1)]);
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<AddOrEditReductionComponent>,
@@ -60,17 +61,12 @@ export class AddOrEditReductionComponent implements OnInit {
   async isReductionValid() {
     const pastPayments: number = await this.repo.payments.studentFeePayments(this.registration.student._id, this.fee.value?._id);
     const reduction = this.getReduction();
-    console.log(Number(this.fee.value?.amount));
-    console.log(pastPayments);
-    console.log(reduction);
     const remainingFeePayment = Number(this.fee.value?.amount) - pastPayments - reduction;
-    console.log('remining', remainingFeePayment);
     return remainingFeePayment >= 0;
   }
 
   async save() {
     const isReductionValid = await this.isReductionValid();
-    console.log(isReductionValid);
     if (!isReductionValid) {
       this.utils.common.toast(`Le reste à payer après réduction est invalide, modifiez la valeur de la réduction`);
       return;
@@ -86,10 +82,36 @@ export class AddOrEditReductionComponent implements OnInit {
     this.utils.common.toast(`Il existe des erreurs dans le formulaire`);
   }
 
+  async pruneFeesAvailable() {
+    const classroom = await this.repo.classrooms.one(this.registration.classroom._id);
+    const otherFees: FeeType[] = await this.repo.fees.otherPayments();
+    this.feesAvailable = this.fees.filter(fee => {
+      return fee._id === classroom.registrationFee ||
+        fee._id === classroom.reregistrationFee ||
+        fee._id === classroom.schoolFee ||
+        otherFees.find(f => f._id === fee._id) !== undefined;
+    });
+
+    if (this.registration.isNewStudent || !this.registration.isReregistration) {
+      const reregistrationIndex = this.feesAvailable.findIndex(fee => fee._id === classroom.reregistrationFee);
+      this.feesAvailable.splice(reregistrationIndex, 1);
+    } else {
+      const registrationIndex = this.feesAvailable.findIndex(fee => fee._id === classroom.registrationFee);
+      this.feesAvailable.splice(registrationIndex, 1);
+    }
+
+    if (this.registration.reductions && this.registration.reductions.length > 0) {
+      this.registration.reductions.forEach(reduction => {
+        const index = this.feesAvailable.findIndex(f => f._id === reduction.fee);
+        this.feesAvailable.splice(index, 1);
+      });
+    }
+  }
+
   async add() {
     const reductionLike = new Reduction();
     reductionLike.reductionType = this.reductionType.value;
-    reductionLike.reduction = this.amount.value;
+    reductionLike.reduction = Number(this.amount.value);
     reductionLike.fee = this.fee.value._id;
     if (this.registration.reductions === undefined || this.registration.reductions == null) {
       this.registration.reductions = [];
@@ -123,6 +145,14 @@ export class AddOrEditReductionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.feeTypesRepository.stream.subscribe(f => this.fees = f);
+    this.feeTypesRepository.stream.subscribe(fees => {
+      this.fees = fees;
+      this.pruneFeesAvailable();
+    });
+
+    this.fee.valueChanges.subscribe(fee => {
+      const index = this.feesAvailable.findIndex(f => f._id === fee._id);
+      this.feesAvailable.splice(index, 0);
+    });
   }
 }

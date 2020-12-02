@@ -4,6 +4,7 @@ import {Examination} from '../../../core/models/examination';
 import {ExaminationsRepository} from '../../../core/repositories/examinations.repository';
 import {Mark} from '../../../core/models/mark';
 import {Utils} from '../../../core/shared/utils';
+import {Repositories} from '../../../core/repositories/repositories';
 
 @Component({
   selector: 'app-marks',
@@ -13,13 +14,15 @@ import {Utils} from '../../../core/shared/utils';
 export class MarksComponent implements OnInit {
 
   examination: Examination;
+  examinationId: string;
   searchTerm = '';
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               private examinationsRepository: ExaminationsRepository,
               public dialogRef: MatDialogRef<MarksComponent>,
+              private repo: Repositories,
               private utils: Utils) {
-    this.examination = this.data.examination;
+    this.examinationId = this.data.examinationId;
   }
 
   search(term) {
@@ -30,13 +33,11 @@ export class MarksComponent implements OnInit {
       this.utils.common.toast('La note est supérieure à la note maximale');
       return;
     }
-    const x = await this.examinationsRepository.update(this.examination, this.examination._id);
+    const x = await this.repo.exams.update(this.examination, this.examination._id);
   }
 
-  marksSorted() {
-    return this.examination.marks.sort((m1, m2) => {
-      return m1.student.lastname.localeCompare(m2.student.lastname);
-    });
+  sortMarks(m1: Mark, m2: Mark) {
+    return m1.student.lastname.localeCompare(m2.student.lastname);
   }
 
   async save() {
@@ -44,10 +45,6 @@ export class MarksComponent implements OnInit {
       await this.examinationsRepository.update(this.examination, this.examination._id);
       this.dialogRef.close();
     }
-  }
-
-  async updateExamination() {
-    // this.examination = await this.examinationsRepository.updateStudents(this.examination, this.examination._id);
   }
 
   isMarksCorrect() {
@@ -63,7 +60,11 @@ export class MarksComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.updateExamination();
+    this.repo.exams.one(this.examinationId)
+      .then(examination => {
+        this.examination = examination;
+        this.examination.marks.sort(this.sortMarks);
+      })
+      .catch(error => this.utils.common.toast(JSON.stringify(error)));
   }
-
 }

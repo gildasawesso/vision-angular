@@ -6,10 +6,15 @@ import {Classroom} from './classroom';
 
 export interface Examination {
   '_id'?: string;
-  classroom: Classroom;
-  schoolYear: SchoolYear;
-  subject: Subject;
-  type: ExaminationType;
+  classroomId: string;
+  schoolYearId: string;
+  subjectId: string;
+  typeId: string;
+  classroom?: Classroom;
+  schoolYear?: SchoolYear;
+  subject?: Subject;
+  type?: ExaminationType;
+  schoolId: string;
   marks?: Array<Mark>;
   examinationDate: Date;
   createdAt?: Date;

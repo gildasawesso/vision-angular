@@ -6,6 +6,7 @@ import {User} from '../../../core/models/user';
 import {SchoolsRepository} from '../../../core/repositories/schools.repository';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../core/services/auth.service';
+import {Repositories} from '../../../core/repositories/repositories';
 
 @Component({
   selector: 'app-school-informations',
@@ -31,6 +32,7 @@ export class SchoolInformationsComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private utils: Utils,
               private schoolsRepository: SchoolsRepository,
+              private repo: Repositories,
               private router: Router,
               private auth: AuthService) { }
 
@@ -58,5 +60,10 @@ export class SchoolInformationsComponent implements OnInit {
       .subscribe(_ => {
         this.isEdited = true;
       });
+
+    this.repo.schools.stream.subscribe(school => {
+      this.schoolForm.patchValue(school);
+      this.isEdited = false;
+    });
   }
 }

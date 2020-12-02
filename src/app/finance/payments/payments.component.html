@@ -5,13 +5,13 @@
 
   <div class="d-flex align-items-center">
     <select class="form-control filter" [formControl]="classroomSelected" [compareWith]="utils.common.compareFn">
-      <option [value]="null">Toutes les classes</option>
-      <option *ngFor="let classroom of classrooms; let i = index;" [value]="classroom">{{classroom.name}}</option>
+      <option [ngValue]="null">Toutes les classes</option>
+      <option *ngFor="let classroom of classrooms; let i = index;" [value]="classroom._id">{{classroom.name}}</option>
     </select>
 
     <select class="form-control filter" [formControl]="studentSelected" [compareWith]="utils.common.compareFn">
-      <option [value]="null">Tous les élèves</option>
-      <option *ngFor="let student of students" [value]="student">{{student.lastname | uppercase}} {{student.firstname | titlecase}}</option>
+      <option [ngValue]="null">Tous les élèves</option>
+      <option *ngFor="let student of students" [value]="student._id">{{student.lastname | uppercase}} {{student.firstname | titlecase}}</option>
     </select>
 
     <input class="form-control picker" type="text" [bsConfig]="datePickerConfg" [formControl]="filterDate" bsDaterangepicker/>

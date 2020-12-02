@@ -40,6 +40,8 @@ import { WorkInProgressComponent } from './components/work-in-progress/work-in-p
 import { StudentChooserComponent } from './components/student-chooser/student-chooser.component';
 import {AtomSpinnerModule} from 'angular-epic-spinners';
 import { ProgressColorPipe } from './pipes/progress-color.pipe';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { TitleComponent } from './components/title/title.component';
 
 const components = [
   AdmissionComponent,
@@ -93,7 +95,9 @@ const modules = [
     ...components,
     ...pipes,
     ...directives,
-    ProgressColorPipe
+    ProgressColorPipe,
+    CapitalizePipe,
+    TitleComponent
   ],
   imports: [
     ...modules,
@@ -103,7 +107,8 @@ const modules = [
         ...pipes,
         ...directives,
         ...modules,
-        ProgressColorPipe
+        ProgressColorPipe,
+        TitleComponent
     ],
   entryComponents: [
     AlertDialogComponent,
@@ -118,7 +123,8 @@ const modules = [
     PrintUtil,
     StudentUtil,
     ExaminationUtil,
-    Utils
+    Utils,
+    SpacedPipe
   ]
 })
 export class SharedModule { }

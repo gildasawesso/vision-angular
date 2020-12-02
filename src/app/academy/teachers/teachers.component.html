@@ -1,1 +1,14 @@
-<router-outlet></router-outlet>
+<app-title>
+  <div>Liste des enseignants</div>
+  <button class="btn" (click)="add()" mat-flat-button color="primary">Ajouter</button>
+</app-title>
+
+<div class="bg-white p-4 rounded">
+  <app-datatable
+    [rows]="teachers | async"
+    [columns]="columns"
+    (edit)="edit($event)"
+    (remove)="delete($event)">
+    <ng-template #fullname let-row="row">{{row?.lastname?.toUpperCase()}} {{row?.firstname}}</ng-template>
+  </app-datatable>
+</div>

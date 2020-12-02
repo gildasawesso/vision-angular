@@ -1,8 +1,9 @@
 <div class="mr-3">
-  <h5>Types d'examination</h5>
-  <div class="d-flex align-items-center">
-    <h3 style="flex-basis: 0;" class="flex-grow-1">Désignation</h3>
-    <h3 style="flex-basis: 0;" class="flex-grow-1">Ordre d'apparition sur le bulletin</h3>
+  <h5 class="h5">Types d'examination</h5>
+  <button class="mt-3" mat-flat-button color="primary" (click)="addExaminationType()" *ngxPermissionsOnly="['ADMIN', constants.permissions.addExaminationType]">Ajouter un type d'examination</button>
+  <div class="d-flex align-items-center mt-4">
+    <div style="flex-basis: 0;" class="flex-grow-1 font-weight-bold">Désignation</div>
+    <div style="flex-basis: 0;" class="flex-grow-1 font-weight-bold">Ordre d'apparition sur le bulletin</div>
     <div style="flex-basis: 0;" class="flex-grow-1"></div>
   </div>
   <div class="d-flex align-items-center" *ngFor="let examType of examinationTypes">
@@ -13,5 +14,4 @@
       <button mat-icon-button color="warn" (click)="deleteExamType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.deleteExaminationType]"><mat-icon>delete</mat-icon></button>
     </div>
   </div>
-  <button mat-stroked-button color="accent" (click)="addExaminationType()" *ngxPermissionsOnly="['ADMIN', constants.permissions.addExaminationType]">Ajouter un type d'examination</button>
 </div>

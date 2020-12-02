@@ -16,7 +16,8 @@ import {FeeTypesRepository} from '../../core/repositories/fee-types.repository';
 import * as moment from 'moment';
 import {AuthService} from '../../core/services/auth.service';
 import {SchoolYearService} from '../../core/services/school-year.service';
-import {PayComponent} from '../pay/pay.component';
+import {PayComponent} from '../../finance/pay/pay.component';
+import {Repositories} from '../../core/repositories/repositories';
 
 @Component({
   selector: 'app-registration',
@@ -67,6 +68,7 @@ export class RegistrationComponent implements OnInit {
               private paymentsRepository: PaymentsRepository,
               private schoolsRepository: SchoolsRepository,
               public feeTypesRepository: FeeTypesRepository,
+              private repo: Repositories,
               private router: Router,
               private utils: Utils,
               private authService: AuthService,
@@ -95,16 +97,31 @@ export class RegistrationComponent implements OnInit {
 
     const defaultFeeId = this.isReregistration ? classroom.reregistrationFee : classroom.registrationFee;
     const defaultFee = await this.feeTypesRepository.one(defaultFeeId);
-    await this.utils.common.modal(PayComponent, {
+    const reset = await this.utils.common.modal(PayComponent, {
       registration: registrationLike,
       defaultFee,
       isRegistration: true
     });
-    this.resetAllForms();
+    if (reset) {
+      this.resetAllForms();
+    }
   }
 
   resetAllForms() {
-    location.reload();
+    this.registrationForm.reset();
+    this.registrationForm.patchValue({
+      gender: 'M',
+      registrationDate: moment().format()
+    });
+    this.registrationForm.markAsUntouched();
+
+    this.studentHasSibling = false;
+    this.isReregistration = false;
+    this.registrationDateIsDifferent = false;
+
+    this.feeTypeToAdd.reset();
+    this.siblingClassroom.reset();
+    this.sibling.reset();
   }
 
   onClassroomSelected() {
@@ -192,11 +209,13 @@ export class RegistrationComponent implements OnInit {
 
     this.onClassroomSelected();
 
-    // todo fixe here
-    // this.siblingClassroom.valueChanges
-    //   .subscribe((classroom: Classroom) => {
-    //     this.siblingClassroomStudents = this.registrationRepository.studentsForClassroom(this.registrations, classroom);
-    //   });
+    this.siblingClassroom.valueChanges
+      .subscribe((classroom: Classroom) => {
+        if (classroom == null) return;
+        this.siblingClassroomStudents = this.repo.registrations.snapshot
+          .filter(r => r.classroom._id === classroom._id)
+          .map(r => r.student);
+      });
 
     this.sibling.valueChanges
       .subscribe((student: Student) => {

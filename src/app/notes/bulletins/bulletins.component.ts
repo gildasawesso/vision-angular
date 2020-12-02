@@ -18,6 +18,8 @@ import {last} from 'rxjs/operators';
 import {BulletinService} from '../../core/services/bulletin.service';
 import {SchoolsRepository} from '../../core/repositories/schools.repository';
 import {SchoolYearService} from '../../core/services/school-year.service';
+import {Services} from '../../core/services/services';
+import {Repositories} from '../../core/repositories/repositories';
 
 @Component({
   selector: 'app-bulletins',
@@ -36,6 +38,7 @@ export class BulletinsComponent implements OnInit {
   notesBySubject: any;
   studentsMarksByExamination = null;
   bulletins: any = null;
+  classroomStudents: Student[] = [];
 
   studentsMarksGroupedBySubject(session: SchoolSession) {
     return this.subjectExaminationsByType.map(subjectByType => {
@@ -55,10 +58,6 @@ export class BulletinsComponent implements OnInit {
         examinations: studentsMarks
       };
     });
-  }
-
-  get classroomStudents() {
-    return this.utils.student.classroomStudents(this.classroomSelected);
   }
 
   rank(subject: Subject, examinationType: ExaminationType) {
@@ -137,24 +136,30 @@ export class BulletinsComponent implements OnInit {
               private subjectsRepository: SubjectsRepository,
               private bulletinService: BulletinService,
               private schoolsRepository: SchoolsRepository,
-              private schoolYearService: SchoolYearService,
+              public schoolYearService: SchoolYearService,
+              private services: Services,
+              private repo: Repositories,
               private utils: Utils) {
   }
 
-  selectClassroom(classroom: Classroom, index: number) {
+  async selectClassroom(classroom: Classroom, index: number) {
     this.selected = index;
-    this.classroomSelected = classroom;
+    this.classroomSelected = await this.repo.classrooms.one(classroom._id);
+    console.log(this.classroomSelected);
+    this.classroomStudents = await this.repo.classrooms.classroomStudents(classroom._id);
   }
 
-  classroomCommonBulletinInformations(classroom: Classroom, session: SchoolSession) {
-    const currentSchool = this.schoolsRepository.list[0];
+  async classroomCommonBulletinInformations(classroom: Classroom, session: SchoolSession) {
+    const user = await this.services.auth.getCurrentUser();
+    const currentSchoolId = user.schools[0];
+    const currentSchool = await this.repo.schools.one(currentSchoolId);
     const madeIn = 'ATROKPOCODJI';
     const lastSession = this.schoolYear.sessions[this.schoolYear.sessions.length - 1];
     const printingDate = moment().format('DD MMMM YYYY');
-    const classSize = this.utils.student.classroomStudents(classroom).length;
+    const classSize = this.classroomStudents.length;
     const schoolYear = moment(this.schoolYearSelected.startDate).format('YYYY') + ' - ' + moment(this.schoolYearSelected.endDate).format('YYYY');
     const totalCoef = classroom.subjects.reduce((acc, cur) => acc + cur.coefficient, 0);
-    const examinationsTypes = this.classroomExaminationTypes(classroom);
+    const examinationsTypes = this.repo.examTypes.snapshot;
     const examinationsTypesNames = examinationsTypes.map(t => t.name);
     const examinationTypesToDisplay = {};
     examinationsTypesNames.forEach((e, index) => examinationTypesToDisplay[`examType${index + 1}`] = e);
@@ -162,7 +167,7 @@ export class BulletinsComponent implements OnInit {
     const classroomStudentsMarksSorted = Object.keys(studentsNotes).sort((a, b) => studentsNotes[b].generalMean - studentsNotes[a].generalMean);
     const firstRankId = classroomStudentsMarksSorted[0];
     const lastRankId = classroomStudentsMarksSorted[classroomStudentsMarksSorted.length - 1];
-    const studentsAllSessionsGeneralMean = this.utils.student.classroomStudents(classroom)
+    const studentsAllSessionsGeneralMean = (await this.repo.classrooms.classroomStudents(classroom._id))
       .map(student => {
         try {
           const studentAnnualNote =  this.schoolYearSelected.sessions
@@ -175,7 +180,7 @@ export class BulletinsComponent implements OnInit {
           return {[student._id]: 0};
         }
       })
-      .sort((aStudentNote, bStudentNote) => Object.values(bStudentNote)[0] - Object.values(aStudentNote)[0]);
+      .sort((aStudentNote, bStudentNote) => Number(Object.values(bStudentNote)[0]) - Number(Object.values(aStudentNote)[0]));
 
     return {
       madeIn,
@@ -201,7 +206,7 @@ export class BulletinsComponent implements OnInit {
       let loading;
       loading = this.utils.common.loading(`Le Bulletin de ${student.firstname} ${student.lastname} est en cours de génération`);
       try {
-        const commonInfo = this.classroomCommonBulletinInformations(classroom, session);
+        const commonInfo = await this.classroomCommonBulletinInformations(classroom, session);
         const notes = await this.processNotes(student, classroom, session, commonInfo);
         await this.utils.print.bulletin(notes);
         loading.close();
@@ -258,7 +263,7 @@ export class BulletinsComponent implements OnInit {
       classroom: classroom.name,
       sessionsReport: null,
       term: session.name.toUpperCase(),
-      examinationsTypes: this.classroomExaminationTypes(classroom).map(t => t.name),
+      examinationsTypes: this.repo.examTypes.snapshot.map(t => t.name),
       totalPoints: this.bulletins[session.name][classroom._id].students[student._id]?.grandTotal?.toFixed(2),
       generalMean: generalMean.toFixed(2),
       generalMeanInLetter: this.utils.common.decimalToLetter(generalMean.toFixed(2)),
@@ -273,7 +278,7 @@ export class BulletinsComponent implements OnInit {
       schoolSessions,
       annualMean: annualStats[annualRankIndex][student._id]?.toFixed(2),
       annualRank: annualRankIndex + 1,
-      subjects: this.classroomSelected.subjects.map(subject => {
+      subjects: this.classroomSelected._subjects.map(subject => {
         const classroomMarksForCurrentSubject = this.bulletins[session.name][classroom._id].subjects[subject._id]?.students;
         const studentMarksForCurrentSubject = this.bulletins[session.name][classroom._id].subjects[subject._id]?.students[student._id];
 
@@ -334,20 +339,29 @@ export class BulletinsComponent implements OnInit {
   }
 
   async printClassroomBulletins(classroom: Classroom, index: number, session: SchoolSession) {
-    this.classroomSelected = classroom;
+    this.classroomSelected = await this.repo.classrooms.one(classroom._id);
     this.selected = index;
+    console.log(this.classroomSelected);
     let loading;
 
     if (this.canGenerateClassroomBulletin()) {
       try {
         loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
         await this.utils.common.sleep(300);
-        const commonBulletinInfo = this.classroomCommonBulletinInformations(this.classroomSelected, session);
+        const commonBulletinInfo = await this.classroomCommonBulletinInformations(this.classroomSelected, session);
+        // debugger;
         const bulletins = this.classroomStudents.map(student => this.processNotes(student, this.classroomSelected, session, commonBulletinInfo));
-        await this.utils.print.classroomBulletin(bulletins);
+        console.log('classroom bulletins', bulletins);
+        try {
+          await this.utils.print.classroomBulletin(bulletins);
+        } catch (e) {
+          console.log(JSON.stringify(e));
+          this.utils.common.alert(JSON.stringify(e.error), 'Une erreur est survenue lors de l\'impression');
+        }
         loading.close();
       } catch (e) {
-        this.utils.common.alert(JSON.stringify(e.error));
+        this.utils.common.alert(JSON.stringify(e.error), 'Une erreur est survenue');
+        console.log(JSON.stringify(e));
         loading.close();
       }
     }
@@ -384,10 +398,12 @@ export class BulletinsComponent implements OnInit {
     this.subjectsRepository.stream
       .subscribe(subjects => this.subjects = subjects);
 
-    this.bulletinService.getBulletins()
-      .then(bulletins => {
+    this.bulletinService.bulletins
+      .subscribe(bulletins => {
+        if (bulletins == null) return;
         this.bulletins = bulletins;
+        console.log(bulletins);
+        this.services.work.ended();
       });
   }
-
 }

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" *ngIf="bulletins != null">
   <div class="col-4">
     <h3>Classes</h3>
     <div class="classrooms">
@@ -6,7 +6,7 @@
         <span class="flex-fill align-self-stretch d-flex align-items-center" (click)="selectClassroom(classroom, i)">{{classroom.name}}</span>
         <button [mat-menu-trigger-for]="printClassroomBulletinMenu" mat-flat-button >Imprimer les bulletins</button>
         <mat-menu #printClassroomBulletinMenu>
-          <button (click)="printClassroomBulletins(classroom, i, session)" *ngFor="let session of schoolYear.sessions" mat-menu-item>{{session.name}}</button>
+          <button (click)="printClassroomBulletins(classroom, i, session)" *ngFor="let session of schoolYearService.snapshot.sessions" mat-menu-item>{{session.name}}</button>
         </mat-menu>
       </div>
     </div>
@@ -20,7 +20,7 @@
           <span class="flex-fill">{{student?.lastname | uppercase}} {{student?.firstname}}</span>
           <button [mat-menu-trigger-for]="printStudentBulletinMenu"  mat-flat-button>Imprimer le bulletin</button>
           <mat-menu #printStudentBulletinMenu>
-            <button (click)="printStudentBulletin(classroomSelected, student, session)" *ngFor="let session of schoolYear.sessions" mat-menu-item>{{session.name}}</button>
+            <button (click)="printStudentBulletin(classroomSelected, student, session)" *ngFor="let session of schoolYearService.snapshot.sessions" mat-menu-item>{{session.name}}</button>
           </mat-menu>
         </div>
       </div>

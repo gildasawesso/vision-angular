@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import {Utils} from '../../../core/shared/utils';
 import {Registration} from '../../../core/models/registration';
 import {RegistrationsRepository} from '../../../core/repositories/registrations.repository';
-import {PayComponent} from '../../pay/pay.component';
+import {PayComponent} from '../../../finance/pay/pay.component';
 import {SchoolYearService} from '../../../core/services/school-year.service';
 import {Repositories} from '../../../core/repositories/repositories';
 import {AuthService} from '../../../core/services/auth.service';

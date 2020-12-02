@@ -1,47 +1,49 @@
-<h4>{{title}}</h4>
-<div class="row" [formGroup]="classroomForm">
-  <app-input name="name" formControlName="name" class="inputs col-12 col-sm-6">Nom</app-input>
-  <app-input name="code" formControlName="code" class="inputs col-12 col-sm-6">Code</app-input>
-  <app-select name="teacher"
-              [options]="teachersRepository.stream | async"
-              displayKey="lastname" valueKey="_id"
-              formControlName="teacher"
-              class="inputs col-12 col-sm-6">
-    Professeur en charge
-  </app-select>
+<app-title>{{ classroomId != null ? classroom?.name : "Ajout d'une classe" }}</app-title>
 
-  <app-select name="subjects" class="inputs col-12 col-sm-6"
+<div [formGroup]="classroomForm">
+  <app-input name="name" formControlName="name">Nom</app-input>
+
+  <app-input name="code" formControlName="code">Code</app-input>
+
+  <label class="text-muted pt-4">Professeur en charge</label>
+  <select class="custom-select" formControlName="_teacher">
+    <option [ngValue]="null">Choisissez</option>
+    <option [ngValue]="teacher"
+            *ngFor="let teacher of teachers | async">{{teacher.lastname}} {{teacher.firstname}}</option>
+  </select>
+
+  <label class="text-muted pt-4">Frais d'inscriptions</label>
+  <select class="custom-select" formControlName="registrationFee">
+    <option [ngValue]="null">Choisissez</option>
+    <option [ngValue]="fee?._id"
+            *ngFor="let fee of fees | async">{{fee?.name}}</option>
+  </select>
+
+  <label class="text-muted pt-4">Frais de réinscription</label>
+  <select class="custom-select" formControlName="reregistrationFee">
+    <option [ngValue]="null">Choisissez</option>
+    <option [ngValue]="fee?._id"
+            *ngFor="let fee of fees | async">{{fee?.name}}</option>
+  </select>
+
+  <label class="text-muted pt-4">Frais de scolarité</label>
+  <select class="custom-select" formControlName="schoolFee">
+    <option [ngValue]="null">Choisissez</option>
+    <option [ngValue]="fee?._id"
+            *ngFor="let fee of fees | async">{{fee?.name}}</option>
+  </select>
+
+
+  <app-advanced-select class="inputs w-100"
               [options]="subjectsRepository.stream | async"
               displayKey="name" valueKey="_id"
-              formControlName="subjects" [multiple]="true">
+              [control]="classroomForm.get('_subjects')" [multiple]="true">
     Cours
-  </app-select>
-  <app-select
-              [options]="feesRepository.stream | async"
-              displayKey="name" valueKey="_id"
-             formControlName="registrationFee"
-             class="inputs col-12">
-    Frais d'inscription
-  </app-select>
-
-  <app-select
-              [options]="feesRepository.stream | async"
-              displayKey="name" valueKey="_id"
-              formControlName="schoolFee"
-              class="inputs col-12">
-    Frais de scolarité
-  </app-select>
-
-  <app-select
-              [options]="feesRepository.stream | async"
-              displayKey="name" valueKey="_id"
-              formControlName="reregistrationFee"
-              class="inputs col-12">
-    Frais de réinscription
-  </app-select>
-
-  <div class="ml-auto mr-4 mt-3">
-    <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
-    <button (click)="save()" mat-flat-button color="primary">{{submitText}}</button>
-  </div>
+  </app-advanced-select>
 </div>
+
+<div class="ml-auto mr-4 mt-3">
+  <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
+  <button (click)="save()" mat-flat-button color="primary">{{ classroomId != null ? 'Modifier' : 'Ajouter' }}</button>
+</div>
+

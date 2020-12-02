@@ -5,6 +5,7 @@ import {Classroom} from '../models/classroom';
 import {map} from 'rxjs/operators';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {SchoolYear} from '../models/school-year';
+import {PaymentsRepository} from './payments.repository';
 
 @Injectable({
   providedIn: 'root'

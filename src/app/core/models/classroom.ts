@@ -7,11 +7,16 @@ export class Classroom {
   name: string;
   code: string;
   capacity: number;
-  teacher: Teacher;
+  teacher: string;
   registrationFee: string;
   reregistrationFee: string;
   schoolFee: string;
   subjects: Array<Subject>;
+  '_registrationFee'?: FeeType;
+  '_reRegistrationFee'?: FeeType;
+  '_schoolFee'?: FeeType;
+  '_subjects'?: Array<Subject>;
+  '_teacher'?: Teacher;
 
 
   // registrationFee: FeeType | string;

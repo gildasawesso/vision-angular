@@ -7,6 +7,11 @@ import {Utils} from '../../../core/shared/utils';
 import {ClassroomsRepository} from '../../../core/repositories/classrooms.repository';
 import {Classroom} from '../../../core/models/classroom';
 import {TeachersRepository} from '../../../core/repositories/teachers.repository';
+import {Repositories} from '../../../core/repositories/repositories';
+import {Observable} from 'rxjs';
+import {Teacher} from '../../../core/models/teacher';
+import {Subject} from '../../../core/models/subject';
+import {FeeType} from '../../../core/models/fee-type';
 
 @Component({
   selector: 'app-add-or-edit-classroom',
@@ -20,15 +25,21 @@ export class AddOrEditClassroomComponent implements OnInit {
     code: [''],
     capacity: [''],
     teacher: [null],
+    _teacher: [null],
     registrationFee: [null],
+    _registrationFee: [null],
     reregistrationFee: [null],
+    _reRegistrationFee: [null],
     schoolFee: [null],
-    subjects: [null]
+    _schoolFee: [null],
+    subjects: [null],
+    _subjects: [null]
   });
-  title = `Ajout d'une nouvelle classe`;
-  submitText = `Créer la classe`;
   classroom: Classroom;
-  isNewClassroom = true;
+  classroomId: string;
+  teachers: Observable<Teacher[]>;
+  subjects: Observable<Subject[]>;
+  fees: Observable<FeeType[]>;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any,
               public dialogRef: MatDialogRef<AddOrEditClassroomComponent>,
@@ -37,19 +48,14 @@ export class AddOrEditClassroomComponent implements OnInit {
               public feesRepository: FeeTypesRepository,
               private classroomsRepository: ClassroomsRepository,
               private utils: Utils,
+              private repo: Repositories,
               public teachersRepository: TeachersRepository) {
-    if (this.data) {
-      this.isNewClassroom = false;
-      this.classroom = this.data;
-      this.title = `Modification de la classe de ${this.classroom.name}`;
-      this.submitText = `Modifier la classe`;
-      this.classroomForm.patchValue(this.classroom);
-    }
+    this.classroomId = this.data.classroomId;
   }
 
   save() {
     if (this.classroomForm.valid) {
-      this.isNewClassroom ? this.createClassroom() : this.updateClassroom();
+      this.classroomId ? this.updateClassroom() : this.createClassroom();
       this.utils.common.toast(`Opération réalisée avec succès`);
       this.dialogRef.close();
     } else {
@@ -65,7 +71,19 @@ export class AddOrEditClassroomComponent implements OnInit {
     await this.classroomsRepository.update(this.classroomForm.value, this.classroom._id);
   }
 
-  ngOnInit() {
+  async init() {
+    this.classroom = await this.repo.classrooms.one(this.classroomId);
+    this.classroomForm.patchValue(this.classroom, { emitEvent: true });
+    console.log(this.classroomForm.value);
   }
 
+  ngOnInit() {
+    this.teachers = this.repo.teachers.stream;
+    this.subjects = this.repo.subjects.stream;
+    this.fees = this.repo.fees.stream;
+
+    if (this.classroomId) {
+      this.init();
+    }
+  }
 }

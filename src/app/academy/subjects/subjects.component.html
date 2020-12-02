@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<app-title>
+  <div>Liste des cours</div>
+  <button class="btn" (click)="add()" mat-flat-button color="primary">Ajouter</button>
+</app-title>
+
+<div class="bg-white p-4 rounded">
+  <app-datatable
+    [rows]="subjects"
+    [columns]="columns"
+    (edit)="edit($event)"
+    (remove)="delete($event)">
+  </app-datatable>
+</div>

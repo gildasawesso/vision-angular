@@ -1,0 +1,50 @@
+<div class="pay">
+  <h4 class="display-4">Modification du payement</h4>
+  <div class="d-flex align-items-center">
+    <p class="lead text-capitalize">{{registration?.student?.firstname | titlecase}}</p>
+    <p class="lead ml-2">{{registration?.student?.lastname.toUpperCase()}}</p>
+    <p class="text-success lead font-weight-bold ml-2">{{registration?.classroom.name}}</p>
+  </div>
+  <mat-divider class="mb-4"></mat-divider>
+
+  <div *ngFor="let paymentLine of paymentLines.controls" [formGroup]="paymentLine" class="pay-line d-flex flex-column">
+    <div class="d-flex justify-content-between align-items-center">
+      <p style="flex: 1">{{paymentLine?.value?.fee?.name}}</p>
+      <div style="flex: 1">
+        <div class="payment-input d-flex align-items-center">
+          <input [formControl]="paymentLine.get('amount')" type="number"/>
+          <div class="px-2 text-muted">/</div>
+          <div class="d-flex flex-column remaining">
+            <span>Reste à payer</span>
+            <div class="text-muted">{{paymentLine?.value?.remaining | spaced: 'F'}}</div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center text-dark pl-1">
+            <mat-icon >history</mat-icon>
+            <div class="mx-1">{{ paymentLine?.value?.pastPayments | spaced: 'F'}}</div>
+          </div>
+          <p class="text-success mt-1 pr-1">{{paymentLine?.value?.reduction}}</p>
+        </div>
+        <span style="color: red;" *ngIf="paymentLine.get('amount')?.hasError('exceeded')">Montant supérieur au payement restant</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center">
+    <div style="flex: 1">Date de payement</div>
+    <div style="flex: 1" class="my-2 mx-0">
+      <app-date [control]="paymentDate"></app-date>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between mt-3">
+    <div>
+      <button class="btn btn-light px-5" (click)="dialogRef.close()">Annuler</button>
+      <button class="btn btn-primary mx-2 px-3" (click)="reductions()">Réductions</button>
+    </div>
+    <button mat-raised-button color="primary" (click)="save()" class="btn px-5">Valider</button>
+  </div>
+</div>
+
+
