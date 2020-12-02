@@ -40,8 +40,9 @@ export class AddOrEditExaminationComponent implements OnInit {
 
   handleOnClassroomSelected() {
     this.classroomFormControl.valueChanges
-      .subscribe((classroom: Classroom) => {
-        this.classroomSubjects = classroom.subjects;
+      .subscribe(async (classroom: Classroom) => {
+        const fullClassroom = await this.repo.classrooms.one(classroom._id);
+        this.classroomSubjects = fullClassroom.subjects;
       });
   }
 
