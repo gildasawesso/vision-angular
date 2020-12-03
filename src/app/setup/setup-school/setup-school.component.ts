@@ -40,7 +40,7 @@ export class SetupSchoolComponent implements OnInit {
         const school: School = await this.schoolsRepository.add(newSchool);
         const user: User = await this.auth.getCurrentUser();
         user.schools.push(school._id);
-        this.auth.currentUser = await this.auth.updateUser(user);
+        this.auth.snapshot = await this.auth.updateUser(user);
         await this.router.navigateByUrl('/setup/schoolyears');
         this.isBusy = false;
       } catch (e) {

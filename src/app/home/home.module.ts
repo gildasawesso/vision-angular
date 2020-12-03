@@ -17,6 +17,7 @@ import {FormsModule} from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavContentComponent } from './home/sidenav-content/sidenav-content.component';
 import { SidenavHeaderComponent } from './home/sidenav-header/sidenav-header.component';
+import {AtomSpinnerModule} from 'angular-epic-spinners';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { SidenavHeaderComponent } from './home/sidenav-header/sidenav-header.com
     MatSelectModule,
     MatSidenavModule,
     FormsModule,
+    AtomSpinnerModule,
     NgxPermissionsModule.forChild()
   ]
 })

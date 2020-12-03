@@ -32,11 +32,11 @@ export class AuthService {
     return !!localStorage.getItem('credentials');
   }
 
-  get currentUser() {
+  get snapshot() {
     return this.userBehaviorSubject.value;
   }
 
-  set currentUser(user: User) {
+  set snapshot(user: User) {
     this.userBehaviorSubject.next(user);
     if (user == null) {
       this.credentials = null;
@@ -72,7 +72,7 @@ export class AuthService {
       if (this.isUserAuthenticated) {
         try {
           const user = await this.api.get(`/users/me`).toPromise();
-          this.currentUser = user;
+          this.snapshot = user;
           return user;
         } catch (e) {
           console.log(e);
@@ -101,7 +101,7 @@ export class AuthService {
   }
 
   async signout() {
-    this.currentUser = null;
+    this.snapshot = null;
     await this.router.navigateByUrl(apiConstants.signin);
     location.reload();
   }

@@ -25,6 +25,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import {LayoutModule} from '@angular/cdk/layout';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 const angularModules = [
   MatButtonModule,
@@ -51,7 +52,8 @@ const angularModules = [
   MatGridListModule,
   MatCardModule,
   MatExpansionModule,
-  ScrollingModule
+  ScrollingModule,
+  MatCheckboxModule
 ];
 
 @NgModule({

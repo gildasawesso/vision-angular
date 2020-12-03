@@ -1,5 +1,12 @@
 @import 'variables';
 
+:host {
+  .working-text {
+    font-size: .7em;
+    color: var(--primary);
+  }
+}
+
 :host::ng-deep {
   mat-form-field {
     .mat-form-field-wrapper {

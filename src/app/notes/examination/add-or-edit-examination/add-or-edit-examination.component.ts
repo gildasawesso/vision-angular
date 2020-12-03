@@ -59,7 +59,7 @@ export class AddOrEditExaminationComponent implements OnInit {
               typeId: type._id,
               examinationDate: this.examinationDateFormControl.value,
               schoolYearId: this.services.schoolYear.snapshot._id,
-              schoolId: this.services.auth.currentUser.schools[0]
+              schoolId: this.services.auth.snapshot.schools[0]
             };
             await this.examinationsRepository.add(examination);
           });

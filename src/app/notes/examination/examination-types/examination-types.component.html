@@ -1,6 +1,6 @@
 <div class="mr-3">
   <h5 class="h5">Types d'examination</h5>
-  <button class="mt-3" mat-flat-button color="primary" (click)="addExaminationType()" *ngxPermissionsOnly="['ADMIN', constants.permissions.addExaminationType]">Ajouter un type d'examination</button>
+  <button class="mt-3" mat-flat-button color="primary" (click)="addExaminationType()" *ngxPermissionsOnly="['ADMIN', 'addExaminationType']">Ajouter un type d'examination</button>
   <div class="d-flex align-items-center mt-4">
     <div style="flex-basis: 0;" class="flex-grow-1 font-weight-bold">Désignation</div>
     <div style="flex-basis: 0;" class="flex-grow-1 font-weight-bold">Ordre d'apparition sur le bulletin</div>
@@ -10,8 +10,8 @@
     <div style="flex-basis: 0;" class="flex-grow-1">{{examType.name}}</div>
     <div style="flex-basis: 0;" class="flex-grow-1">{{examType.displayOrder}}</div>
     <div style="flex-basis: 0;" class="flex-grow-1">
-      <button mat-icon-button (click)="editExaminationType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.editExaminationType]"><mat-icon>edit</mat-icon></button>
-      <button mat-icon-button color="warn" (click)="deleteExamType(examType)" *ngxPermissionsOnly="['ADMIN', constants.permissions.deleteExaminationType]"><mat-icon>delete</mat-icon></button>
+      <button mat-icon-button (click)="editExaminationType(examType)" *ngxPermissionsOnly="['ADMIN', 'editExaminationType']"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button color="warn" (click)="deleteExamType(examType)" *ngxPermissionsOnly="['ADMIN', 'deleteExaminationType']"><mat-icon>delete</mat-icon></button>
     </div>
   </div>
 </div>

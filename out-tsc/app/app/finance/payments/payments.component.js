@@ -42,7 +42,6 @@ let PaymentsComponent = class PaymentsComponent {
             amount: 'Montant',
             options: 'Options',
         };
-        this.optionsPermissions = { edit: constants.permissions.editPayment, delete: constants.permissions.deletePayment };
     }
     get startDateFiltering() {
         return localStorage.getItem('filteringStartDate');

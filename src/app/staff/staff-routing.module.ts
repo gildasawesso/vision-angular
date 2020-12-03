@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {UsersComponent} from './users/users.component';
+import {StaffComponent} from './staff.component';
 import {RolesComponent} from './roles/roles.component';
 
 const routes: Routes = [
-  { path: 'users', component: UsersComponent },
+  { path: 'list', component: StaffComponent },
   { path: 'roles', component: RolesComponent },
-  { path: '', redirectTo: 'users', pathMatch: 'full' },
+  { path: '', redirectTo: 'list', pathMatch: 'full' }
 ];
 
 @NgModule({

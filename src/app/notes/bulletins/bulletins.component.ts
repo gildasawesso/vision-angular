@@ -203,16 +203,15 @@ export class BulletinsComponent implements OnInit {
 
   async printStudentBulletin(classroom: Classroom, student: Student, session: SchoolSession) {
     if (this.canGenerateClassroomBulletin()) {
-      let loading;
-      loading = this.utils.common.loading(`Le Bulletin de ${student.firstname} ${student.lastname} est en cours de génération`);
+      this.services.work.started(`Le Bulletin de ${student.firstname} ${student.lastname} est en cours de génération`);
       try {
         const commonInfo = await this.classroomCommonBulletinInformations(classroom, session);
         const notes = await this.processNotes(student, classroom, session, commonInfo);
         await this.utils.print.bulletin(notes);
-        loading.close();
+        this.services.work.ended();
       } catch (e) {
         console.error(e);
-        loading.close();
+        this.services.work.ended();
         this.utils.common.alert('les données sont insuffisantes pour générer les bulletins');
       }
     }
@@ -341,12 +340,10 @@ export class BulletinsComponent implements OnInit {
   async printClassroomBulletins(classroom: Classroom, index: number, session: SchoolSession) {
     this.classroomSelected = await this.repo.classrooms.one(classroom._id);
     this.selected = index;
-    console.log(this.classroomSelected);
-    let loading;
 
     if (this.canGenerateClassroomBulletin()) {
       try {
-        loading = this.utils.common.loading('Les Bulletins sont en cours de génération');
+        this.services.work.started('Les Bulletins sont en cours de génération');
         await this.utils.common.sleep(300);
         const commonBulletinInfo = await this.classroomCommonBulletinInformations(this.classroomSelected, session);
         // debugger;
@@ -358,11 +355,11 @@ export class BulletinsComponent implements OnInit {
           console.log(JSON.stringify(e));
           this.utils.common.alert(JSON.stringify(e.error), 'Une erreur est survenue lors de l\'impression');
         }
-        loading.close();
+        this.services.work.ended();
       } catch (e) {
         this.utils.common.alert(JSON.stringify(e.error), 'Une erreur est survenue');
         console.log(JSON.stringify(e));
-        loading.close();
+        this.services.work.ended();
       }
     }
   }
@@ -402,7 +399,6 @@ export class BulletinsComponent implements OnInit {
       .subscribe(bulletins => {
         if (bulletins == null) return;
         this.bulletins = bulletins;
-        console.log(bulletins);
         this.services.work.ended();
       });
   }

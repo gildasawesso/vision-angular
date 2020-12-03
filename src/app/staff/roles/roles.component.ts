@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import {AddOrEditUserComponent} from '../users/add-or-edit-user/add-or-edit-user.component';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AddOrEditUserComponent} from '../add-or-edit-user/add-or-edit-user.component';
 import {User} from '../../core/models/user';
 import {Utils} from '../../core/shared/utils';
 import {RolesRepository} from '../../core/repositories/roles.repository';
 import {Role} from '../../core/models/role';
 import {AddOrEditRoleComponent} from './add-or-edit-role/add-or-edit-role.component';
+import {Repositories} from '../../core/repositories/repositories';
 
 @Component({
   selector: 'app-roles',
@@ -13,21 +14,22 @@ import {AddOrEditRoleComponent} from './add-or-edit-role/add-or-edit-role.compon
 })
 export class RolesComponent implements OnInit {
 
-  data: Role[];
-  mapping = {
-    name: 'Nom',
-    'array permissions description |': 'Permissions',
-    options: 'Options'
-  };
+  roles: Role[];
+  columns: any[];
 
-  constructor(private utils: Utils, private rolesRepository: RolesRepository) { }
+  @ViewChild('permissions', {static: true}) permissionsTemplate: TemplateRef<any>;
+
+  constructor(private utils: Utils,
+              private repo: Repositories,
+              private rolesRepository: RolesRepository
+  ) { }
 
   async add() {
-    await this.utils.common.modal(AddOrEditRoleComponent, { role: null });
+    await this.utils.common.modal(AddOrEditRoleComponent, { role: null }, false);
   }
 
   async edit(role: Role) {
-    await this.utils.common.modal(AddOrEditRoleComponent, { role });
+    await this.utils.common.modal(AddOrEditRoleComponent, { roleId: role._id });
   }
 
   async delete(user: User) {
@@ -39,7 +41,11 @@ export class RolesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.rolesRepository.stream
-      .subscribe(roles => this.data = [...roles]);
+    this.repo.roles.stream.subscribe(roles => this.roles = [...roles]);
+
+    this.columns = [
+      { name: 'Nom', prop: 'name' },
+      { name: 'Permissions', cellTemplate: this.permissionsTemplate },
+    ];
   }
 }

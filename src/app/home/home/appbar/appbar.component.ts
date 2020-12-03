@@ -7,6 +7,7 @@ import {SchoolyearsRepository} from '../../../core/repositories/schoolyears.repo
 import {SchoolYear} from '../../../core/models/school-year';
 import {SchoolSession} from '../../../core/models/school-session';
 import {SchoolYearService} from '../../../core/services/school-year.service';
+import {Services} from '../../../core/services/services';
 
 @Component({
   selector: 'app-appbar',
@@ -18,6 +19,8 @@ export class AppbarComponent implements OnInit {
   routes: Array<{text: string, url: string}>;
   isHomeMenu = false;
   moduleSelected: string;
+  working = false;
+  workingText = '';
 
   schoolYears: SchoolYear[];
   currentSchoolYear: SchoolYear;
@@ -42,6 +45,7 @@ export class AppbarComponent implements OnInit {
               private breakpointObserver: BreakpointObserver,
               private schoolYearService: SchoolYearService,
               private schoolyearsRepository: SchoolyearsRepository,
+              private services: Services,
               public auth: AuthService) { }
 
   async signout() {
@@ -61,6 +65,11 @@ export class AppbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.services.work.working.subscribe(val => {
+      this.working = val.state;
+      this.workingText = val.text;
+    });
+
     this.appbarService.appbarMenus
       .subscribe(routes => {
         this.routes = routes;

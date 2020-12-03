@@ -4,6 +4,7 @@ import {NgxPermissionsService} from 'ngx-permissions';
 import {SchoolYearService} from './school-year.service';
 import {first} from 'rxjs/operators';
 import {SchoolYear} from '../models/school-year';
+import {constants} from '../constants';
 
 @Injectable()
 export class PermissionsService {
@@ -19,15 +20,15 @@ export class PermissionsService {
     });
   }
 
-  get permissions() {
-    return this.userPermissions();
+  get userPermissions() {
+    return this.currentUserPermissions();
   }
 
   get allPermissions() {
-    return this.getAllPermissions();
+    return constants.permissions.map(module => module.permissions).reduce((acc, cur) => [...acc, ...cur]);
   }
 
-  private async userPermissions() {
+  private async currentUserPermissions() {
     if (this.schoolyear == null) {
       return [];
     }
@@ -35,11 +36,11 @@ export class PermissionsService {
   }
 
   private async getAllPermissions() {
-    return await this.api.get('/permissions').toPromise();
+    return await this.api.get(`/permissions?schoolyear=${this.schoolYearService.snapshot._id}`).toPromise();
   }
 
   async loadPermissions() {
-    const permissions = await this.userPermissions();
+    const permissions = await this.currentUserPermissions();
     this.ngxPermissions.loadPermissions(permissions);
   }
 }

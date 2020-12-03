@@ -11,6 +11,8 @@ import {ExaminationsRepository} from './examinations.repository';
 import {ExaminationTypesRepository} from './examinationTypes.repository';
 import {TeachersRepository} from './teachers.repository';
 import {SubjectsRepository} from './subjects.repository';
+import {UsersRepository} from './users.repository';
+import {RolesRepository} from './roles.repository';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +29,8 @@ export class Repositories {
               public examTypes: ExaminationTypesRepository,
               public teachers: TeachersRepository,
               public subjects: SubjectsRepository,
+              public users: UsersRepository,
+              public roles: RolesRepository,
               public transactionTypes: TransactionTypesRepository) {
   }
 }

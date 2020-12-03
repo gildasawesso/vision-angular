@@ -52,7 +52,7 @@ export class RegisterComponent implements OnInit {
         student: this.oldRegistration.student,
         registrationDate: this.registrationDate.value,
         reductions: [],
-        school: this.auth.currentUser.schools[0]
+        school: this.auth.snapshot.schools[0]
       };
 
       const defaultFee = await this.repo.fees.one(registrationLike.classroom.reregistrationFee);

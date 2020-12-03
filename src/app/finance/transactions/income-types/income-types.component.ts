@@ -29,7 +29,7 @@ export class IncomeTypesComponent implements OnInit {
       height: 'auto'
     });
     if (result) {
-      const user = this.services.auth.currentUser;
+      const user = this.services.auth.snapshot;
       const type: TransactionType = {
         name: result,
         schoolId: user.schools[0],
@@ -49,7 +49,7 @@ export class IncomeTypesComponent implements OnInit {
     });
 
     if (result && result !== type.name) {
-      const user = this.services.auth.currentUser;
+      const user = this.services.auth.snapshot;
       const transactionType: TransactionType = {
         name: result,
         schoolId: user.schools[0],

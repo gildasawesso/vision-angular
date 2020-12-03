@@ -42,12 +42,12 @@ export class Common {
 
   modal<T>(component, data, noPadding = false, config?: MatDialogConfig): Promise<T> {
     const dialog: MatDialogRef<any> = this.matDialog.open(component, {
+      ...config,
       panelClass: noPadding ? 'dialog-without-padding' : 'relative',
-      minWidth: '60%',
+      maxWidth: '70%',
       maxHeight: '90vh',
       data,
       disableClose: true,
-      ...config
     });
 
     return dialog.afterClosed().toPromise();

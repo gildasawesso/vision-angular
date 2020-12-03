@@ -1,7 +1,6 @@
-import {Permission} from './permission';
-
 export class Role {
-  '_id': string;
+  '_id'?: string;
   name: string;
-  permissions: Array<Permission>;
+  permissions: Array<string>;
+  schoolId: string;
 }

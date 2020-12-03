@@ -1,24 +1,21 @@
-<h4>{{title}}</h4>
-<div [formGroup]="rolesForm">
+<h4>{{role ? 'Modification du rôle' : 'Ajouter un rôle' }}</h4>
 
-  <div class="row">
-    <app-input formControlName="name" class="inputs col-12">Nom du rôle</app-input>
-  </div>
+<app-input [formControl]="roleNameFormControl" class="inputs">Nom du rôle</app-input>
 
-  <div class="row">
-    <app-select class="inputs col-12"
-                [options]="permissions"
-                displayKey="description" valueKey="_id"
-                formControlName="permissions" [multiple]="true">
-      Permissions
-    </app-select>
+<div [formGroup]="permissionsForm">
+  <div class="permission-modules" formArrayName="modules" *ngFor="let permissionModule of permissionModulesArray.controls; let i = index">
+    <div>Module {{ constants.permissions[i].name }}</div>
+    <div [formGroupName]="i">
+     <div formArrayName="permissions" class="mt-2 d-flex flex-wrap justify-content-between">
+       <div class="permission" [formArrayName]="j" *ngFor="let permission of permissionModule.controls.permissions.controls; let j = index">
+         <mat-checkbox color="primary" formControlName="checked">{{ permission?.value?.description }}</mat-checkbox>
+       </div>
+     </div>
+    </div>
   </div>
 </div>
-
-
 
 <div class="ml-auto mr-4">
   <button class="mr-4" (click)="dialogRef.close()" mat-button>Annuler</button>
-  <button (click)="save()" mat-flat-button color="primary">{{submitText}}</button>
+  <button (click)="save()" mat-flat-button color="primary">{{ role ? 'Modifier' : 'Ajouter' }}</button>
 </div>
-

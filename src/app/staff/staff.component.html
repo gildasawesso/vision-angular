@@ -1,1 +1,18 @@
-<router-outlet></router-outlet>
+<div class="d-flex align-items-center">
+  <h5 class="mx-4">Personnel</h5>
+  <button (click)="add()" mat-flat-button color="primary">Ajouter</button>
+</div>
+<div class="mt-3 bg-white p-4 rounded">
+  <app-datatable
+    [rows]="users"
+  [columns]="columns"
+  (edit)="edit($event)"
+  (remove)="delete($event)">
+    <ng-template #fullname let-row="row">{{row?.lastname?.toUpperCase()}} {{row?.firstname}}</ng-template>
+    <ng-template #role let-row="row">
+      <ul class="small">
+        <li *ngFor="let role of row.roles">{{ role?.name }}</li>
+      </ul>
+    </ng-template>
+  </app-datatable>
+</div>

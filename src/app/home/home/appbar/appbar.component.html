@@ -1,5 +1,9 @@
 <mat-toolbar class="appbar bg-transparent p-3 d-flex align-items-center">
   <span class="flex-grow-1"></span>
+  <div class="d-flex align-items-center" *ngIf="working">
+    <app-atom-spinner class="mx-auto p-3" [animationDuration]="1000" [size]="30" [color]="'#1976d2'"></app-atom-spinner>
+    <div class="working-text p-3 mx-auto">{{workingText}}</div>
+  </div>
   <mat-form-field class="school-years" color="accent" appearance="outline">
     <mat-select [(ngModel)]="currentSchoolYear" (ngModelChange)="onSchoolYearChange($event)" [compareWith]="compareFn">
       <mat-option

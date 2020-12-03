@@ -59,7 +59,7 @@ export class AddOrEditTransactionComponent implements OnInit {
 
   async add() {
     const transactionLike = this.transactionForm.value;
-    const user = this.services.auth.currentUser;
+    const user = this.services.auth.snapshot;
     const transaction: Transaction = {
       name: transactionLike.name,
       amount: Number(transactionLike.amount),
@@ -80,7 +80,7 @@ export class AddOrEditTransactionComponent implements OnInit {
 
   async edit() {
     const transactionLike = this.transactionForm.value;
-    const user = this.services.auth.currentUser;
+    const user = this.services.auth.snapshot;
     const transaction: Transaction = {
       name: transactionLike.name,
       amount: Number(transactionLike.amount),

@@ -89,7 +89,7 @@ export class AddOrEditSchoolYearComponent implements OnInit {
 
   async add() {
     const newSchoolYear: SchoolYear = this.schoolYearForm.value;
-    newSchoolYear.school = this.auth.currentUser.schools[0];
+    newSchoolYear.school = this.auth.snapshot.schools[0];
     await this.schoolyearsRepository.add(newSchoolYear);
     this.isBusy = false;
     this.dialogRef.close();

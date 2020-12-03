@@ -6,5 +6,11 @@
 
   .signin {
     height: 100%;
+
+    .connexion {
+      box-shadow: 0 2px 3px rgba(0,0,0,.08);
+      padding: 24px;
+      border-radius: 7px;
+    }
   }
 }

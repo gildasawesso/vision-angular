@@ -38,7 +38,7 @@ import {ProgressbarModule} from 'ngx-bootstrap/progressbar';
     {
       provide: APP_INITIALIZER,
       useFactory: (permissionsService: PermissionsService, ps: NgxPermissionsService ) => async () => {
-        const permissions = await permissionsService.permissions;
+        const permissions = await permissionsService.userPermissions;
         ps.loadPermissions(permissions);
       },
       deps: [PermissionsService, NgxPermissionsService],

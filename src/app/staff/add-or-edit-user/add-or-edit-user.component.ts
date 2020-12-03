@@ -1,11 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {Utils} from '../../../core/shared/utils';
-import {UsersRepository} from '../../../core/repositories/users.repository';
-import {User} from '../../../core/models/user';
-import {RolesRepository} from '../../../core/repositories/roles.repository';
-import {SchoolsRepository} from '../../../core/repositories/schools.repository';
+import {Utils} from '../../core/shared/utils';
+import {UsersRepository} from '../../core/repositories/users.repository';
+import {User} from '../../core/models/user';
+import {RolesRepository} from '../../core/repositories/roles.repository';
+import {SchoolsRepository} from '../../core/repositories/schools.repository';
 
 @Component({
   selector: 'app-add-user',

@@ -33,14 +33,14 @@ export const menuConfig = [
   },
   {
     staff: [
-      { text: 'personnel', url: '/staff/users', icon: 'people' },
+      { text: 'personnel', url: '/staff/list', icon: 'people' },
       { text: 'rôles', url: '/staff/roles', icon: 'admin_panel_settings' },
     ]
   },
   {
     notes: [
-      {text: 'Examinations', url: '/notes/examinations/list', icon: 'science'},
-      {text: 'Types examinations', url: '/notes/examinations/types', icon: 'reorder'},
+      { text: 'Examinations', url: '/notes/examinations/list', icon: 'science'},
+      { text: 'Types examinations', url: '/notes/examinations/types', icon: 'reorder'},
       { text: 'Bulletins', url: '/notes/bulletins', icon: 'emoji_events' },
     ]
   },

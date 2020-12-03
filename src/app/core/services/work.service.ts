@@ -1,29 +1,18 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {WorkInProgressComponent} from '../shared/components/work-in-progress/work-in-progress.component';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkService {
 
-  isBusy = new BehaviorSubject(false);
-  private dialogRef: MatDialogRef<any>;
+  working = new BehaviorSubject({ state: false, text: ''});
 
   started(message: string) {
-    this.dialogRef = this.dialog.open(WorkInProgressComponent, {
-      data: message,
-      minWidth: 400,
-      hasBackdrop: false
-    });
+    this.working.next({ state: true, text: message});
   }
 
   ended() {
-    this.dialogRef?.close();
-  }
-
-  constructor(private dialog: MatDialog) {
-
+    this.working.next({ state: false, text: ''});
   }
 }

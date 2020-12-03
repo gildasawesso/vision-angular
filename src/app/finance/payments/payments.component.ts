@@ -89,7 +89,6 @@ export class PaymentsComponent implements OnInit {
     amount: 'Montant',
     options: 'Options',
   };
-  optionsPermissions = { edit: constants.permissions.editPayment, delete: constants.permissions.deletePayment };
 
   refreshList() {
     let payments = [...this.payments];

@@ -1,5 +1,5 @@
-<h4 class="display-4 text-center">{{schoolYear ? 'Modification de l\'année scolaire' : 'Ajout d\'une année scolaire' }}</h4>
-<div class="col-8 mx-auto" [formGroup]="schoolYearForm">
+<h4 class="h4 text-center">{{schoolYear ? 'Modification de l\'année scolaire' : 'Ajout d\'une année scolaire' }}</h4>
+<div class="mx-auto" [formGroup]="schoolYearForm">
 
   <app-date class="col-12 col-sm-6" [control]="schoolYearForm.get('startDate')">Date début</app-date>
   <app-date class="col-12 col-sm-6" [control]="schoolYearForm.get('endDate')">Date fin</app-date>

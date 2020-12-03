@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  max-width: 40vw;
+
+  .permission-modules {
+    margin: 24px 0;
+    padding: 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+
+  .permission {
+    flex-basis: 200px;
+    flex-grow: 1;
+  }
+}

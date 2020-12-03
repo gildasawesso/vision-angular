@@ -1,6 +1,6 @@
 <div class="d-flex flex-column align-items-center justify-content-center signin">
   <div class="connexion col-10 col-sm-4 mx-auto" [formGroup]="signinForm">
-    <h1 class="display-1">Connexion</h1>
+    <h1 class="text-center">Connexion</h1>
     <app-input [control]="signinForm.get('username')" formControlName="username">Username</app-input>
     <app-input [control]="signinForm.get('password')" (keyup.enter)="signin()" formControlName="password" type="password">Mot de passe</app-input>
     <app-action-button (appClick)="signin()" class="mt-4" color="primary">Connexion</app-action-button>
