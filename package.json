@@ -33,7 +33,7 @@
     "chartjs-plugin-datalabels": "^0.7.0",
     "dayjs": "^1.9.1",
     "jwt-decode": "^2.2.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "ng2-charts": "^2.4.2",
     "ngx-bootstrap": "^6.1.0",
     "ngx-permissions": "^8.1.1",
